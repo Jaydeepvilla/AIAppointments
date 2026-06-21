@@ -2,6 +2,7 @@ import { streamText, tool } from 'ai'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { services, availability } from '@/lib/db/schema'
+import { eq } from 'drizzle-orm'
 
 const MODEL = 'anthropic/claude-sonnet-4.6'
 
@@ -29,7 +30,7 @@ const tools = {
       const slots = await db
         .select()
         .from(availability)
-        .where((t) => t.dayOfWeek === dayOfWeek)
+        .where(eq(availability.dayOfWeek, dayOfWeek))
       return slots.map((s) => ({
         start: s.startTime,
         end: s.endTime,
@@ -47,7 +48,7 @@ const tools = {
       const availability_slots = await db
         .select()
         .from(availability)
-        .where((t) => t.dayOfWeek === dayOfWeek)
+        .where(eq(availability.dayOfWeek, dayOfWeek))
 
       if (!availability_slots.length) return { slots: [] }
 
@@ -86,7 +87,7 @@ Always be professional, friendly, and helpful. When suggesting appointments, use
       messages,
       tools,
       maxSteps: 10,
-    })
+    } as any)
 
     return result.toUIMessageStreamResponse()
   } catch (error) {

@@ -1,5 +1,5 @@
 import { SignUp } from '@clerk/nextjs'
-import { Calendar } from 'lucide-react'
+import { Tooth } from '@/components/tooth-icon'
 import Link from 'next/link'
 
 export default function SignUpPage() {
@@ -11,7 +11,7 @@ export default function SignUpPage() {
       <div className="mb-8 flex flex-col items-center">
         <Link href="/" className="flex flex-col items-center gap-2.5 hover:opacity-90 transition">
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-blue-500 flex items-center justify-center shadow-lg">
-            <Calendar className="w-5 h-5 text-white" />
+            <Tooth className="w-5 h-5 text-white" />
           </div>
           <span className="text-2xl font-bold tracking-tight text-foreground">
             Dental<span className="text-indigo-650 dark:text-indigo-400">AI</span>

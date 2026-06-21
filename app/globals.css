@@ -52,14 +52,17 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--destructive);
+  --color-indigo-650: #493fdf;
+  --color-indigo-655: #3d35b8;
+  --color-violet-650: #7431e3;
 }
 
 :root {
   color-scheme: light;
-  --background: #f8fafc;
+  --background: #fdfeff;
   --foreground: #0f172a;
   --card: #ffffff;
-  --card-elevated: #f1f5f9;
+  --card-elevated: #f8fafc;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
   --primary: #4f46e5;
@@ -77,9 +80,9 @@
   --success: #10b981;
   --warning: #f59e0b;
 
-  --glass-bg: rgba(255, 255, 255, 0.65);
-  --glass-border: rgba(15, 23, 42, 0.07);
-  --glass-shadow: 0 8px 32px 0 rgba(15, 23, 42, 0.04);
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(99, 102, 241, 0.08);
+  --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06);
   --input-bg: #ffffff;
   --input-border: rgba(15, 23, 42, 0.1);
   --input-text: #0f172a;
@@ -95,8 +98,8 @@
   --sidebar-ring: rgba(79, 70, 229, 0.3);
 
   --gradient-text-image: linear-gradient(to right, #4f46e5, #7c3aed, #4f46e5);
-  --bg-radial-gradient: radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.03) 0px, transparent 50%),
-                        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.03) 0px, transparent 50%);
+  --bg-radial-gradient: radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 50%),
+                        radial-gradient(at 100% 100%, rgba(139, 92, 246, 0.04) 0px, transparent 50%);
 
   --radius: 0.75rem;
   --chart-1: #4f46e5;
@@ -262,21 +265,35 @@
 
   .btn-glass {
     @apply px-5 py-2.5 rounded-lg font-medium text-white transition-all duration-200 border border-white/10 shadow-sm inline-flex items-center justify-center gap-2;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.7) 0%, rgba(139, 92, 246, 0.7) 100%);
-    backdrop-filter: blur(4px);
-    border-color: rgba(255, 255, 255, 0.15);
+    background: linear-gradient(135deg, #493fdf 0%, #7431e3 100%);
+    box-shadow: 0 4px 15px rgba(73, 63, 223, 0.25);
   }
 
   .btn-glass:hover {
     @apply -translate-y-0.5;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.85) 0%, rgba(139, 92, 246, 0.85) 100%);
-    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    background: linear-gradient(135deg, #3d35b8 0%, #7431e3 100%);
+    box-shadow: 0 6px 20px rgba(73, 63, 223, 0.4);
     border-color: rgba(255, 255, 255, 0.3);
   }
 
   .btn-glass:active {
     @apply translate-y-0;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.95) 0%, rgba(139, 92, 246, 0.95) 100%);
+    background: linear-gradient(135deg, #3d35b8 0%, #5b1fa8 100%);
+  }
+
+  :global(.dark) .btn-glass,
+  .dark .btn-glass {
+    background: linear-gradient(135deg, rgba(73, 63, 223, 0.65) 0%, rgba(116, 49, 227, 0.65) 100%);
+    backdrop-filter: blur(8px);
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+  }
+
+  :global(.dark) .btn-glass:hover,
+  .dark .btn-glass:hover {
+    background: linear-gradient(135deg, rgba(73, 63, 223, 0.8) 0%, rgba(116, 49, 227, 0.8) 100%);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.25);
+    border-color: rgba(255, 255, 255, 0.2);
   }
 
   .input-field {
@@ -295,4 +312,132 @@
     @apply outline-none border-indigo-500/50 shadow-[0_0_0_3px_rgba(99,102,241,0.15)];
   }
 }
+
+@keyframes orb-pulse-slow {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    filter: blur(20px) brightness(1);
+    opacity: 0.7;
+  }
+  33% {
+    transform: scale(1.12) translate(6px, -8px);
+    filter: blur(28px) brightness(1.2);
+    opacity: 0.9;
+  }
+  66% {
+    transform: scale(0.9) translate(-6px, 6px);
+    filter: blur(22px) brightness(0.9);
+    opacity: 0.65;
+  }
+}
+
+@keyframes orb-pulse-fast {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    filter: blur(15px);
+    opacity: 0.85;
+  }
+  50% {
+    transform: scale(1.18) translate(-3px, 3px);
+    filter: blur(24px);
+    opacity: 1;
+  }
+}
+
+@keyframes message-appear {
+  0% {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes slide-in-workspace {
+  0% {
+    opacity: 0;
+    transform: translateX(30px) scale(0.99);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes slide-in-workspace-mobile {
+  0% {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-orb-slow {
+  animation: orb-pulse-slow 8s infinite ease-in-out;
+}
+
+.animate-orb-fast {
+  animation: orb-pulse-fast 5s infinite ease-in-out;
+}
+
+.animate-message {
+  animation: message-appear 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-workspace {
+  animation: slide-in-workspace 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-workspace-mobile {
+  animation: slide-in-workspace-mobile 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bg-radial-orb {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.38) 0%, rgba(139, 92, 246, 0.3) 35%, rgba(236, 72, 153, 0.08) 65%, transparent 100%);
+}
+
+/* Custom Scrollbars for Premium Aesthetics */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.25);
+  border-radius: 9999px;
+  transition: background 0.15s;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.45);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Firefox scrollbar-thin fallback */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.25) transparent;
+}
+
+.dark .scrollbar-thin {
+  scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+}
+
+
 

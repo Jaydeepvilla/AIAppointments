@@ -40,16 +40,13 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        layout: {
-          unsafe_disableDevelopmentModeWarnings: true,
-        },
         variables: {
           colorPrimary: '#4f46e5',
           colorBackground: 'var(--card)',
-          colorText: 'var(--foreground)',
-          colorTextSecondary: 'var(--muted-foreground)',
-          colorInputBackground: 'var(--clerk-input-bg)',
-          colorInputText: 'var(--clerk-input-text)',
+          colorForeground: 'var(--foreground)',
+          colorMutedForeground: 'var(--muted-foreground)',
+          colorInput: 'var(--clerk-input-bg)',
+          colorInputForeground: 'var(--clerk-input-text)',
           colorBorder: 'var(--clerk-border)',
           borderRadius: '0.75rem',
         },

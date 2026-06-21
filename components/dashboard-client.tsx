@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts'
 import { Calendar, DollarSign, Users, TrendingUp, ShieldAlert, CheckCircle, RefreshCw, Bell } from 'lucide-react'
+import { Tooth } from '@/components/tooth-icon'
 import { useRouter } from 'next/navigation'
 import { UserButton } from '@clerk/nextjs'
 import { useTheme } from 'next-themes'
@@ -83,7 +84,7 @@ export function DashboardClient() {
       const revenueByDate: { [key: string]: number } = {}
       revenueRawData.forEach((item) => {
         const date = item.date || 'Unknown'
-        revenueByDate[date] = (revenueByDate[date] || 0) + parseFloat(item.total || 0)
+        revenueByDate[date] = (revenueByDate[date] || 0) + parseFloat(item.total || '0')
       })
 
       const chartData = Object.entries(revenueByDate)
@@ -131,7 +132,7 @@ export function DashboardClient() {
       const revenueByDate: { [key: string]: number } = {}
       revenueRawData.forEach((item) => {
         const date = item.date || 'Unknown'
-        revenueByDate[date] = (revenueByDate[date] || 0) + parseFloat(item.total || 0)
+        revenueByDate[date] = (revenueByDate[date] || 0) + parseFloat(item.total || '0')
       })
 
       const chartData = Object.entries(revenueByDate)
@@ -186,7 +187,7 @@ export function DashboardClient() {
         <div className="max-w-7xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shadow-inner">
-              <Calendar className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
+              <Tooth className="w-5 h-5 text-indigo-500 dark:text-indigo-400" />
             </div>
             <div className="flex items-center gap-2">
               <span className="text-lg font-bold tracking-tight text-foreground">DentalAI</span>
@@ -211,7 +212,7 @@ export function DashboardClient() {
                 </button>
 
                 {showNotifications && (
-                  <div className="absolute right-0 mt-2 w-80 rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="absolute right-0 mt-2 w-80 max-w-[calc(100vw-2.5rem)] rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                     <div className="px-4 py-2 border-b border-border flex items-center justify-between">
                       <span className="text-xs font-bold text-foreground">Notifications</span>
                       {notifications.filter((n) => !n.read).length > 0 && (
@@ -266,7 +267,7 @@ export function DashboardClient() {
             )}
 
             <ThemeToggle />
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </div>
         </div>
       </nav>
@@ -293,7 +294,7 @@ export function DashboardClient() {
         {selectedTab === 'overview' && (
           <div className="space-y-8">
             {/* Stats Cards */}
-            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 sm:gap-6">
               {/* Today's Appointments */}
               <div className="glass p-5 rounded-2xl border border-border relative overflow-hidden shadow-lg group hover:border-indigo-500/10 transition-all duration-300">
                 <div className="absolute top-0 right-0 w-20 h-20 bg-indigo-500/5 blur-2xl rounded-full pointer-events-none" />
