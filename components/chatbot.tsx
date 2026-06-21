@@ -1748,7 +1748,7 @@ export function Chatbot() {
                 </div>
 
                 {/* Suggested Action Chips */}
-                <div className="px-6 py-2.5 bg-white dark: border-t border-slate-200/10 dark:border-white/5 flex gap-2 overflow-x-auto scrollbar-none items-center">
+                <div className="px-6 py-2.5 bg-white dark:bg-slate-900 border-t border-slate-200/10 dark:border-white/5 flex gap-2 overflow-x-auto scrollbar-none items-center">
                   <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest mr-1.5 flex items-center gap-1">
                     <Sparkles className="w-3 h-3 text-indigo-500" /> Options:
                   </span>
@@ -1772,7 +1772,7 @@ export function Chatbot() {
                 </div>
 
                 {/* Composer Textbox */}
-                <div className="p-4 border-t border-slate-200/20 dark:border-white/5 bg-white/50 dark:">
+                <div className="p-4 border-t border-slate-200/20 dark:border-white/5 bg-white/50 dark:bg-slate-900/50">
                   <form onSubmit={handleSendMessage} className="flex gap-2.5">
                     <div className="flex-1 bg-card dark:bg-slate-950/50 border border-slate-200/60 dark:border-white/5 rounded-2xl px-4 py-2 flex items-center focus-within:border-indigo-500/50 transition">
                       <input
@@ -1827,7 +1827,7 @@ export function Chatbot() {
             /* Compact Mode Layout */
             <div className="flex-1 flex flex-col h-full bg-background relative">
               {/* Header Details */}
-              <div className="px-5 py-3.5 border-b border-slate-200/20 dark:border-white/5 flex items-center justify-between bg-white dark:">
+              <div className="px-5 py-3.5 border-b border-slate-200/20 dark:border-white/5 flex items-center justify-between bg-white dark:bg-slate-900">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-violet-500 flex items-center justify-center shadow">
                     <Tooth className="w-4 h-4 text-white" />
@@ -2058,7 +2058,7 @@ export function Chatbot() {
               </div>
 
               {/* Compact Suggested Action Chips */}
-              <div className="px-4 py-2 bg-white dark: border-t border-slate-200/10 dark:border-white/5 flex gap-1.5 overflow-x-auto scrollbar-none items-center">
+              <div className="px-4 py-2 bg-white dark:bg-slate-900 border-t border-slate-200/10 dark:border-white/5 flex gap-1.5 overflow-x-auto scrollbar-none items-center">
                 <span className="text-[8px] font-black text-muted-foreground uppercase tracking-widest mr-1 flex items-center gap-0.5 flex-shrink-0">
                   <Sparkles className="w-2.5 h-2.5 text-indigo-500" /> Options:
                 </span>
@@ -2082,7 +2082,7 @@ export function Chatbot() {
               </div>
 
               {/* Composer */}
-              <div className="p-3 border-t border-slate-200/20 dark:border-white/5 bg-white/50 dark:">
+              <div className="p-3 border-t border-slate-200/20 dark:border-white/5 bg-white/50 dark:bg-slate-900/50">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <input
                     type="text"
