@@ -1,0 +1,202 @@
+"use client";
+
+import Link from"next/link";
+import { usePathname } from"next/navigation";
+import { useState, useEffect } from"react";
+import { useTheme } from"next-themes";
+import { Show, UserButton } from"@clerk/nextjs";
+import { Menu, X, Sun, Moon } from"lucide-react";
+import { Button } from"@/components/shared/button";
+
+const NAV_LINKS = [
+ { label:"Features", href:"/features"},
+ { label:"Pricing", href:"/pricing"},
+ { label:"Integrations", href:"/integrations"},
+ { label:"Docs", href:"/docs"},
+ { label:"Changelog", href:"/changelog"},
+];
+
+export function MarketingNav() {
+ const pathname = usePathname();
+ const [mobileOpen, setMobileOpen] = useState(false);
+ const { resolvedTheme, setTheme } = useTheme();
+ const [isScrolled, setIsScrolled] = useState(false);
+ const [mounted, setMounted] = useState(false);
+
+ useEffect(() => {
+ setMounted(true);
+ const handleScroll = () => {
+ setIsScrolled(window.scrollY > 10);
+ };
+ window.addEventListener("scroll", handleScroll);
+ handleScroll();
+ return () => window.removeEventListener("scroll", handleScroll);
+ }, []);
+
+ return (
+ <header
+ className={`left-space-0 right-space-0 z-50 w-full transition-all duration-300 ${isScrolled
+ ?"fixed top-space-0 pt-space-2 px-space-6"
+ :"absolute top-space-0 pt-space-5 px-space-6"
+ }`}
+ >
+ <div
+ className={`mx-auto max-w-5xl rounded-full px-space-6 transition-all duration-300 ${isScrolled
+ ?"bg-card/85 backdrop-blur-md border border-border-muted"
+ :"bg-transparent border border-transparent"
+ }`}
+ >
+ <div className="flex h-14 items-center justify-between">
+ {/* Logo */}
+ <Link href="/"className="flex items-center gap-space-2 shrink-0">
+ <svg width="24"height="24"viewBox="0 0 24 24"fill="none"className="text-primary">
+ <rect x="2"y="2"width="20"height="20"rx="6"fill="currentColor"fillOpacity="0.15"stroke="currentColor"strokeWidth="1.5"/>
+ <path d="M8 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm5 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM8.5 14.5s1 2 3.5 2 3.5-2 3.5-2"stroke="currentColor"strokeWidth="1.5"strokeLinecap="round"/>
+ </svg>
+ <span className="text-body-md tracking-tight text-foreground font-semibold">
+ Operator
+ </span>
+ </Link>
+
+ {/* Desktop nav */}
+ <nav className="hidden md:flex items-center gap-space-1">
+ {NAV_LINKS.map((item) => (
+ <Link
+ key={item.href}
+ href={item.href}
+ className={`px-space-4 py-space-2 rounded-full text-body-sm transition-all ${pathname === item.href
+ ?"text-primary bg-primary/5 font-medium"
+ :"text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--foreground)/0.03)]"
+ }`}
+ >
+ {item.label}
+ </Link>
+ ))}
+ </nav>
+
+ {/* Desktop right */}
+ <div className="hidden md:flex items-center gap-space-2">
+ {/* Theme toggle */}
+ <Button
+ variant="ghost"
+ size="icon"
+ onClick={() => setTheme(resolvedTheme ==="dark"?"light":"dark")}
+ className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-transparent transition-colors"
+ aria-label="Toggle theme"
+ >
+ {mounted && resolvedTheme ==="dark"? (
+ <Sun className="h-4 w-4"/>
+ ) : (
+ <Moon className="h-4 w-4"/>
+ )}
+ </Button>
+
+ <div className="w-px h-4 bg-[hsl(var(--foreground)/0.08)] mx-space-1"/>
+
+ {/* Auth controls: show sign-in/up when signed out, dashboard+avatar when signed in */}
+ <Show when="signed-out">
+ <Link
+ href="/sign-in"
+ className="text-body-sm text-muted-foreground hover:text-foreground transition-colors px-space-3 py-space-2"
+ >
+ Sign in
+ </Link>
+ <Link
+ href="/sign-up"
+ className="inline-flex items-center gap-space-2 radius-md bg-primary px-space-4 py-space-2 text-body-sm text-primary-foreground hover:bg-primary/95 transition-all font-semibold"
+ >
+ Get started
+ </Link>
+ </Show>
+
+ <Show when="signed-in">
+ <Link
+ href="/dashboard"
+ className="text-body-sm text-muted-foreground hover:text-foreground transition-colors px-space-3 py-space-2"
+ >
+ Dashboard
+ </Link>
+ <UserButton
+ appearance={{
+ elements: {
+ avatarBox:"h-8 w-8",
+ },
+ }}
+ />
+ </Show>
+ </div>
+
+ {/* Mobile toggle */}
+ <Button
+ className="md:hidden p-space-2 radius-md text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--foreground)/0.04)] transition-colors"
+ onClick={() => setMobileOpen(!mobileOpen)}
+ aria-label="Toggle menu"
+ >
+ {mobileOpen ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}
+ </Button>
+ </div>
+
+ {/* Mobile menu */}
+ {mobileOpen && (
+ <div className="md:hidden border-t border-[hsl(var(--foreground)/0.06)] py-space-4 space-y-space-1">
+ {NAV_LINKS.map((item) => (
+ <Link
+ key={item.href}
+ href={item.href}
+ onClick={() => setMobileOpen(false)}
+ className="block px-space-3 py-space-2 text-body-sm text-muted-foreground hover:text-foreground radius-md transition-colors"
+ >
+ {item.label}
+ </Link>
+ ))}
+ {[
+ ["Demo","/demo"],
+ ["Contact","/contact"],
+ ["Integrations","/integrations"],
+ ].map(([label, href]) => (
+ <Link
+ key={href}
+ href={href}
+ onClick={() => setMobileOpen(false)}
+ className="block px-space-3 py-space-2 text-body-sm text-muted-foreground hover:text-foreground radius-md transition-colors"
+ >
+ {label}
+ </Link>
+ ))}
+ <div className="h-px bg-[hsl(var(--foreground)/0.06)] my-space-3"/>
+ <div className="flex flex-col gap-space-2">
+ <Show when="signed-out">
+ <Link
+ href="/sign-in"
+ onClick={() => setMobileOpen(false)}
+ className="block px-space-3 py-space-2 text-body-sm text-center text-muted-foreground border border-[hsl(var(--foreground)/0.08)] radius-md"
+ >
+ Sign in
+ </Link>
+ <Link
+ href="/sign-up"
+ onClick={() => setMobileOpen(false)}
+ className="block px-space-3 py-space-2 text-body-sm text-center bg-primary text-primary-foreground radius-md"
+ >
+ Get started
+ </Link>
+ </Show>
+ <Show when="signed-in">
+ <Link
+ href="/dashboard"
+ onClick={() => setMobileOpen(false)}
+ className="block px-space-3 py-space-2 text-body-sm text-center text-muted-foreground border border-[hsl(var(--foreground)/0.08)] radius-md"
+ >
+ Dashboard
+ </Link>
+ <div className="flex justify-center pt-space-1">
+ <UserButton />
+ </div>
+ </Show>
+ </div>
+ </div>
+ )}
+ </div>
+ </header>
+ );
+}

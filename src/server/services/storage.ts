@@ -1,0 +1,63 @@
+export interface FileUploadResult {
+  filePath: string;
+  fileSize: number;
+  fileType: string;
+  url: string;
+}
+
+export interface StorageProvider {
+  uploadFile(file: { name: string; size: number; type: string; buffer: Buffer }, organizationId: string): Promise<FileUploadResult>;
+  deleteFile(filePath: string): Promise<void>;
+}
+
+// Configurable target: local (mock), vercel_blob, s3, r2
+export type StorageTarget = "mock" | "vercel_blob" | "s3" | "r2";
+
+export class StorageService implements StorageProvider {
+  private target: StorageTarget;
+
+  constructor(target: StorageTarget = "mock") {
+    this.target = target;
+  }
+
+  async uploadFile(
+    file: { name: string; size: number; type: string; buffer: Buffer },
+    organizationId: string
+  ): Promise<FileUploadResult> {
+    const fileExtension = file.name.split(".").pop() || "txt";
+    const uniqueName = `${Date.now()}-${Math.random().toString(36).substring(2, 8)}.${fileExtension}`;
+    const filePath = `uploads/${organizationId}/${uniqueName}`;
+
+    switch (this.target) {
+      case "vercel_blob":
+        // Placeholder for vercel blob client upload
+        console.log(`[Storage] Uploading ${file.name} to Vercel Blob at ${filePath}`);
+        break;
+      case "s3":
+        // Placeholder for AWS S3 upload
+        console.log(`[Storage] Uploading ${file.name} to S3 at ${filePath}`);
+        break;
+      case "r2":
+        // Placeholder for Cloudflare R2 upload
+        console.log(`[Storage] Uploading ${file.name} to Cloudflare R2 at ${filePath}`);
+        break;
+      case "mock":
+      default:
+        console.log(`[Storage] Simulated mock upload for ${file.name} to ${filePath}`);
+        break;
+    }
+
+    return {
+      filePath,
+      fileSize: file.size,
+      fileType: fileExtension.toLowerCase(),
+      url: `https://storage.nexx.ai/${filePath}`,
+    };
+  }
+
+  async deleteFile(filePath: string): Promise<void> {
+    console.log(`[Storage] Deleted file from path: ${filePath} using provider: ${this.target}`);
+  }
+}
+
+export const storageService = new StorageService("mock");

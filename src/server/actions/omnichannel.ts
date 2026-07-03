@@ -1,0 +1,386 @@
+"use server";
+
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { db } from "../db";
+import { 
+  conversations, 
+  channelMessages, 
+  communicationChannels, 
+  channelConnections, 
+  inboxThreads, 
+  inboxParticipants,
+  leadProfiles,
+  messageTemplates,
+  channelSettings
+} from "../db/schema";
+import { eq, and, desc, asc } from "drizzle-orm";
+import { membershipRepository } from "../repositories/membership";
+import { omnichannelRepository } from "../repositories/omnichannel";
+import { omnichannelRouter } from "../services/omnichannel/router";
+
+async function getVerifiedOrgId() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+  const memberships = await membershipRepository.getByUser(userId);
+  if (memberships.length === 0) throw new Error("No organization found");
+  return memberships[0].organizationId;
+}
+
+// --- Inbox Thread Actions ---
+
+export async function getInboxThreadsAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+    
+    // Fetch threads
+    const threads = await db.query.inboxThreads.findMany({
+      where: eq(inboxThreads.organizationId, orgId),
+      orderBy: [desc(inboxThreads.updatedAt)],
+      with: {
+        channel: true,
+        conversation: {
+          with: {
+            leadProfile: true
+          }
+        },
+        lastMessage: true
+      }
+    });
+
+    return { success: true, threads };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to fetch inbox threads" };
+  }
+}
+
+export async function getThreadMessagesAction(conversationId: string) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    const messages = await db.query.channelMessages.findMany({
+      where: and(
+        eq(channelMessages.organizationId, orgId),
+        eq(channelMessages.conversationId, conversationId)
+      ),
+      orderBy: [asc(channelMessages.createdAt)]
+    });
+
+    return { success: true, messages };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to fetch thread messages" };
+  }
+}
+
+export async function sendStaffReplyAction(options: {
+  threadId: string;
+  conversationId: string;
+  channelId: string;
+  recipientId: string;
+  content: string;
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    await omnichannelRouter.sendOutgoingMessage({
+      organizationId: orgId,
+      channelId: options.channelId,
+      conversationId: options.conversationId,
+      recipientId: options.recipientId,
+      content: options.content,
+      isAiGenerated: false
+    });
+
+    // Clear unread count, set last message and mark updated
+    await db
+      .update(inboxThreads)
+      .set({ unreadCount: 0, updatedAt: new Date() })
+      .where(eq(inboxThreads.id, options.threadId));
+
+    revalidatePath("/inbox");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to deliver manual staff reply" };
+  }
+}
+
+export async function assignThreadAction(threadId: string, staffId: string | null) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    await db
+      .update(inboxThreads)
+      .set({ assignedStaffId: staffId, updatedAt: new Date() })
+      .where(and(eq(inboxThreads.id, threadId), eq(inboxThreads.organizationId, orgId)));
+
+    revalidatePath("/inbox");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to assign thread" };
+  }
+}
+
+export async function updateThreadStatusAction(threadId: string, status: "open" | "closed" | "snoozed") {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    await db
+      .update(inboxThreads)
+      .set({ status, updatedAt: new Date() })
+      .where(and(eq(inboxThreads.id, threadId), eq(inboxThreads.organizationId, orgId)));
+
+    revalidatePath("/inbox");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to update thread status" };
+  }
+}
+
+// --- Channel Actions ---
+
+export async function getChannelsAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    const channels = await db.query.communicationChannels.findMany({
+      where: eq(communicationChannels.organizationId, orgId),
+      with: {
+        connections: true,
+        settings: true
+      }
+    });
+
+    return { success: true, channels };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to list channels" };
+  }
+}
+
+export async function connectChannelAction(options: {
+  type: "whatsapp" | "sms" | "email" | "instagram" | "facebook";
+  name: string;
+  credentials: Record<string, any>;
+  metadata: Record<string, any>;
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    // Create channel
+    const channel = await omnichannelRepository.createChannel({
+      organizationId: orgId,
+      type: options.type,
+      name: options.name,
+      status: "active"
+    });
+
+    // Save credentials
+    await omnichannelRepository.saveConnection({
+      organizationId: orgId,
+      channelId: channel.id,
+      externalId: options.credentials.phoneId || options.credentials.accountSid || options.credentials.user || "ext-id",
+      credentials: options.credentials,
+      metadata: options.metadata,
+      status: "connected"
+    });
+
+    revalidatePath("/channels");
+    return { success: true, channel };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to connect channel" };
+  }
+}
+
+export async function saveChannelSettingsAction(options: {
+  channelId: string;
+  aiEnabled: boolean;
+  aiTone: string;
+  responseDelaySeconds: number;
+  businessHoursOnly: boolean;
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    await omnichannelRepository.updateSettings(orgId, options.channelId, {
+      aiEnabled: options.aiEnabled,
+      aiTone: options.aiTone,
+      responseDelaySeconds: options.responseDelaySeconds,
+      businessHoursOnly: options.businessHoursOnly
+    });
+
+    revalidatePath("/channels");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save channel settings" };
+  }
+}
+
+// --- Message Template Actions ---
+
+export async function getTemplatesAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+    const templates = await omnichannelRepository.listTemplates(orgId);
+    return { success: true, templates };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to list templates" };
+  }
+}
+
+export async function saveTemplateAction(options: {
+  id?: string;
+  name: string;
+  category: string;
+  channelType: string;
+  body: string;
+  subject?: string;
+  variables: string[];
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    if (options.id) {
+      await omnichannelRepository.updateTemplate(options.id, {
+        name: options.name,
+        category: options.category,
+        channelType: options.channelType,
+        body: options.body,
+        subject: options.subject || null,
+        variables: options.variables
+      });
+    } else {
+      await omnichannelRepository.createTemplate({
+        organizationId: orgId,
+        name: options.name,
+        category: options.category,
+        channelType: options.channelType,
+        body: options.body,
+        subject: options.subject || null,
+        variables: options.variables,
+        status: "approved"
+      });
+    }
+
+    revalidatePath("/templates");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save template" };
+  }
+}
+
+export async function deleteTemplateAction(id: string) {
+  try {
+    await getVerifiedOrgId(); // secure verification check
+    await omnichannelRepository.deleteTemplate(id);
+    revalidatePath("/templates");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to delete template" };
+  }
+}
+
+// --- Contact Management Actions ---
+
+export async function getContactsAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+    const contacts = await db.query.leadProfiles.findMany({
+      where: eq(leadProfiles.organizationId, orgId),
+      orderBy: [desc(leadProfiles.createdAt)]
+    });
+    return { success: true, contacts };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to list contact leads" };
+  }
+}
+
+export async function updateContactAction(options: {
+  id: string;
+  name?: string;
+  email?: string;
+  phone?: string;
+  status?: string;
+  notes?: string;
+  tags?: string[];
+  lifetimeValue?: number;
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    await db
+      .update(leadProfiles)
+      .set({
+        ...options,
+        updatedAt: new Date()
+      })
+      .where(and(eq(leadProfiles.id, options.id), eq(leadProfiles.organizationId, orgId)));
+
+    revalidatePath("/contacts");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to update contact profile" };
+  }
+}
+
+// --- Channel Analytics Actions ---
+
+export async function getOmnichannelAnalyticsAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    const [sentMsgs, receivedMsgs, channels] = await Promise.all([
+      db.query.channelMessages.findMany({
+        where: and(
+          eq(channelMessages.organizationId, orgId),
+          eq(channelMessages.direction, "outgoing")
+        )
+      }),
+      db.query.channelMessages.findMany({
+        where: and(
+          eq(channelMessages.organizationId, orgId),
+          eq(channelMessages.direction, "incoming")
+        )
+      }),
+      omnichannelRepository.listChannels(orgId)
+    ]);
+
+    const sentCount = sentMsgs.length;
+    const receivedCount = receivedMsgs.length;
+    
+    // Calculate response rate (messages that aren't failures)
+    const successSent = sentMsgs.filter((m) => m.status !== "failed").length;
+    const responseRate = sentCount > 0 ? Math.round((successSent / sentCount) * 100) : 0;
+
+    // Split conversions per channel
+    const channelPerf: Record<string, { sent: number; received: number }> = {};
+    for (const chan of channels) {
+      channelPerf[chan.type] = { sent: 0, received: 0 };
+    }
+
+    for (const m of sentMsgs) {
+      // Find matching channel type
+      const chan = channels.find((c) => c.id === m.channelId);
+      if (chan) {
+        channelPerf[chan.type].sent++;
+      }
+    }
+
+    for (const m of receivedMsgs) {
+      const chan = channels.find((c) => c.id === m.channelId);
+      if (chan) {
+        channelPerf[chan.type].received++;
+      }
+    }
+
+    return {
+      success: true,
+      analytics: {
+        sentCount,
+        receivedCount,
+        responseRate,
+        channelPerf
+      }
+    };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to compute channel analytics" };
+  }
+}

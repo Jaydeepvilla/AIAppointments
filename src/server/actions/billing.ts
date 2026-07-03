@@ -1,0 +1,212 @@
+"use server";
+
+import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
+import { billingRepository } from "../repositories/billing";
+import { billingService } from "../services/billing/billing";
+import { db } from "../db";
+import { eq } from "drizzle-orm";
+import { subscriptions, billingAccounts, paymentMethods, payments, invoices } from "../db/schema";
+import { ProviderRegistry } from "../services/billing/providers/registry";
+import "../services/billing/providers/stripe"; // Load provider registration
+import "../services/billing/providers/razorpay";
+
+async function getVerifiedUser() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+  return userId;
+}
+
+async function getVerifiedOrgContext() {
+  const { orgId } = await auth();
+  if (!orgId) throw new Error("No organization selected");
+  return orgId;
+}
+
+export async function getBillingPortalDataAction() {
+  try {
+    const orgId = await getVerifiedOrgContext();
+    
+    // Resolve subscription
+    let sub = await db.query.subscriptions.findFirst({
+      where: eq(subscriptions.organizationId, orgId),
+    });
+
+    // Seed default subscription if none exists
+    if (!sub) {
+      const [newSub] = await db
+        .insert(subscriptions)
+        .values({
+          organizationId: orgId,
+          planId: "free",
+          status: "trialing",
+        })
+        .returning();
+      sub = newSub;
+    }
+
+    // Resolve customer billing account
+    let account = await billingRepository.getBillingAccount(orgId);
+    if (!account) {
+      account = await billingRepository.createBillingAccount({
+        organizationId: orgId,
+        email: "billing@customer.com",
+        currency: "USD",
+      });
+    }
+
+    const invoicesList = await billingRepository.getInvoices(account.id);
+    const paymentsList = await billingRepository.getPayments(account.id);
+    const counters = await billingRepository.getUsageCounters(orgId);
+
+    return {
+      success: true,
+      subscription: sub,
+      account,
+      invoices: invoicesList,
+      payments: paymentsList,
+      usageCounters: counters,
+    };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to load billing portal details" };
+  }
+}
+
+export async function upgradeSubscriptionAction(planId: string) {
+  try {
+    const orgId = await getVerifiedOrgContext();
+    
+    let sub = await db.query.subscriptions.findFirst({
+      where: eq(subscriptions.organizationId, orgId),
+    });
+
+    if (!sub) {
+      throw new Error("Subscription parameters missing");
+    }
+
+    // Resolve or create customer account
+    let account = await billingRepository.getBillingAccount(orgId);
+    if (!account) {
+      account = await billingRepository.createBillingAccount({
+        organizationId: orgId,
+        email: "billing@customer.com",
+        currency: "USD",
+      });
+    }
+
+    // Trigger mock Stripe subscription creation
+    const stripe = ProviderRegistry.getSubscriptionProvider("stripe");
+    const stripeCustomer = ProviderRegistry.getBillingProvider("stripe");
+    
+    const stripeCust = await stripeCustomer.createCustomer(account.email);
+    const stripeSub = await stripe.createSubscription(stripeCust.id, `price_${planId}`);
+
+    // Update DB Sub
+    await db
+      .update(subscriptions)
+      .set({
+        planId,
+        status: "active",
+        stripeSubscriptionId: stripeSub.id,
+        currentPeriodStart: stripeSub.currentPeriodStart,
+        currentPeriodEnd: stripeSub.currentPeriodEnd,
+        updatedAt: new Date(),
+      })
+      .where(eq(subscriptions.id, sub.id));
+
+    // Register a payment record
+    const amount = planId === "pro" ? "79.00" : planId === "business" ? "299.00" : "0.00";
+    if (parseFloat(amount) > 0) {
+      await db.insert(payments).values({
+        billingAccountId: account.id,
+        subscriptionId: sub.id,
+        amount,
+        currency: "USD",
+        status: "succeeded",
+        providerPaymentId: `ch_${Math.random().toString(36).substring(2, 10)}`,
+      });
+    }
+
+    revalidatePath("/billing");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to transition subscription tier" };
+  }
+}
+
+export async function cancelSubscriptionAction() {
+  try {
+    const orgId = await getVerifiedOrgContext();
+    
+    const sub = await db.query.subscriptions.findFirst({
+      where: eq(subscriptions.organizationId, orgId),
+    });
+
+    if (!sub) throw new Error("No active subscription");
+
+    if (sub.stripeSubscriptionId) {
+      const stripe = ProviderRegistry.getSubscriptionProvider("stripe");
+      await stripe.cancelSubscription(sub.stripeSubscriptionId);
+    }
+
+    await db
+      .update(subscriptions)
+      .set({
+        planId: "free",
+        status: "canceled",
+        stripeSubscriptionId: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(subscriptions.id, sub.id));
+
+    revalidatePath("/billing");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Cancellation failed" };
+  }
+}
+
+// --- Coupons & Analytics ---
+export async function getCouponsAction() {
+  try {
+    const couponsList = await billingRepository.getCoupons();
+    return { success: true, coupons: couponsList };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to load coupons" };
+  }
+}
+
+export async function createCouponAction(data: {
+  code: string;
+  type: string;
+  value: string;
+  expirationDays?: number;
+}) {
+  try {
+    const expirationDate = data.expirationDays 
+      ? new Date(Date.now() + data.expirationDays * 24 * 60 * 60 * 1000) 
+      : null;
+
+    const coupon = await billingRepository.createCoupon({
+      code: data.code.toUpperCase(),
+      type: data.type,
+      value: data.value,
+      expirationDate,
+      usageLimit: 100,
+    });
+
+    revalidatePath("/agency/billing");
+    return { success: true, coupon };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save discount coupon" };
+  }
+}
+
+export async function getRevenueMetricsAction() {
+  try {
+    const metrics = await billingRepository.getRevenueAnalytics();
+    return { success: true, metrics };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to compile financial metrics" };
+  }
+}

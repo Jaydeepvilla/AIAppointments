@@ -1,0 +1,42 @@
+# Group 1: General search engines
+User-agent: *
+Allow: /
+Allow: /features
+Allow: /pricing
+Allow: /about
+Allow: /contact
+Allow: /demo
+Allow: /docs
+Allow: /security
+Allow: /privacy
+Allow: /terms
+Allow: /changelog
+Allow: /integrations
+
+# Disallow private/dashboard/reseller routes
+Disallow: /dashboard/
+Disallow: /inbox/
+Disallow: /conversations/
+Disallow: /analytics/
+Disallow: /leads/
+Disallow: /contacts/
+Disallow: /appointments/
+Disallow: /escalations/
+Disallow: /automations/
+Disallow: /flows/
+Disallow: /faqs/
+Disallow: /settings/
+Disallow: /kb/
+Disallow: /voice/
+Disallow: /widget/
+Disallow: /channels/
+Disallow: /team/
+Disallow: /billing/
+Disallow: /agency/
+Disallow: /onboarding/
+Disallow: /api/
+Disallow: /_next/
+
+# Host and Sitemap locations
+Host: https://nexx-receptionist.ai
+Sitemap: https://nexx-receptionist.ai/sitemap.xml

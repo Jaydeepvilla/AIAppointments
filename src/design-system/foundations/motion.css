@@ -1,0 +1,333 @@
+/* ==========================================================================
+   OPERATOR MOTION SYSTEM
+   Enterprise SaaS Motion Foundation — Single Source of Truth
+   ========================================================================== */
+
+:root {
+    /* ----------------------------------------------------------------------
+     Duration Scale
+     ---------------------------------------------------------------------- */
+    --duration-instant: 100ms;  /* hover feedback, pressed states */
+    --duration-fast: 150ms;     /* buttons, toggles, small interactions */
+    --duration-base: 200ms;     /* dropdowns, tooltips, focus rings */
+    --duration-moderate: 300ms; /* modals, drawers, page content */
+    --duration-slow: 400ms;     /* page transitions, reveals */
+    --duration-slower: 600ms;   /* scroll reveal, onboarding */
+
+    /* ----------------------------------------------------------------------
+     Easing Curves
+     ---------------------------------------------------------------------- */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);   /* general purpose */
+    --ease-out: cubic-bezier(0, 0, 0.2, 1);           /* elements entering */
+    --ease-in: cubic-bezier(0.4, 0, 1, 1);            /* elements leaving */
+    --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); /* playful bounce */
+    --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);    /* premium, cinematic */
+}
+
+/* ==========================================================================
+   KEYFRAMES
+   ========================================================================== */
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-down {
+    from { opacity: 0; transform: translateY(-16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-left {
+    from { opacity: 0; transform: translateX(-16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fade-right {
+    from { opacity: 0; transform: translateX(16px); }
+    to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scale-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1; }
+}
+
+@keyframes pulse-ring {
+    from { transform: scale(0.95); opacity: 0.6; }
+    to   { transform: scale(1.2); opacity: 0; }
+}
+
+@keyframes shimmer {
+    from { background-position: -200% 0; }
+    to   { background-position: 200% 0; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+}
+
+@keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+}
+
+@keyframes glow {
+    0%, 100% { opacity: 0.4; }
+    50%      { opacity: 1; }
+}
+
+@keyframes content-show {
+    from { opacity: 0; transform: scale(0.96) translateY(4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes success-check {
+    0%   { transform: scale(0); opacity: 0; }
+    50%  { transform: scale(1.15); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes shake-subtle {
+    0%, 100% { transform: translateX(0); }
+    25%      { transform: translateX(-3px); }
+    75%      { transform: translateX(3px); }
+}
+
+/* ==========================================================================
+   PAGE CONTENT ENTRY
+   ========================================================================== */
+
+.animate-page-enter {
+    animation: fade-up var(--duration-moderate) var(--ease-smooth) both;
+}
+
+/* ==========================================================================
+   ENTRY ANIMATIONS
+   ========================================================================== */
+
+.animate-fade-in {
+    animation: fade-in var(--duration-base) var(--ease-out) both;
+}
+
+.animate-fade-up {
+    animation: fade-up var(--duration-moderate) var(--ease-smooth) both;
+}
+
+.animate-fade-down {
+    animation: fade-down var(--duration-moderate) var(--ease-smooth) both;
+}
+
+.animate-fade-left {
+    animation: fade-left var(--duration-moderate) var(--ease-smooth) both;
+}
+
+.animate-fade-right {
+    animation: fade-right var(--duration-moderate) var(--ease-smooth) both;
+}
+
+.animate-scale-in {
+    animation: scale-in var(--duration-base) var(--ease-spring) both;
+}
+
+.animate-content-show {
+    animation: content-show var(--duration-base) var(--ease-smooth) both;
+}
+
+/* ==========================================================================
+   FEEDBACK ANIMATIONS
+   ========================================================================== */
+
+.animate-success {
+    animation: success-check var(--duration-moderate) var(--ease-spring) both;
+}
+
+.animate-error-shake {
+    animation: shake-subtle var(--duration-moderate) var(--ease-standard);
+}
+
+/* ==========================================================================
+   CONTINUOUS ANIMATIONS
+   ========================================================================== */
+
+.animate-float {
+    animation: float 6s ease-in-out infinite;
+}
+
+.animate-pulse-soft {
+    animation: pulse-soft 2s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+    animation: spin-slow 20s linear infinite;
+}
+
+.animate-glow {
+    animation: glow 3s ease-in-out infinite;
+}
+
+/* ==========================================================================
+   SKELETON & SHIMMER
+   ========================================================================== */
+
+.animate-shimmer {
+    background:
+        linear-gradient(90deg,
+            transparent 0%,
+            hsl(var(--foreground) / 0.04) 50%,
+            transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 1.8s infinite linear;
+}
+
+/* ==========================================================================
+   REVEAL SYSTEM — Single shared implementation
+   ========================================================================== */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition:
+        opacity var(--duration-slower) var(--ease-smooth),
+        transform var(--duration-slower) var(--ease-smooth);
+}
+
+.reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger support — add data-delay attribute */
+.reveal[data-delay="1"] { transition-delay: 80ms; }
+.reveal[data-delay="2"] { transition-delay: 160ms; }
+.reveal[data-delay="3"] { transition-delay: 240ms; }
+.reveal[data-delay="4"] { transition-delay: 320ms; }
+.reveal[data-delay="5"] { transition-delay: 400ms; }
+
+/* ==========================================================================
+   INTERACTIVE PRIMITIVES
+   ========================================================================== */
+
+/* Cards — subtle lift on hover */
+.interactive-card {
+    transition:
+        transform var(--duration-fast) var(--ease-standard),
+        border-color var(--duration-fast) var(--ease-standard),
+        box-shadow var(--duration-fast) var(--ease-standard);
+}
+
+.interactive-card:hover {
+    transform: translateY(-2px);
+}
+
+.interactive-card:active {
+    transform: translateY(0);
+    transition-duration: var(--duration-instant);
+}
+
+/* Buttons — micro lift */
+.interactive-button {
+    transition:
+        transform var(--duration-instant) var(--ease-standard),
+        box-shadow var(--duration-instant) var(--ease-standard),
+        opacity var(--duration-instant) var(--ease-standard);
+}
+
+.interactive-button:hover {
+    transform: translateY(-1px);
+}
+
+.interactive-button:active {
+    transform: translateY(0) scale(0.98);
+    transition-duration: 60ms;
+}
+
+/* Integration nodes */
+.integration-node {
+    transition:
+        transform var(--duration-base) var(--ease-spring),
+        box-shadow var(--duration-base) var(--ease-standard);
+}
+
+.integration-node:hover {
+    transform: scale(1.04);
+}
+
+.integration-node:active {
+    transform: scale(0.98);
+    transition-duration: var(--duration-instant);
+}
+
+/* ==========================================================================
+   SIGNAL EFFECT
+   ========================================================================== */
+
+.signal-pulse {
+    position: relative;
+}
+
+.signal-pulse::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid hsl(var(--primary) / 0.15);
+    animation: pulse-ring 2s infinite;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   MESH GLOW
+   ========================================================================== */
+
+.mesh-glow {
+    position: absolute;
+    inset: auto;
+    width: 500px;
+    height: 500px;
+    border-radius: 9999px;
+    filter: blur(120px);
+    opacity: 0.12;
+    pointer-events: none;
+}
+
+/* ==========================================================================
+   SIDEBAR TRANSITIONS
+   ========================================================================== */
+
+.sidebar-transition {
+    transition:
+        width var(--duration-moderate) var(--ease-smooth),
+        padding var(--duration-moderate) var(--ease-smooth);
+}
+
+/* ==========================================================================
+   REDUCED MOTION — Accessibility first
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}
