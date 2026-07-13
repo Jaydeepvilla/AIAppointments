@@ -23,6 +23,16 @@ export const billingRepository = {
     return acc || null;
   },
 
+  async getPaymentMethods(billingAccountId: string) {
+    // We need to import paymentMethods from schema
+    // Let's assume it's imported above
+    const { paymentMethods } = require("../db/schema");
+    return db
+      .select()
+      .from(paymentMethods)
+      .where(eq(paymentMethods.billingAccountId, billingAccountId));
+  },
+
   async createBillingAccount(data: typeof billingAccounts.$inferInsert) {
     const [acc] = await db
       .insert(billingAccounts)

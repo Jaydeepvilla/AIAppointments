@@ -77,11 +77,8 @@ export function MarketingNav() {
  {/* Desktop right */}
  <div className="hidden md:flex items-center gap-space-2">
  {/* Theme toggle */}
- <Button
- variant="ghost"
- size="icon"
- onClick={() => setTheme(resolvedTheme ==="dark"?"light":"dark")}
- className="h-8 w-8 rounded-full text-muted-foreground hover:text-foreground hover:bg-transparent transition-colors"
+ <Button variant="ghost" size="icon" shape="circle" onClick={() => setTheme(resolvedTheme ==="dark"?"light":"dark")}
+ className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent transition-colors"
  aria-label="Toggle theme"
  >
  {mounted && resolvedTheme ==="dark"? (
@@ -101,12 +98,9 @@ export function MarketingNav() {
  >
  Sign in
  </Link>
- <Link
- href="/sign-up"
- className="inline-flex items-center gap-space-2 radius-md bg-primary px-space-4 py-space-2 text-body-sm text-primary-foreground hover:bg-primary/95 transition-all font-semibold"
- >
- Get started
- </Link>
+ <Button asChild size="sm">
+ <Link href="/sign-up">Get started</Link>
+ </Button>
  </Show>
 
  <Show when="signed-in">
@@ -127,9 +121,7 @@ export function MarketingNav() {
  </div>
 
  {/* Mobile toggle */}
- <Button
- className="md:hidden p-space-2 radius-md text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--foreground)/0.04)] transition-colors"
- onClick={() => setMobileOpen(!mobileOpen)}
+ <Button variant="ghost" size="icon" className="md:hidden text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--foreground)/0.04)]" onClick={() => setMobileOpen(!mobileOpen)}
  aria-label="Toggle menu"
  >
  {mobileOpen ? <X className="h-5 w-5"/> : <Menu className="h-5 w-5"/>}

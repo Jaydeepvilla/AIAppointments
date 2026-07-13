@@ -10,6 +10,7 @@ export interface NewWebsiteImport {
   pagesFound?: number;
   pagesScraped?: number;
   errorMessage?: string | null;
+  metadata?: Record<string, any>;
 }
 
 export const importsRepository = {

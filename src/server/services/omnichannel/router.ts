@@ -34,8 +34,6 @@ export const omnichannelRouter = {
     } = payload;
 
     try {
-      console.log(`[Omnichannel Router] Routing incoming ${channelType} message from ${senderUserId}`);
-
       // 1. Find or Create Contact/Lead profile by matching contact channel identity
       let contactChannelRow = await db.query.contactChannels.findFirst({
         where: and(

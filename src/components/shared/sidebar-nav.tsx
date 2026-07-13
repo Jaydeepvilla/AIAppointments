@@ -29,6 +29,7 @@ import {
   CreditCard,
   Palette,
   Globe,
+  Brain,
 } from "lucide-react";
 
 const IconMap = {
@@ -56,6 +57,7 @@ const IconMap = {
   CreditCard,
   Palette,
   Globe,
+  Brain,
 };
 
 interface SidebarLinkProps {
@@ -79,7 +81,7 @@ export function SidebarNavGroup({ title, links }: SidebarGroupProps) {
       {isCollapsed ? (
         <div className="h-px bg-[hsl(var(--foreground)/0.06)] my-space-2 mx-space-2" />
       ) : (
-        <p className="px-space-3 pb-space-1 pt-space-3 text-[12px] uppercase tracking-widest text-primary font-normal select-none transition-opacity duration-200" aria-hidden="true">
+        <p className="px-space-3 pb-space-1 pt-space-3 text-caption uppercase tracking-widest text-primary font-normal select-none transition-opacity duration-200" aria-hidden="true">
           {title}
         </p>
       )}
@@ -120,7 +122,7 @@ export function SidebarNavGroup({ title, links }: SidebarGroupProps) {
               )}
             />
             {!isCollapsed && (
-              <span className={cn("truncate text-[13px]", isActive ? "font-medium" : "font-normal")}>{link.label}</span>
+              <span className={cn("truncate text-body-sm", isActive ? "font-medium" : "font-normal")}>{link.label}</span>
             )}
 
             {/* Active indicator dot for collapsed mode */}

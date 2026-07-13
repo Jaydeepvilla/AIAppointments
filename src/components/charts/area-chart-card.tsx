@@ -2,9 +2,11 @@
 
 import * as React from "react"
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from "recharts"
-import { ChartTooltip } from "./chart-tooltip"
-import { ChartSkeleton } from "./chart-skeleton"
-import { ChartEmptyState } from "./chart-empty-state"
+import dynamic from 'next/dynamic'
+
+const ChartTooltip = dynamic(() => import('./chart-tooltip').then(m => m.ChartTooltip), { ssr: false })
+const ChartSkeleton = dynamic(() => import('./chart-skeleton').then(m => m.ChartSkeleton), { ssr: false })
+const ChartEmptyState = dynamic(() => import('./chart-empty-state').then(m => m.ChartEmptyState), { ssr: false })
 
 export interface AreaChartCardProps {
   data: any[]

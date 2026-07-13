@@ -4,7 +4,6 @@ import { MarketingNav } from"@/components/marketing/nav";
 import { MarketingFooter } from"@/components/marketing/footer";
 import { InteractiveArchitecture } from"@/components/marketing/interactive-architecture";
 import { DashboardPreview } from"@/components/marketing/visualizations/dashboard-preview";
-import { BrowserFrame } from"@/components/shared/browser-frame";
 import { ProductSimulation } from"@/components/marketing/visualizations/product-simulation";
 import { InteractiveIndustryExplorer } from"@/components/marketing/visualizations/industry-explorer";
 import { ROISimulatorSection } from"@/components/marketing/visualizations/revenue-recovery-simulator";
@@ -123,8 +122,8 @@ const COMPARISON_BADGES = [
  { label:"vs. Doing nothing", value:"Recover $60k+/year"},
 ];
 export default async function HomePage() {
- const { userId } = await auth();
- return (
+  const { userId } = await auth();
+  return (
  <div className="relative flex flex-col min-h-screen bg-background text-foreground">
  <MarketingNav />
  <main className="flex-1 overflow-x-hidden">
@@ -136,9 +135,9 @@ export default async function HomePage() {
  className="relative overflow-hidden gradient-hero pt-space-28 pb-space-20 md:pt-space-32 md:pb-space-24"
  >
  {/* Dotted grid background */}
- <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  {/* Radial glow */}
- <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-screen bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.12),transparent_70%)] pointer-events-none"/>
+ <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-screen bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.12),transparent_70%)] pointer-events-none"/>
  <div className="relative mx-auto max-w-screen-xl px-space-6 flex flex-col items-center mt-space-16">
  {/* Announcement pill */}
  <div className="flex justify-center mb-space-8">
@@ -172,60 +171,88 @@ export default async function HomePage() {
  {/* CTAs */}
  <div className="flex flex-col sm:flex-row items-center justify-center gap-space-4 mb-space-12 w-full">
  {userId ? (
- <Link
- href="/dashboard"
- className="inline-flex items-center gap-space-2 radius-full bg-primary text-white px-space-8 py-space-3 text-[14px] font-normal hover:bg-primary/95 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto justify-center"
- >
+ <Button asChild variant="default" size="lg" className="cursor-pointer w-full sm:w-auto">
+ <Link href="/dashboard">
  Go to Dashboard <ArrowRight className="h-4 w-4"/>
  </Link>
+ </Button>
  ) : (
  <>
- <Link
- href="/demo"
- className="inline-flex items-center gap-space-2 rounded-full border border-border-muted bg-bg-layer-2 px-space-8 py-space-3 text-[14px] font-normal text-foreground hover:bg-bg-layer-1 hover:border-foreground/20 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto justify-center"
- >
+ <Button asChild variant="outline" size="lg" className="cursor-pointer w-full sm:w-auto">
+ <Link href="/demo">
  Learn more
  </Link>
- <Link
- href="/sign-up"
- className="inline-flex items-center gap-space-2 rounded-full bg-primary text-white px-space-8 py-space-3 text-[14px] font-normal hover:bg-primary/95 transition-all active:scale-[0.98] focus-visible:ring-2 focus-visible:ring-primary w-full sm:w-auto justify-center"
- >
+ </Button>
+ <Button asChild variant="default" size="lg" className="cursor-pointer w-full sm:w-auto">
+ <Link href="/sign-up">
  Get started today <ArrowRight className="h-4 w-4"/>
  </Link>
+ </Button>
  </>
  )}
  </div>
- {/* Browser preview window */}
+ {/* Browser preview window — cropped, non-interactive */}
  <div className="relative w-full max-w-screen-xl mt-space-4">
  <div className="absolute -inset-space-10 mesh-glow opacity-[0.12] pointer-events-none z-0"/>
- <BrowserFrame
- url="app.operator.ai/dashboard"
- className="relative z-10"
- >
+ <div className="relative z-10 radius-2xl overflow-hidden max-h-128 pointer-events-none select-none shadow-[0_20px_60px_-15px_hsl(var(--primary)/0.12)]">
  <DashboardPreview />
- </BrowserFrame>
  </div>
- {/* Partner/Brand logos strip */}
- <div className="mt-space-16 border-t border-border-muted pt-space-8 text-center w-full max-w-4xl">
- <p className="text-caption text-muted-foreground uppercase tracking-widest mb-space-4 font-medium">
- Trusted by 500+ clinics, salons, law firms, and service brands
- </p>
- <div className="flex flex-wrap items-center justify-center gap-x-space-10 gap-y-space-4 opacity-50 grayscale hover:opacity-75 transition-opacity">
- <div className="flex items-center gap-space-2 text-[14px] font-normal tracking-tight text-foreground select-none">
- <Activity className="h-4 w-4"/> DentalCare
+ {/* Bottom fade */}
+ <div className="absolute bottom-space-0 left-space-0 right-space-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent z-20 pointer-events-none" />
  </div>
- <div className="flex items-center gap-space-2 text-[14px] font-normal tracking-tight text-foreground select-none">
- <Scale className="h-4 w-4"/> ApexLegal
- </div>
- <div className="flex items-center gap-space-2 text-[14px] font-normal tracking-tight text-foreground select-none">
- <Scissors className="h-4 w-4"/> GlowSalon
- </div>
- <div className="flex items-center gap-space-2 text-[14px] font-normal tracking-tight text-foreground select-none">
- <Home className="h-4 w-4"/> PrimeEstate
- </div>
- </div>
- </div>
- </div>
+  {/* Partner/Brand logos strip */}
+  <div className="mt-space-16 border-t border-border-muted pt-space-10 text-center w-full max-w-4xl">
+    <p className="text-caption text-muted-foreground uppercase tracking-widest mb-space-8 font-semibold opacity-85">
+      Trusted by 500+ clinics, salons, law firms, and service brands
+    </p>
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-y-space-6 gap-x-space-8 items-center justify-items-center opacity-65 hover:opacity-90 transition-opacity duration-300">
+      
+      {/* CareDental Logo */}
+      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+        <div className="h-7 w-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover/logo:bg-emerald-500/20 transition-colors">
+          <Activity className="h-4 w-4" />
+        </div>
+        <span className="text-body-md tracking-tight">
+          <span className="text-muted-foreground font-light">Care</span>
+          <span className="text-foreground font-semibold">Dental</span>
+        </span>
+      </div>
+
+      {/* Vanguard Law Logo */}
+      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+        <div className="h-7 w-7 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover/logo:bg-indigo-500/20 transition-colors">
+          <Scale className="h-4 w-4" />
+        </div>
+        <span className="text-body-md tracking-tight">
+          <span className="text-foreground font-semibold">Vanguard</span>
+          <span className="text-muted-foreground font-light ml-space-0.5">Law</span>
+        </span>
+      </div>
+
+      {/* Aura Studios Logo */}
+      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+        <div className="h-7 w-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover/logo:bg-amber-500/20 transition-colors">
+          <Scissors className="h-4 w-4" />
+        </div>
+        <span className="text-body-sm tracking-wider uppercase font-bold text-foreground group-hover/logo:text-amber-500 transition-colors">
+          Aura<span className="text-muted-foreground font-light text-caption tracking-normal lowercase ml-space-1">studios</span>
+        </span>
+      </div>
+
+      {/* Apex Realty Logo */}
+      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+        <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover/logo:bg-primary/20 transition-colors">
+          <Home className="h-4 w-4" />
+        </div>
+        <span className="text-body-md tracking-tight">
+          <span className="text-foreground font-medium">Apex</span>
+          <span className="text-primary font-bold ml-space-0.5">Realty</span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+  </div>
  </section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 2: SOCIAL PROOF STRIP — Horizontal brand ribbon
@@ -329,7 +356,7 @@ export default async function HomePage() {
  <div className="grid grid-cols-1 md:grid-cols-2 gap-space-8 items-stretch">
  {/* WITHOUT OPERATOR CARD */}
  <div className="radius-2xl border border-[hsl(var(--state-error-text)/0.12)] bg-[hsl(var(--state-error-bg)/0.5)] p-space-8 ] hover:-translate-y-1 transition-all duration-350 ease-out relative overflow-hidden group">
- <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,rgba(240,68,56,0.04),transparent_70%)] pointer-events-none"/>
+ <div className="absolute top-space-0 right-space-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,rgba(240,68,56,0.04),transparent_70%)] pointer-events-none"/>
  <div className="flex items-center gap-space-3 mb-space-6">
  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[hsl(var(--state-error-bg))] text-[hsl(var(--state-error-text))]">
  <UserX className="h-4 w-4"/>
@@ -460,7 +487,7 @@ export default async function HomePage() {
  id="how-it-works"
  className="relative py-space-24 lg:py-space-32 overflow-hidden architecture-bg"
  >
- <div className="absolute inset-0 dot-grid opacity-8 pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid opacity-8 pointer-events-none"/>
  <div className="relative mx-auto max-w-6xl px-space-6">
  <div className="text-center mb-space-16">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-4">
@@ -521,7 +548,7 @@ export default async function HomePage() {
  id="getting-started"
  className="py-space-24 lg:py-space-32 relative overflow-hidden"
  >
- <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-96 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_70%)] pointer-events-none"/>
  <div className="relative mx-auto max-w-5xl px-space-6">
  {/* Header */}
@@ -542,10 +569,10 @@ export default async function HomePage() {
  </p>
  </div>
  {/* Three Tilted Steps Cards */}
- <div className="grid grid-cols-1 md:grid-cols-3 gap-space-8 md:gap-space-6 px-space-4 md:px-0 items-stretch">
+ <div className="grid grid-cols-1 md:grid-cols-3 gap-space-8 md:gap-space-6 px-space-4 md:px-space-0 items-stretch">
  {/* Step 1: Connect (Tilted Left) */}
  <div className="tilted-card-left radius-2xl border border-[hsl(var(--foreground)/0.06)] bg-card/65 p-space-8 flex flex-col justify-between relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)] pointer-events-none"/>
+ <div className="absolute top-space-0 right-space-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)] pointer-events-none"/>
  <div>
  <span className="text-caption uppercase tracking-wider text-primary font-mono font-semibold">
  01 / Connect
@@ -590,7 +617,7 @@ export default async function HomePage() {
  </div>
  {/* Step 2: Train (Straight Center) */}
  <div className="tilted-card-center radius-2xl border border-[hsl(var(--foreground)/0.08)] bg-card p-space-8 flex flex-col justify-between relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_70%)] pointer-events-none"/>
+ <div className="absolute top-space-0 right-space-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_70%)] pointer-events-none"/>
  <div className="absolute top-space-4 right-space-4 h-2 w-2 radius-full bg-primary animate-pulse"/>
  <div>
  <span className="text-caption uppercase tracking-wider text-primary font-mono font-semibold">
@@ -625,7 +652,7 @@ export default async function HomePage() {
  </div>
  {/* Step 3: Go Live (Tilted Right) */}
  <div className="tilted-card-right radius-2xl border border-[hsl(var(--foreground)/0.06)] bg-card/65 p-space-8 flex flex-col justify-between relative overflow-hidden">
- <div className="absolute top-0 right-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)] pointer-events-none"/>
+ <div className="absolute top-space-0 right-space-0 w-32 h-32 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.04),transparent_70%)] pointer-events-none"/>
  <div>
  <span className="text-caption uppercase tracking-wider text-primary font-mono font-semibold">
  03 / Go Live
@@ -745,7 +772,7 @@ export default async function HomePage() {
  }`}
  >
  {plan.highlight && (
- <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 radius-full bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] px-space-4 py-space-1 text-caption text-primary-foreground whitespace-nowrap font-semibold">
+ <div className="absolute top-space-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 radius-full bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] px-space-4 py-space-1 text-caption text-primary-foreground whitespace-nowrap font-semibold">
  ✦ Most Popular
  </div>
  )}
@@ -822,7 +849,7 @@ export default async function HomePage() {
  id="cta-final"
  className="relative py-space-28 lg:py-space-32 overflow-hidden cta-mesh"
  >
- <div className="absolute inset-0 dot-grid opacity-10 pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  {/* Extra mesh glow */}
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-80 mesh-glow opacity-50 pointer-events-none"/>
  <div className="relative mx-auto max-w-2xl px-space-6 text-center">
@@ -842,18 +869,16 @@ export default async function HomePage() {
  it today.
  </p>
  <div className="flex flex-col sm:flex-row items-center justify-center gap-space-4 mb-space-6">
- <Link
- href="/sign-up"
- className="inline-flex items-center gap-space-2 rounded-full bg-primary px-space-8 py-space-3 text-[14px] text-white font-normal hover:bg-primary/90 transition-all hover:scale-[1.02] cursor-pointer"
- >
+ <Button asChild variant="default" size="lg" className="cursor-pointer">
+ <Link href="/sign-up">
  Start your free trial <ArrowRight className="h-4 w-4"/>
  </Link>
- <Link
- href="/demo"
- className="inline-flex items-center gap-space-2 rounded-full border border-[hsl(var(--foreground)/0.1)] px-space-5 py-space-3 text-body-sm text-muted-foreground hover:text-foreground hover:border-[hsl(var(--foreground)/0.2)] transition-colors cursor-pointer"
- >
+ </Button>
+ <Button asChild variant="outline" size="lg" className="cursor-pointer">
+ <Link href="/demo">
  Book a live demo <ArrowRight className="h-3.5 w-3.5"/>
  </Link>
+ </Button>
  </div>
  <div className="flex items-center justify-center gap-space-4 text-caption text-muted-foreground">
  <span className="flex items-center gap-space-1">

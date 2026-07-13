@@ -12,9 +12,6 @@ export async function POST(req: NextRequest) {
     formData.forEach((value, key) => {
       body[key] = value.toString();
     });
-
-    console.log("[Voice Webhook Inbound] Received call:", JSON.stringify(body));
-
     const callerNumber = body.From || "unknown";
     const recipientNumber = body.To || "";
     const callSid = body.CallSid || "unknown-sid";
@@ -43,9 +40,6 @@ export async function POST(req: NextRequest) {
 
     // Evaluate Routing Actions
     const routing = await voiceRouting.getCallRoutingAction(orgId);
-
-    console.log(`[Voice Webhook Inbound] Routing decision for ${recipientNumber}: ${routing.action}`);
-
     let xmlResponse = "";
 
     switch (routing.action) {

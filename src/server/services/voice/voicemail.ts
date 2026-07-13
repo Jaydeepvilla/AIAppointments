@@ -15,8 +15,6 @@ export const voicemailProcessor = {
     const { organizationId, sessionId, recordingUrl } = options;
 
     try {
-      console.log(`[Voicemail Processor] Registering voicemail for session ${sessionId}, URL: ${recordingUrl}`);
-
       // 1. Create voicemail record
       const [voicemail] = await db
         .insert(voicemailMessages)
@@ -51,7 +49,6 @@ export const voicemailProcessor = {
         try {
           // In production, we fetch the recordingUrl audio buffer and send it to STT
           // For now, we mock/retrieve a standard transcription callback or simulate STT
-          console.log(`[Voicemail Processor] Sending voicemail recording to STT provider`);
           transcriptText = "Hello, I wanted to schedule an appointment for next Tuesday at 2 PM. Please call me back.";
         } catch (sttErr) {
           console.error("[Voicemail Processor] STT translation failed:", sttErr);
@@ -91,7 +88,6 @@ export const voicemailProcessor = {
               updatedAt: new Date(),
             })
             .where(eq(leadProfiles.id, existingLead.id));
-          console.log(`[Voicemail Processor] Updated existing lead notes for ${callerNumber}`);
         } else {
           await db.insert(leadProfiles).values({
             organizationId,
@@ -101,7 +97,6 @@ export const voicemailProcessor = {
             notes: `[Voicemail Callback Request]: ${summaryText}\nTranscript: ${transcriptText}`,
             leadScore: 10,
           });
-          console.log(`[Voicemail Processor] Created new callback lead for ${callerNumber}`);
         }
       }
 

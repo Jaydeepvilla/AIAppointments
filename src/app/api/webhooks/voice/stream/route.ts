@@ -21,8 +21,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => ({}));
-    console.log("[Voice Stream Webhook] Handshake payload received:", JSON.stringify(body));
-
     return NextResponse.json({
       success: true,
       message: "Streaming handshake completed. Active socket connection can initiate.",

@@ -48,15 +48,11 @@ export function TrialBanner({ trialEndsAt, planId }: TrialBannerProps) {
         {" "}Upgrade to keep your AI Receptionist active.
       </span>
       <Button
-        size="sm"
+        size="xs"
+        variant={isExpired || isExpiringSoon ? "warning" : "soft"}
         onClick={() => router.push("/billing")}
-        className={cn(
-          "h-6 gap-space-2 text-caption shrink-0  px-space-2",
-          isExpired || isExpiringSoon
-            ? "bg-warning-500/10 text-warning-500 border border-warning-500/20 hover:bg-warning-500/15"
-            : "bg-[hsl(var(--primary)/0.08)] text-primary border border-[hsl(var(--primary)/0.2)] hover:bg-[hsl(var(--primary)/0.12)]"
-        )}
         id="trial-banner-upgrade-btn"
+        className="shrink-0"
       >
         <Zap className="h-2.5 w-2.5" />
         Upgrade

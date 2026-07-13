@@ -14,9 +14,6 @@ export async function POST(req: NextRequest) {
     formData.forEach((value, key) => {
       body[key] = value.toString();
     });
-
-    console.log("[Voice Recording Webhook] Callback body:", JSON.stringify(body));
-
     const callSid = body.CallSid || "unknown";
     const recordingUrl = body.RecordingUrl;
     const durationStr = body.RecordingDuration || "0";

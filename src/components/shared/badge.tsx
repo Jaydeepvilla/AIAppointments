@@ -1,56 +1,44 @@
-import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "./utils";
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+
+import { cn } from "@/components/shared/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center radius-md px-space-2 py-space-0.5 text-caption font-medium transition-colors duration-150 select-none ring-1 ring-inset",
+  "inline-flex items-center rounded-full border px-space-2.5 py-space-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "bg-[hsl(var(--primary)/0.08)] text-primary ring-[hsl(var(--primary)/0.12)]",
+          "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
         secondary:
-          "bg-[hsl(var(--foreground)/0.04)] text-muted-foreground ring-[hsl(var(--foreground)/0.08)]",
-        success:
-          "bg-[hsl(var(--state-success-bg))] text-[hsl(var(--state-success-text))] ring-[hsl(var(--state-success-text)/0.15)]",
-        warning:
-          "bg-[hsl(var(--state-warning-bg))] text-[hsl(var(--state-warning-text))] ring-[hsl(var(--state-warning-text)/0.15)]",
+          "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
         destructive:
-          "bg-[hsl(var(--state-error-bg))] text-[hsl(var(--state-error-text))] ring-[hsl(var(--state-error-text)/0.15)]",
-        outline:
-          "bg-transparent text-foreground ring-[hsl(var(--foreground)/0.12)]",
+          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
+        outline: "text-foreground",
+        success:
+          "border-transparent bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20 dark:text-emerald-400 dark:bg-emerald-500/15 dark:hover:bg-emerald-500/25 border-emerald-500/20",
+        warning:
+          "border-transparent bg-amber-500/10 text-amber-600 hover:bg-amber-500/20 dark:text-amber-400 dark:bg-amber-500/15 dark:hover:bg-amber-500/25 border-amber-500/20",
+        info:
+          "border-transparent bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 dark:text-blue-400 dark:bg-blue-500/15 dark:hover:bg-blue-500/25 border-blue-500/20",
+        soft:
+          "border-transparent bg-muted text-muted-foreground hover:bg-muted/80",
       },
     },
     defaultVariants: {
       variant: "default",
     },
   }
-);
+)
 
 export interface BadgeProps
-  extends React.HTMLAttributes<HTMLSpanElement>,
-    VariantProps<typeof badgeVariants> {
-  dot?: boolean;
-}
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof badgeVariants> {}
 
-function Badge({ className, variant, dot, children, ...props }: BadgeProps) {
+function Badge({ className, variant, ...props }: BadgeProps) {
   return (
-    <span className={cn(badgeVariants({ variant }), className)} {...props}>
-      {dot && (
-        <span
-          className={cn(
-            "mr-space-1 h-1.5 w-1.5 radius-md shrink-0",
-            variant === "success" && "bg-[hsl(var(--state-success-text))]",
-            variant === "warning" && "bg-[hsl(var(--state-warning-text))]",
-            variant === "destructive" && "bg-[hsl(var(--state-error-text))]",
-            variant === "default" && "bg-primary",
-            (!variant || variant === "secondary" || variant === "outline") && "bg-muted-foreground"
-          )}
-        />
-      )}
-      {children}
-    </span>
-  );
+    <div className={cn(badgeVariants({ variant }), className)} {...props} />
+  )
 }
 
-export { Badge, badgeVariants };
+export { Badge, badgeVariants }

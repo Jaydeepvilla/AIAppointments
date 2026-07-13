@@ -23,10 +23,6 @@ export class EmailProvider implements MessagingProvider, WebhookProvider {
     try {
       const smtpHost = connectionConfig.host || "smtp.gmail.com";
       const smtpUser = connectionConfig.user || "mock@gmail.com";
-      
-      console.log(`[Email SDK] Outgoing Email to ${recipientId} from ${smtpUser} via ${smtpHost}:`);
-      console.log(`[Email SDK] Content:`, content);
-
       // Perform a mock SMTP call / Microsoft Graph API request
       const mockEmailId = "mail-" + Math.random().toString(36).substring(2, 16) + "@nexx.ai";
 

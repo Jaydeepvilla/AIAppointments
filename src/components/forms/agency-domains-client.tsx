@@ -1,23 +1,26 @@
-"use client";
+"use client";import { Badge } from "@/components/shared/badge";
 
 import { useState, useTransition } from "react";
-import { 
-  Globe, 
-  Plus, 
-  Trash2, 
-  CheckCircle2, 
-  AlertCircle, 
-  RefreshCw, 
-  Check, 
+import {
+  Globe,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  Check,
   HelpCircle,
-  Network
-} from "lucide-react";
+  Network } from
+"lucide-react";
 import { Button } from "@/components/shared/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/shared/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/shared/dialog";
 import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
 import { addAgencyDomainAction, deleteAgencyDomainAction, verifyDomainSslAction } from "@/server/actions/agency";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { NativeSelect, NativeTable } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DomainRecord {
   id: string;
@@ -27,10 +30,11 @@ interface DomainRecord {
   createdAt: Date;
 }
 
-export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] }) {
+export function AgencyDomainsClient({ initialDomains }: {initialDomains: any[];}) {
   const [domains, setDomains] = useState<DomainRecord[]>(initialDomains as DomainRecord[]);
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [confirmDialogId, setConfirmDialogId] = useState<string | null>(null);
 
   // New Domain form
   const [newDomainName, setNewDomainName] = useState("");
@@ -52,7 +56,7 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
     startTransition(async () => {
       const res = await addAgencyDomainAction(newDomainName.trim(), newDomainType);
       if (res.success && res.domain) {
-        setDomains(prev => [res.domain as unknown as DomainRecord, ...prev]);
+        setDomains((prev) => [res.domain as unknown as DomainRecord, ...prev]);
         setNewDomainName("");
         setIsOpen(false);
       } else {
@@ -61,11 +65,17 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
     });
   };
 
-  const handleDeleteDomain = async (domainId: string) => {
-    if (!confirm("Are you sure you want to remove this domain connection? client workspaces mapped to this domain will disconnect.")) return;
+  const handleDeleteDomain = (domainId: string) => {
+    setConfirmDialogId(domainId);
+  };
+
+  const handleConfirmDeleteDomain = async () => {
+    if (!confirmDialogId) return;
+    const domainId = confirmDialogId;
+    setConfirmDialogId(null);
 
     const originalList = [...domains];
-    setDomains(prev => prev.filter(d => d.id !== domainId));
+    setDomains((prev) => prev.filter((d) => d.id !== domainId));
 
     const res = await deleteAgencyDomainAction(domainId);
     if (!res.success) {
@@ -76,14 +86,14 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
 
   const handleVerifySsl = async (domainId: string) => {
     // optimistic verification toggle
-    setDomains(prev =>
-      prev.map(d => d.id === domainId ? { ...d, sslStatus: "active" } : d)
+    setDomains((prev) =>
+    prev.map((d) => d.id === domainId ? { ...d, sslStatus: "active" } : d)
     );
 
     const res = await verifyDomainSslAction(domainId);
     if (!res.success) {
-      setDomains(prev =>
-        prev.map(d => d.id === domainId ? { ...d, sslStatus: "pending" } : d)
+      setDomains((prev) =>
+      prev.map((d) => d.id === domainId ? { ...d, sslStatus: "pending" } : d)
       );
       alert("DNS verification check failed. Ensure the CNAME record is active: " + res.error);
     }
@@ -93,26 +103,26 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
     switch (status) {
       case "active":
         return (
-          <span className="inline-flex items-center gap-space-1 px-space-2 py-space-1 radius-md text-caption  uppercase tracking-wider bg-success-500/10 text-success-500 border border-success-500/25">
+          <Badge variant="success">
             <CheckCircle2 className="h-3 w-3" />
             Verified SSL
-          </span>
-        );
+          </Badge>);
+
       case "failed":
         return (
-          <span className="inline-flex items-center gap-space-1 px-space-2 py-space-1 radius-md text-caption  uppercase tracking-wider bg-destructive/10 text-error-500 border border-error-500/25">
+          <Badge variant="destructive">
             <AlertCircle className="h-3 w-3" />
             DNS Failed
-          </span>
-        );
+          </Badge>);
+
       case "pending":
       default:
         return (
-          <span className="inline-flex items-center gap-space-1 px-space-2 py-space-1 radius-md text-caption  uppercase tracking-wider bg-warning-500/10 text-warning-500 border border-warning-500/25 animate-pulse">
+          <Badge variant="warning" className="animate-pulse">
             <RefreshCw className="h-3 w-3 animate-spin" />
             Resolving
-          </span>
-        );
+          </Badge>);
+
     }
   };
 
@@ -124,7 +134,7 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
         
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Button className="gap-space-2 cursor-pointer bg-primary text-primary-foreground  px-space-4 py-space-2">
+            <Button className="text-primary-foreground px-space-4 py-space-2">
               <Plus className="h-4 w-4" />
               Link Custom Domain
             </Button>
@@ -140,25 +150,25 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
             <div className="space-y-space-4 py-space-3">
               <div className="space-y-space-2">
                 <Label className="text-body-sm ">Subdomain Name</Label>
-                <Input 
-                  placeholder="e.g. portal.myagency.com" 
+                <Input
+                  placeholder="e.g. portal.myagency.com"
                   value={newDomainName}
-                  onChange={(e) => setNewDomainName(e.target.value)}
-                />
+                  onChange={(e) => setNewDomainName(e.target.value)} />
+                
               </div>
 
               <div className="space-y-space-2">
                 <Label className="text-body-sm ">Domain Mapping Type</Label>
-                <select
+                <NativeSelect
                   value={newDomainType}
                   onChange={(e) => setNewDomainType(e.target.value as any)}
-                  className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-                >
+                  className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground">
+                  
                   <option value="portal">Agency Admin Portal</option>
                   <option value="client">Client Portal dashboard</option>
                   <option value="widget">Whitelabel Chat Widget API</option>
                   <option value="api">Whitelabel Custom Webhooks API</option>
-                </select>
+                </NativeSelect>
               </div>
 
               {/* CNAME DNS instructions box */}
@@ -170,7 +180,7 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
                 <p>
                   Login to your domain provider (e.g. GoDaddy, Cloudflare) and append the following record:
                 </p>
-                <div className="p-space-2 bg-background/60 rounded border border-border/50 space-y-space-1 font-mono text-caption text-foreground">
+                <Badge>
                   <div className="flex justify-between">
                     <span className="text-muted-foreground">Type:</span>
                     <strong>CNAME</strong>
@@ -183,20 +193,20 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
                     <span className="text-muted-foreground">Value:</span>
                     <strong>cname.nexx.ai</strong>
                   </div>
-                </div>
+                </Badge>
               </div>
 
-              {dialogError && (
-                <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
+              {dialogError &&
+              <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
                   <AlertCircle className="h-4 w-4" />
                   <span>{dialogError}</span>
                 </div>
-              )}
+              }
             </div>
 
             <DialogFooter>
               <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
-              <Button onClick={handleAddDomain} disabled={isPending} className="bg-primary text-primary-foreground ">
+              <Button onClick={handleAddDomain} disabled={isPending} className="text-primary-foreground">
                 {isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-space-2" /> : null}
                 Provision SSL
               </Button>
@@ -207,62 +217,65 @@ export function AgencyDomainsClient({ initialDomains }: { initialDomains: any[] 
 
       {/* Linked subdomains list */}
       <Card className="bg-card/30 border border-border/50 overflow-hidden">
-        {domains.length === 0 ? (
-          <div className="py-space-16 text-center text-muted-foreground text-body-sm">
+        {domains.length === 0 ?
+        <div className="py-space-16 text-center text-muted-foreground text-body-sm">
             No custom domains linked yet. Point your CNAME record to set up platform white-labeling.
-          </div>
-        ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse text-body-sm">
-              <thead>
-                <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
-                  <th className="px-space-6 py-space-4">Linked URL</th>
-                  <th className="px-space-6 py-space-4">Type</th>
-                  <th className="px-space-6 py-space-4">SSL Status</th>
-                  <th className="px-space-6 py-space-4">Added Date</th>
-                  <th className="px-space-6 py-space-4 text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-border/10 text-foreground">
-                {domains.map((record) => (
-                  <tr key={record.id} className="hover:bg-accent/10 transition-colors">
-                    <td className="px-space-6 py-space-4 font-mono  text-foreground flex items-center gap-space-2">
-                      <Globe className="h-4 w-4 text-primary" />
-                      {record.domainName}
-                    </td>
-                    <td className="px-space-6 py-space-4 capitalize text-caption text-muted-foreground">
-                      {record.type.replace("-", " ")} Domain
-                    </td>
-                    <td className="px-space-6 py-space-4">{getStatusBadge(record.sslStatus)}</td>
-                    <td className="px-space-6 py-space-4 text-muted-foreground text-caption">
-                      {new Date(record.createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-space-6 py-space-4 text-right space-x-space-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleVerifySsl(record.id)}
-                        disabled={record.sslStatus === "active"}
-                        className="text-primary hover:text-primary/95 text-caption  cursor-pointer"
-                      >
-                        Verify DNS
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => handleDeleteDomain(record.id)}
-                        className="text-destructive hover:text-error-500 hover:bg-destructive/10 cursor-pointer h-8 w-8 p-space-0"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+          </div> :
+
+        <ScrollArea className="" vertical={false}>
+                              <NativeTable className="w-full text-left border-collapse text-body-sm">
+                                <thead>
+                                  <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
+                                    <th className="px-space-6 py-space-4">Linked URL</th>
+                                    <th className="px-space-6 py-space-4">Type</th>
+                                    <th className="px-space-6 py-space-4">SSL Status</th>
+                                    <th className="px-space-6 py-space-4">Added Date</th>
+                                    <th className="px-space-6 py-space-4 text-right">Actions</th>
+                                  </tr>
+                                </thead>
+                                <tbody className="divide-y divide-border/10 text-foreground">
+                                  {domains.map((record) =>
+                                <tr key={record.id} className="hover:bg-accent/10 transition-colors">
+                                      <td className="px-space-6 py-space-4 font-mono  text-foreground flex items-center gap-space-2">
+                                        <Globe className="h-4 w-4 text-primary" />
+                                        {record.domainName}
+                                      </td>
+                                      <td className="px-space-6 py-space-4 capitalize text-caption text-muted-foreground">
+                                        {record.type.replace("-", " ")} Domain
+                                      </td>
+                                      <td className="px-space-6 py-space-4">{getStatusBadge(record.sslStatus)}</td>
+                                      <td className="px-space-6 py-space-4 text-muted-foreground text-caption">
+                                        {new Date(record.createdAt).toLocaleDateString()}
+                                      </td>
+                                      <td className="px-space-6 py-space-4 text-right space-x-space-2">
+                                        <Button variant="ghost" size="sm" onClick={() => handleVerifySsl(record.id)}
+                                    disabled={record.sslStatus === "active"}
+                                    className="text-primary hover:text-primary/95 text-caption  cursor-pointer">
+                                      
+                                          Verify DNS
+                                        </Button>
+                                        <Button variant="ghost" size="icon" onClick={() => handleDeleteDomain(record.id)}
+                                    className="text-destructive hover:text-error-500 hover:bg-destructive/10 cursor-pointer h-8 w-8 p-space-0">
+                                      
+                                          <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                      </td>
+                                    </tr>
+                                )}
+                                </tbody>
+                              </NativeTable>
+                            </ScrollArea>
+        }
       </Card>
-    </div>
-  );
+
+      <ConfirmDialog
+        open={!!confirmDialogId}
+        onOpenChange={(open) => !open && setConfirmDialogId(null)}
+        title="Remove Domain"
+        description="Are you sure you want to remove this domain connection? Client workspaces mapped to this domain will disconnect."
+        onConfirm={handleConfirmDeleteDomain}
+        confirmText="Remove" />
+      
+    </div>);
+
 }

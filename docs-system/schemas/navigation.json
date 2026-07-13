@@ -1,0 +1,10 @@
+{
+  "categories": [
+    "getting-started",
+    "api-reference",
+    "architecture",
+    "deployment",
+    "troubleshooting"
+  ],
+  "maxDepth": 3
+}

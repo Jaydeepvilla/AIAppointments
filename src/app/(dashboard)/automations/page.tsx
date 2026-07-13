@@ -17,7 +17,7 @@ import {
  RotateCcw,
  Sparkles,
 } from"lucide-react";
-import { Button, PrimaryButton } from"@/components/shared/button";
+import { Button } from"@/components/shared/button";
 import { Input } from"@/components/shared/input";
 import { Label } from"@/components/shared/label";
 import { 
@@ -67,7 +67,7 @@ export default function AutomationsPage() {
  };
 
  return (
- <div className="space-y-space-4 animate-fade-in w-full h-[calc(100vh-8.5rem)] flex flex-col overflow-hidden">
+ <div className="space-y-space-4 animate-fade-in w-full h-full flex flex-col overflow-hidden">
  {/* Header */}
  <PageTitle
  title="Automations"
@@ -359,7 +359,7 @@ export default function AutomationsPage() {
  </div>
 
  <div className="flex justify-end pt-space-4 border-t border-[hsl(var(--foreground)/0.05)] shrink-0 bg-background">
- <PrimaryButton type="submit"disabled={loading} className="h-8.5 text-caption font-semibold px-space-4 rounded-full">
+ <Button type="submit" disabled={loading} className="h-8.5 text-caption font-semibold px-space-4 rounded-full">
  {loading ? (
  <>
  <Loader2 className="h-3.5 w-3.5 animate-spin mr-space-1"/>
@@ -371,7 +371,7 @@ export default function AutomationsPage() {
  <span>Save Automation Settings</span>
  </>
  )}
- </PrimaryButton>
+ </Button>
  </div>
  </form>
  </div>

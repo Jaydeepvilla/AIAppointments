@@ -70,59 +70,6 @@ export class OpenAIProvider implements LLMProvider {
   }
 }
 
-export class AnthropicProvider implements LLMProvider {
-  constructor(private apiKey?: string) { }
-
-  async generateCompletion(
-    messages: ChatMessage[],
-    options?: { temperature?: number; jsonMode?: boolean }
-  ): Promise<LLMCompletionResult> {
-    if (!this.apiKey) {
-      throw new Error("Anthropic API Key is missing");
-    }
-
-    try {
-      const systemMsg = messages.find((m) => m.role === "system")?.content || "";
-      const remainingMsgs = messages.filter((m) => m.role !== "system");
-
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": this.apiKey,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-3-5-haiku-latest",
-          system: systemMsg,
-          messages: remainingMsgs,
-          max_tokens: 1024,
-          temperature: options?.temperature ?? 0.7,
-        }),
-      });
-
-      if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
-        throw new Error(errData.error?.message || `HTTP ${response.status}`);
-      }
-
-      const data = await response.json();
-      return {
-        content: data.content[0]?.text || "",
-        provider: "anthropic",
-        model: "claude-3-5-haiku-latest",
-        usage: {
-          promptTokens: data.usage?.input_tokens ?? 0,
-          completionTokens: data.usage?.output_tokens ?? 0,
-          totalTokens: (data.usage?.input_tokens ?? 0) + (data.usage?.output_tokens ?? 0),
-        },
-      };
-    } catch (error: any) {
-      console.error("[AnthropicProvider] Error generating completion:", error);
-      throw error;
-    }
-  }
-}
 
 export class GeminiProvider implements LLMProvider {
   constructor(private apiKey?: string) { }
@@ -300,11 +247,9 @@ export class MockLLMProvider implements LLMProvider {
 export const llmRegistry = {
   getProvider(): LLMProvider {
     const openaiKey = process.env.OPENAI_API_KEY;
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
     const geminiKey = process.env.GEMINI_API_KEY;
 
     if (openaiKey) return new OpenAIProvider(openaiKey);
-    if (anthropicKey) return new AnthropicProvider(anthropicKey);
     if (geminiKey) return new GeminiProvider(geminiKey);
 
     return new MockLLMProvider();

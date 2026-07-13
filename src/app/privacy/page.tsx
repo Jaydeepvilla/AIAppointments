@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MarketingNav } from "@/components/marketing/nav";
 import { MarketingFooter } from "@/components/marketing/footer";
 import { Shield } from "lucide-react";
+import { NativeA } from "@/components/shared/native";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Operator Receptionist",
@@ -62,9 +63,9 @@ export default function PrivacyPage() {
                     ["transfers", "International Transfers"],
                     ["contact", "Contact Us"],
                   ].map(([id, label]) => (
-                    <a key={id} href={`#${id}`} className="block text-caption text-muted-foreground hover:text-foreground transition-colors py-space-1">
+                    <NativeA key={id} href={`#${id}`} className="block text-caption text-muted-foreground hover:text-foreground transition-colors py-space-1">
                       {label}
-                    </a>
+                    </NativeA>
                   ))}
                 </nav>
               </div>

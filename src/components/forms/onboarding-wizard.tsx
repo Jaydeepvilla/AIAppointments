@@ -1,562 +1,552 @@
 "use client";
 
-import * as React from"react";
-import { useRouter } from"next/navigation";
-import { useForm } from"react-hook-form";
-import { zodResolver } from"@hookform/resolvers/zod";
+import * as React from "react";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
- Scale,
- Scissors,
- Activity,
- Sparkles,
- Presentation,
- Home,
- Dumbbell,
- Bot,
- Globe,
- Mail,
- Phone,
- MapPin,
- Clock,
- ArrowRight,
- ArrowLeft,
- Building,
- Check,
- Loader2,
- Rocket,
- ChevronRight,
-} from"lucide-react";
-
-import { Button } from"@/components/shared/button";
-import { Input } from"@/components/shared/input";
-import { Label } from"@/components/shared/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from"@/components/shared/select";
-import { cn } from"@/components/shared/utils";
-
-import { INDUSTRIES, TIMEZONES } from"@/lib/constants";
-import { onboardingSchema, OnboardingInput } from"@/lib/validators";
-import { createOrganizationAction } from"@/server/actions/onboarding";
+  Scale, Scissors, Activity, Sparkles, Presentation,
+  Home, Dumbbell, Bot, Globe, Mail, Phone, MapPin, Clock,
+  ArrowRight, ArrowLeft, Building, Check, Loader2, Rocket,
+  AlertCircle, Stethoscope, Flame,
+} from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/select";
+import { cn } from "@/components/shared/utils";
+import { INDUSTRIES, TIMEZONES } from "@/lib/constants";
+import { onboardingSchema, OnboardingInput } from "@/lib/validators";
+import { createOrganizationAction } from "@/server/actions/onboarding";
 
 type Step = 1 | 2 | 3 | 4 | 5;
 
-const INDUSTRY_ICONS: Record<typeof INDUSTRIES[number], React.ComponentType<any>> = {
- "Dental Clinic": Activity,
- "Medical Clinic": Activity,
- "Salon": Scissors,
- "Spa": Sparkles,
- "Law Firm": Scale,
- "Consultant": Presentation,
- "Real Estate": Home,
- "Gym": Dumbbell,
- "Other": Bot,
+/* ── Industry config ─────────────────────────────────────── */
+const INDUSTRY_CONFIG: Record<
+  string,
+  { icon: React.ComponentType<any>; gradient: string; glow: string; emoji: string }
+> = {
+  "Dental Clinic":   { icon: Stethoscope,  gradient: "135deg, hsl(199,90%,40%), hsl(217,90%,50%)", glow: "hsl(199,90%,50%)", emoji: "🦷" },
+  "Medical Clinic":  { icon: Activity,     gradient: "135deg, hsl(152,80%,35%), hsl(171,80%,40%)", glow: "hsl(152,80%,45%)", emoji: "🏥" },
+  "Salon":           { icon: Scissors,     gradient: "135deg, hsl(330,80%,50%), hsl(350,80%,55%)", glow: "hsl(330,80%,55%)", emoji: "✂️" },
+  "Spa":             { icon: Sparkles,     gradient: "135deg, hsl(270,80%,50%), hsl(290,80%,55%)", glow: "hsl(270,80%,55%)", emoji: "💆" },
+  "Law Firm":        { icon: Scale,        gradient: "135deg, hsl(38,90%,45%), hsl(30,90%,50%)",   glow: "hsl(38,90%,50%)",  emoji: "⚖️" },
+  "Consultant":      { icon: Presentation, gradient: "135deg, hsl(210,80%,45%), hsl(230,80%,55%)", glow: "hsl(210,80%,55%)", emoji: "💼" },
+  "Real Estate":     { icon: Home,         gradient: "135deg, hsl(142,70%,35%), hsl(160,70%,42%)", glow: "hsl(142,70%,45%)", emoji: "🏠" },
+  "Gym":             { icon: Flame,        gradient: "135deg, hsl(14,90%,50%), hsl(35,90%,50%)",   glow: "hsl(14,90%,55%)",  emoji: "💪" },
+  "Other":           { icon: Bot,          gradient: "135deg, hsl(258,70%,50%), hsl(278,70%,55%)", glow: "hsl(258,70%,55%)", emoji: "✨" },
 };
 
+/* ── Step Progress ──────────────────────────────────────── */
 const STEP_META = [
- { label:"Industry", description:"Tell us your business type"},
- { label:"Details", description:"Contact information"},
- { label:"Location", description:"Where you operate"},
- { label:"Review", description:"Confirm & launch"},
+  { label: "Industry", desc: "Business type" },
+  { label: "Details",  desc: "Contact info" },
+  { label: "Location", desc: "Where you are" },
+  { label: "Review",   desc: "Confirm & launch" },
 ];
 
-/* ─────────────────────────────────────────────────────────
- Premium Input Field Wrapper
-───────────────────────────────────────────────────────── */
-function FieldGroup({
- icon: Icon,
- label,
- error,
- children,
- id,
- optional,
-}: {
- icon: React.ComponentType<any>;
- label: string;
- error?: string;
- children: React.ReactNode;
- id: string;
- optional?: boolean;
-}) {
- return (
- <div className="space-y-space-1.5">
- <Label htmlFor={id} className="flex items-center gap-space-2 text-xs font-semibold text-foreground/80 uppercase tracking-wider">
- {label}
- {optional && (
- <span className="normal-case tracking-normal font-normal text-muted-foreground/60">(optional)</span>
- )}
- </Label>
- <div className="relative group">
- <Icon className="absolute left-space-3.5 top-space-1/2 -translate-y-space-1/2 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors duration-150 pointer-events-none"/>
- {children}
- </div>
- {error && (
- <p className="flex items-center gap-space-1.5 text-xs text-state-error-text mt-space-1">
- <span className="inline-block h-1.5 w-1.5 rounded-full bg-state-error-text shrink-0"/>
- {error}
- </p>
- )}
- </div>
- );
+function StepBar({ step }: { step: number }) {
+  return (
+    <div className="mb-8">
+      {/* Progress track */}
+      <div className="flex items-center mb-4">
+        {STEP_META.map((_, idx) => {
+          const s = idx + 1;
+          const done = step > s;
+          const current = step === s;
+          return (
+            <React.Fragment key={s}>
+              {/* Node */}
+              <div className={cn(
+                "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black transition-all duration-500 z-10",
+              )}>
+                {done ? (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full"
+                    style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(290,80%,50%))", boxShadow: "0 0 16px hsl(258,80%,55%,0.6)" }}>
+                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
+                  </div>
+                ) : current ? (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full relative"
+                    style={{ background: "rgba(139,92,246,0.15)", border: "2px solid hsl(258,80%,60%)", boxShadow: "0 0 20px hsl(258,80%,60%,0.3)" }}>
+                    <span style={{ color: "hsl(258,100%,78%)", fontSize: "12px", fontWeight: 900 }}>{s}</span>
+                    {/* Pulse ring */}
+                    <div className="absolute inset-0 rounded-full border-2 border-violet-500/30 animate-ping [animation-duration:2s]" />
+                  </div>
+                ) : (
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full"
+                    style={{ background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.09)" }}>
+                    <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "12px", fontWeight: 700 }}>{s}</span>
+                  </div>
+                )}
+              </div>
+              {/* Connector */}
+              {s < 4 && (
+                <div className="flex-1 h-px mx-1 relative" style={{ background: "rgba(255,255,255,0.07)" }}>
+                  <div className="absolute inset-0 rounded-full transition-all duration-700"
+                    style={{
+                      background: "linear-gradient(to right, hsl(258,80%,55%), hsl(290,80%,50%))",
+                      width: done ? "100%" : "0%",
+                    }} />
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
+      {/* Labels row */}
+      <div className="flex items-start">
+        {STEP_META.map((meta, idx) => {
+          const s = idx + 1;
+          const done = step > s;
+          const current = step === s;
+          const isLast = s === 4;
+          return (
+            <React.Fragment key={s}>
+              <div className={cn("flex flex-col items-center w-9 shrink-0")}>
+                <span className={cn("text-[10px] font-bold leading-none whitespace-nowrap",
+                  current ? "text-violet-400" : done ? "text-white/50" : "text-white/20")}>
+                  {meta.label}
+                </span>
+              </div>
+              {!isLast && <div className="flex-1 mx-1" />}
+            </React.Fragment>
+          );
+        })}
+      </div>
+    </div>
+  );
 }
 
+/* ── Glassmorphism Panel ────────────────────────────────── */
+function GlassPanel({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="w-full rounded-2xl overflow-hidden"
+      style={{
+        background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)",
+        border: "1px solid rgba(255,255,255,0.10)",
+        boxShadow: "0 24px 64px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08) inset, 0 -1px 0 rgba(0,0,0,0.3) inset",
+        backdropFilter: "blur(20px)",
+      }}>
+      {children}
+    </div>
+  );
+}
+
+/* ── Input ──────────────────────────────────────────────── */
+const Field = React.forwardRef<
+  HTMLInputElement,
+  React.InputHTMLAttributes<HTMLInputElement> & {
+    label: string; icon: React.ComponentType<any>; error?: string; optional?: boolean;
+  }
+>(({ label, icon: Icon, error, optional, className, ...props }, ref) => (
+  <div className="space-y-2">
+    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em]"
+      style={{ color: "rgba(255,255,255,0.4)" }}>
+      {label}
+      {optional && <span className="normal-case tracking-normal font-normal text-white/20">(optional)</span>}
+    </label>
+    <div className="relative">
+      <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none z-10 transition-colors duration-200"
+        style={{ color: "rgba(255,255,255,0.25)" }} />
+      <input
+        ref={ref}
+        className={cn(
+          "w-full h-11 pl-10 pr-4 rounded-xl text-sm text-white font-medium transition-all duration-200 outline-none",
+          "placeholder:text-white/20",
+          className
+        )}
+        style={{
+          background: "rgba(255,255,255,0.06)",
+          border: "1.5px solid rgba(255,255,255,0.09)",
+        }}
+        onFocus={e => {
+          e.target.style.border = "1.5px solid hsl(258,80%,60%)";
+          e.target.style.boxShadow = "0 0 0 3px hsl(258,80%,60%,0.15), 0 0 20px hsl(258,80%,60%,0.08)";
+          e.target.style.background = "rgba(139,92,246,0.08)";
+        }}
+        onBlur={e => {
+          e.target.style.border = "1.5px solid rgba(255,255,255,0.09)";
+          e.target.style.boxShadow = "none";
+          e.target.style.background = "rgba(255,255,255,0.06)";
+        }}
+        {...props}
+      />
+    </div>
+    {error && (
+      <p className="flex items-center gap-1.5 text-[11px] text-rose-400 mt-1">
+        <span className="inline-block h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0" />
+        {error}
+      </p>
+    )}
+  </div>
+));
+Field.displayName = "Field";
+
+/* ── Buttons ────────────────────────────────────────────── */
+function Btn({ children, onClick, type = "button", disabled, wide }: {
+  children: React.ReactNode; onClick?: () => void;
+  type?: "button" | "submit"; disabled?: boolean; wide?: boolean;
+}) {
+  return (
+    <button type={type} onClick={onClick} disabled={disabled}
+      className={cn("inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black text-white transition-all duration-200",
+        "hover:scale-[1.03] active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100",
+        wide && "min-w-44")}
+      style={{
+        background: disabled ? "rgba(139,92,246,0.4)" : "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))",
+        boxShadow: disabled ? "none" : "0 4px 24px hsl(258,80%,55%,0.45), 0 1px 0 rgba(255,255,255,0.15) inset",
+      }}>
+      {children}
+    </button>
+  );
+}
+
+function OutlineBtn({ children, onClick, disabled }: {
+  children: React.ReactNode; onClick?: () => void; disabled?: boolean;
+}) {
+  return (
+    <button type="button" onClick={onClick} disabled={disabled}
+      className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold text-white/50 transition-all duration-200 hover:text-white/80 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-30"
+      style={{ background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.10)" }}>
+      {children}
+    </button>
+  );
+}
+
+/* ── Main Wizard ────────────────────────────────────────── */
 export function OnboardingWizard() {
- const router = useRouter();
- const [step, setStep] = React.useState<Step>(1);
- const [isSubmitting, setIsSubmitting] = React.useState(false);
- const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const router = useRouter();
+  const [step, setStep] = React.useState<Step>(1);
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [hoveredIndustry, setHoveredIndustry] = React.useState<string | null>(null);
 
- const {
- register,
- handleSubmit,
- setValue,
- watch,
- formState: { errors },
- trigger,
- } = useForm<OnboardingInput>({
- resolver: zodResolver(onboardingSchema),
- defaultValues: {
- industry: undefined,
- name:"",
- website:"",
- email:"",
- phone:"",
- address:"",
- timezone:"UTC",
- },
- });
+  const { register, handleSubmit, setValue, watch, formState: { errors }, trigger } = useForm<OnboardingInput>({
+    resolver: zodResolver(onboardingSchema),
+    defaultValues: { industry: undefined, name: "", website: "", email: "", phone: "", address: "", timezone: "UTC" },
+  });
 
- const selectedIndustry = watch("industry");
- const formValues = watch();
+  const selectedIndustry = watch("industry");
+  const formValues = watch();
 
- const handleIndustrySelect = (industry: typeof INDUSTRIES[number]) => {
- setValue("industry", industry, { shouldValidate: true });
- };
+  const nextStep = async () => {
+    let valid = false;
+    if (step === 1) valid = await trigger(["industry"]);
+    else if (step === 2) valid = await trigger(["name", "website", "email", "phone"]);
+    else if (step === 3) valid = await trigger(["address", "timezone"]);
+    if (valid) setStep(p => (p + 1) as Step);
+  };
 
- const nextStep = async () => {
- let isValid = false;
- if (step === 1) {
- isValid = await trigger(["industry"]);
- } else if (step === 2) {
- isValid = await trigger(["name","website","email","phone"]);
- } else if (step === 3) {
- isValid = await trigger(["address","timezone"]);
- }
- if (isValid) setStep((prev) => (prev + 1) as Step);
- };
+  const onSubmit = async (data: OnboardingInput) => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+    setStep(5);
+    try {
+      const res = await createOrganizationAction(data);
+      if (res.success) { router.refresh(); router.push("/dashboard"); }
+      else { setSubmitError(res.error || "Failed"); setStep(4); }
+    } catch (e: any) {
+      setSubmitError(e?.message || "Unexpected error");
+      setStep(4);
+    } finally { setIsSubmitting(false); }
+  };
 
- const prevStep = () => setStep((prev) => (prev - 1) as Step);
+  return (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      {step < 5 && <StepBar step={step} />}
 
- const onSubmit = async (data: OnboardingInput) => {
- setIsSubmitting(true);
- setSubmitError(null);
- setStep(5);
- try {
- const response = await createOrganizationAction(data);
- if (response.success) {
- router.refresh();
- router.push("/dashboard");
- } else {
- setSubmitError(response.error ||"Failed to create organization");
- setStep(4);
- }
- } catch (err: any) {
- setSubmitError(err?.message ||"An unexpected error occurred");
- setStep(4);
- } finally {
- setIsSubmitting(false);
- }
- };
+      {/* ── STEP 1: Industry ── */}
+      {step === 1 && (
+        <GlassPanel>
+          {/* Header */}
+          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <h3 className="text-base font-black text-white mb-1">What type of business do you run?</h3>
+            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>
+              We'll auto-configure your AI Receptionist — no manual setup needed.
+            </p>
+          </div>
 
- /* ── Step Indicator ── */
- const StepBar = () => (
- <div className="mb-space-8">
- <div className="flex items-center justify-between">
- {STEP_META.map((meta, idx) => {
- const s = idx + 1;
- const isCompleted = step > s;
- const isCurrent = step === s;
- const isPending = step < s;
- return (
- <React.Fragment key={s}>
- {/* Node */}
- <div className="flex flex-col items-center gap-space-1.5">
- <div
- className={cn(
- "relative flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold transition-all duration-300",
- isCompleted
- ?"bg-primary text-primary-foreground 0_0_0_4px_hsl(var(--primary)/0.15)]"
- : isCurrent
- ?"bg-primary text-primary-foreground 0_0_0_4px_hsl(var(--primary)/0.20)] ring-2 ring-primary/30"
- :"bg-muted text-muted-foreground/60"
- )}
- >
- {isCompleted ? (
- <Check className="h-3.5 w-3.5"strokeWidth={2.5} />
- ) : (
- <span>{s}</span>
- )}
- </div>
- <span
- className={cn(
- "hidden sm:block text-caption font-semibold tracking-wide",
- isCurrent ?"text-primary": isCompleted ?"text-foreground/70":"text-muted-foreground/50"
- )}
- >
- {meta.label}
- </span>
- </div>
+          {/* Industry grid */}
+          <div className="p-5">
+            <div className="grid grid-cols-3 gap-3">
+              {INDUSTRIES.map((industry) => {
+                const cfg = INDUSTRY_CONFIG[industry] || INDUSTRY_CONFIG["Other"];
+                const Icon = cfg.icon;
+                const isSelected = selectedIndustry === industry;
+                const isHovered = hoveredIndustry === industry;
 
- {/* Connector */}
- {s < 4 && (
- <div className="flex-1 mx-space-2 h-px relative overflow-hidden rounded-full bg-muted">
- <div
- className="absolute inset-y-space-0 left-space-0 bg-primary transition-all duration-500 ease-in-out"
- style={{ width: step > s ?"100%":"0%"}}
- />
- </div>
- )}
- </React.Fragment>
- );
- })}
- </div>
- </div>
- );
+                return (
+                  <button key={industry} type="button"
+                    onClick={() => setValue("industry", industry, { shouldValidate: true })}
+                    onMouseEnter={() => setHoveredIndustry(industry)}
+                    onMouseLeave={() => setHoveredIndustry(null)}
+                    className="relative flex flex-col items-center justify-center gap-3 py-5 px-3 rounded-2xl text-center cursor-pointer select-none transition-all duration-300"
+                    style={{
+                      background: isSelected
+                        ? `linear-gradient(135deg, ${cfg.gradient.split(", ").map(c => c + "25").join(", ")})`
+                        : isHovered
+                          ? "rgba(255,255,255,0.07)"
+                          : "rgba(255,255,255,0.03)",
+                      border: isSelected
+                        ? `2px solid ${cfg.glow}60`
+                        : isHovered
+                          ? "2px solid rgba(255,255,255,0.15)"
+                          : "2px solid rgba(255,255,255,0.07)",
+                      boxShadow: isSelected
+                        ? `0 0 24px ${cfg.glow}30, 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`
+                        : isHovered
+                          ? "0 4px 16px rgba(0,0,0,0.2)"
+                          : "none",
+                      transform: isSelected ? "scale(1.03)" : isHovered ? "scale(1.02)" : "scale(1)",
+                    }}>
 
- /* ── Panel wrapper ── */
- const Panel = ({ children }: { children: React.ReactNode }) => (
- <div className="w-full rounded-2xl border border-border/60 bg-card/50 0_2px_20px_hsl(var(--primary)/0.06),0_1px_3px_rgba(0,0,0,0.05)] backdrop-blur-sm overflow-hidden">
- {children}
- </div>
- );
+                    {/* Checkmark */}
+                    {isSelected && (
+                      <div className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full"
+                        style={{ background: `linear-gradient(135deg, ${cfg.gradient})`, boxShadow: `0 0 10px ${cfg.glow}80` }}>
+                        <Check className="h-3 w-3 text-white" strokeWidth={3} />
+                      </div>
+                    )}
 
- const PanelHeader = ({ title, desc }: { title: string; desc: string }) => (
- <div className="px-space-6 pt-space-6 pb-space-5 border-b border-border/50">
- <h2 className="text-base font-semibold text-foreground tracking-tight mb-space-1">{title}</h2>
- <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
- </div>
- );
+                    {/* Icon */}
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300"
+                      style={{
+                        background: isSelected || isHovered
+                          ? `linear-gradient(135deg, ${cfg.gradient})`
+                          : "rgba(255,255,255,0.07)",
+                        boxShadow: isSelected
+                          ? `0 4px 20px ${cfg.glow}50`
+                          : isHovered
+                            ? `0 4px 16px ${cfg.glow}30`
+                            : "none",
+                      }}>
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
 
- const PanelBody = ({ children, className }: { children: React.ReactNode; className?: string }) => (
- <div className={cn("px-space-6 py-space-5", className)}>{children}</div>
- );
+                    <span className="text-[11px] font-bold leading-tight transition-colors duration-200"
+                      style={{ color: isSelected ? "rgba(255,255,255,0.95)" : isHovered ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.45)" }}>
+                      {industry}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
 
- const PanelFooter = ({ children }: { children: React.ReactNode }) => (
- <div className="px-space-6 py-space-4 border-t border-border/50 bg-muted/20 flex items-center justify-between">
- {children}
- </div>
- );
+            {errors.industry && (
+              <p className="flex items-center gap-1.5 text-[11px] text-rose-400 mt-3">
+                <span className="h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0 inline-block" />
+                {errors.industry.message}
+              </p>
+            )}
+          </div>
 
- return (
- <form onSubmit={handleSubmit(onSubmit)}>
- {/* Step bar — only for steps 1–4 */}
- {step < 5 && <StepBar />}
+          {/* Footer */}
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
+            <span className="text-[11px]" style={{ color: selectedIndustry ? "hsl(258,100%,78%)" : "rgba(255,255,255,0.25)" }}>
+              {selectedIndustry
+                ? <span className="flex items-center gap-1.5 font-semibold"><Check className="h-3.5 w-3.5" /> {selectedIndustry} selected</span>
+                : "Select your industry to continue"}
+            </span>
+            <Btn onClick={nextStep} disabled={!selectedIndustry}>
+              Continue <ArrowRight className="h-3.5 w-3.5" />
+            </Btn>
+          </div>
+        </GlassPanel>
+      )}
 
- {/* ── Step 1: Industry ── */}
- {step === 1 && (
- <Panel>
- <PanelHeader
- title="What type of business do you run?"
- desc="We'll automatically configure your AI Receptionist for your industry — no setup needed."
- />
- <PanelBody>
- <div className="grid grid-cols-2 sm:grid-cols-3 gap-space-2.5">
- {INDUSTRIES.map((industry) => {
- const Icon = INDUSTRY_ICONS[industry] || Bot;
- const isSelected = selectedIndustry === industry;
- return (
- <Button
- key={industry}
- type="button"
- onClick={() => handleIndustrySelect(industry)}
- className={cn(
- "group relative flex flex-col items-center justify-center gap-space-2.5 h-32 px-space-2 rounded-xl border text-center transition-all duration-200 cursor-pointer select-none",
- isSelected
- ?"border-primary bg-primary/8 0_0_0_1px_hsl(var(--primary)/0.5),0_4px_16px_hsl(var(--primary)/0.12)] text-primary"
- :"border-border/60 bg-background/40 text-muted-foreground hover:border-primary/40 hover:text-foreground hover:bg-primary/4 0_2px_12px_hsl(var(--primary)/0.06)]"
- )}
- >
- {/* Selected checkmark */}
- {isSelected && (
- <span className="absolute top-space-2 right-space-2 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-primary text-primary-foreground">
- <Check className="h-2.5 w-2.5"strokeWidth={3} />
- </span>
- )}
- <div className={cn(
- "flex h-10 w-10 items-center justify-center rounded-xl transition-all duration-200",
- isSelected ?"bg-primary/15":"bg-muted/70 group-hover:bg-primary/10"
- )}>
- <Icon className={cn("h-5 w-5 transition-transform duration-200 group-hover:scale-110", isSelected ?"text-primary":"text-muted-foreground group-hover:text-primary")} />
- </div>
- <span className="text-xs font-semibold leading-tight">{industry}</span>
- </Button>
- );
- })}
- </div>
- {errors.industry && (
- <p className="flex items-center gap-space-1.5 text-xs text-state-error-text mt-space-3">
- <span className="inline-block h-1.5 w-1.5 rounded-full bg-state-error-text shrink-0"/>
- {errors.industry.message}
- </p>
- )}
- </PanelBody>
- <PanelFooter>
- <span className="text-xs text-muted-foreground">
- {selectedIndustry ? (
- <span className="flex items-center gap-space-1.5 text-primary">
- <Check className="h-3.5 w-3.5"/>
- <strong>{selectedIndustry}</strong> selected
- </span>
- ) : (
- "Select your industry to continue"
- )}
- </span>
- <Button
- type="button"
- onClick={nextStep}
- disabled={!selectedIndustry}
- className="gap-space-2"
- >
- Continue <ArrowRight className="h-3.5 w-3.5"/>
- </Button>
- </PanelFooter>
- </Panel>
- )}
+      {/* ── STEP 2: Details ── */}
+      {step === 2 && (
+        <GlassPanel>
+          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <h3 className="text-base font-black text-white mb-1">Your contact details</h3>
+            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>How customers and your AI Receptionist will identify your business.</p>
+          </div>
+          <div className="p-6 space-y-4">
+            <Field label="Business Name" icon={Building} error={errors.name?.message} id="name"
+              placeholder="Acme Dental Clinic" {...register("name")} />
+            <Field label="Website" icon={Globe} error={errors.website?.message} id="website"
+              optional placeholder="https://acmedental.com" {...register("website")} />
+            <div className="grid grid-cols-2 gap-3">
+              <Field label="Email" icon={Mail} error={errors.email?.message} id="email"
+                type="email" placeholder="info@acme.com" {...register("email")} />
+              <Field label="Phone" icon={Phone} error={errors.phone?.message} id="phone"
+                placeholder="+1 555-0199" {...register("phone")} />
+            </div>
+          </div>
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
+            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)}>
+              <ArrowLeft className="h-3.5 w-3.5" /> Back
+            </OutlineBtn>
+            <Btn onClick={nextStep}>Continue <ArrowRight className="h-3.5 w-3.5" /></Btn>
+          </div>
+        </GlassPanel>
+      )}
 
- {/* ── Step 2: Business Info ── */}
- {step === 2 && (
- <Panel>
- <PanelHeader
- title="Your contact details"
- desc="This is how customers and your AI Receptionist will identify your business."
- />
- <PanelBody className="space-y-space-4">
- <FieldGroup icon={Building} label="Business Name"error={errors.name?.message} id="name">
- <Input
- id="name"
- placeholder="Acme Dental Clinic"
- className="pl-space-10"
- {...register("name")}
- />
- </FieldGroup>
+      {/* ── STEP 3: Location ── */}
+      {step === 3 && (
+        <GlassPanel>
+          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <h3 className="text-base font-black text-white mb-1">Where are you located?</h3>
+            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>Used for scheduling in the right timezone and location-based answers.</p>
+          </div>
+          <div className="p-6 space-y-4">
+            <Field label="Business Address" icon={MapPin} error={errors.address?.message} id="address"
+              placeholder="123 Main St, Suite 100, New York, NY" {...register("address")} />
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em]"
+                style={{ color: "rgba(255,255,255,0.4)" }}>Timezone</label>
+              <div className="relative">
+                <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none z-10" style={{ color: "rgba(255,255,255,0.25)" }} />
+                <Select defaultValue={watch("timezone")} onValueChange={v => setValue("timezone", v, { shouldValidate: true })}>
+                  <SelectTrigger className="pl-10 h-11 rounded-xl text-sm text-white font-medium w-full"
+                    style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.09)", outline: "none" }}>
+                    <SelectValue placeholder="Select timezone" />
+                  </SelectTrigger>
+                  <SelectContent style={{ background: "hsl(240,22%,10%)", border: "1px solid rgba(255,255,255,0.10)", color: "white" }}>
+                    {TIMEZONES.map(tz => (
+                      <SelectItem key={tz.value} value={tz.value}
+                        style={{ color: "rgba(255,255,255,0.75)" }}>{tz.label}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              {errors.timezone && <p className="text-[11px] text-rose-400">{errors.timezone.message}</p>}
+            </div>
+          </div>
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
+            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)}>
+              <ArrowLeft className="h-3.5 w-3.5" /> Back
+            </OutlineBtn>
+            <Btn onClick={nextStep}>Continue <ArrowRight className="h-3.5 w-3.5" /></Btn>
+          </div>
+        </GlassPanel>
+      )}
 
- <FieldGroup icon={Globe} label="Website"error={errors.website?.message} id="website"optional>
- <Input
- id="website"
- placeholder="https://acmedental.com"
- className="pl-space-10"
- {...register("website")}
- />
- </FieldGroup>
+      {/* ── STEP 4: Review ── */}
+      {step === 4 && (
+        <GlassPanel>
+          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
+            <h3 className="text-base font-black text-white mb-1">Everything look right?</h3>
+            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>Review your details. You can change these later in settings.</p>
+          </div>
+          <div className="p-6 space-y-5">
+            {submitError && (
+              <div className="flex items-start gap-3 p-4 rounded-xl" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+                <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-rose-300 leading-relaxed">{submitError}</p>
+              </div>
+            )}
 
- <FieldGroup icon={Mail} label="Business Email"error={errors.email?.message} id="email">
- <Input
- id="email"
- type="email"
- placeholder="info@acmedental.com"
- className="pl-space-10"
- {...register("email")}
- />
- </FieldGroup>
+            {/* Selected industry hero */}
+            {formValues.industry && (() => {
+              const cfg = INDUSTRY_CONFIG[formValues.industry] || INDUSTRY_CONFIG["Other"];
+              const Icon = cfg.icon;
+              return (
+                <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: `linear-gradient(135deg, ${cfg.gradient.split(", ").map(c => c + "20").join(", ")})`, border: `1px solid ${cfg.glow}30` }}>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0" style={{ background: `linear-gradient(135deg, ${cfg.gradient})`, boxShadow: `0 4px 20px ${cfg.glow}40` }}>
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-black text-white">{formValues.industry}</div>
+                    <div className="text-[11px] text-white/40 mt-0.5">Industry configuration ready</div>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[10px] font-bold text-emerald-400">Ready</span>
+                  </div>
+                </div>
+              );
+            })()}
 
- <FieldGroup icon={Phone} label="Phone Number"error={errors.phone?.message} id="phone">
- <Input
- id="phone"
- placeholder="+1 555-0199"
- className="pl-space-10"
- {...register("phone")}
- />
- </FieldGroup>
- </PanelBody>
- <PanelFooter>
- <Button type="button"variant="outline"onClick={prevStep} className="gap-space-2">
- <ArrowLeft className="h-3.5 w-3.5"/> Back
- </Button>
- <Button type="button"onClick={nextStep} className="gap-space-2">
- Continue <ArrowRight className="h-3.5 w-3.5"/>
- </Button>
- </PanelFooter>
- </Panel>
- )}
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { l: "Business Name", v: formValues.name },
+                { l: "Email", v: formValues.email },
+                { l: "Phone", v: formValues.phone },
+                { l: "Address", v: formValues.address },
+                ...(formValues.website ? [{ l: "Website", v: formValues.website }] : []),
+                { l: "Timezone", v: TIMEZONES.find(t => t.value === formValues.timezone)?.label || formValues.timezone },
+              ].map(({ l, v }) => (
+                <div key={l} className="flex flex-col gap-1 px-4 py-3 rounded-xl"
+                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+                  <span className="text-[9px] font-black uppercase tracking-[0.12em]" style={{ color: "rgba(255,255,255,0.25)" }}>{l}</span>
+                  <span className="text-[11px] font-bold text-white/80 truncate">{v || "—"}</span>
+                </div>
+              ))}
+            </div>
 
- {/* ── Step 3: Location ── */}
- {step === 3 && (
- <Panel>
- <PanelHeader
- title="Where are you located?"
- desc="Your AI Receptionist uses this to answer location questions and schedule in the right timezone."
- />
- <PanelBody className="space-y-space-4">
- <FieldGroup icon={MapPin} label="Business Address"error={errors.address?.message} id="address">
- <Input
- id="address"
- placeholder="123 Main St, Suite 100, New York, NY"
- className="pl-space-10"
- {...register("address")}
- />
- </FieldGroup>
+            {/* Launch callout */}
+            <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(168,85,247,0.08))", border: "1px solid rgba(139,92,246,0.2)" }}>
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))", boxShadow: "0 4px 20px hsl(258,80%,55%,0.4)" }}>
+                <Rocket className="h-5 w-5 text-white" />
+              </div>
+              <p className="text-[11px] text-white/55 leading-relaxed">
+                <span className="text-white font-black">Ready to launch.</span> Your AI Receptionist for{" "}
+                <span className="font-bold" style={{ color: "hsl(258,100%,78%)" }}>{formValues.industry}</span> will go live the moment you click below.
+              </p>
+            </div>
+          </div>
+          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
+            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)} disabled={isSubmitting}>
+              <ArrowLeft className="h-3.5 w-3.5" /> Back
+            </OutlineBtn>
+            <Btn type="submit" disabled={isSubmitting} wide>
+              {isSubmitting ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />Creating…</>
+                : <><Rocket className="h-3.5 w-3.5" />Launch Workspace</>}
+            </Btn>
+          </div>
+        </GlassPanel>
+      )}
 
- <div className="space-y-space-1.5">
- <Label htmlFor="timezone"className="text-xs font-semibold text-foreground/80 uppercase tracking-wider">
- Timezone
- </Label>
- <div className="relative group">
- <Clock className="absolute left-space-3.5 top-space-1/2 -translate-y-space-1/2 h-4 w-4 text-muted-foreground/60 group-focus-within:text-primary transition-colors duration-150 pointer-events-none z-10"/>
- <Select
- defaultValue={watch("timezone")}
- onValueChange={(val) => setValue("timezone", val, { shouldValidate: true })}
- >
- <SelectTrigger className="pl-space-10"id="timezone">
- <SelectValue placeholder="Select timezone"/>
- </SelectTrigger>
- <SelectContent>
- {TIMEZONES.map((tz) => (
- <SelectItem key={tz.value} value={tz.value}>
- {tz.label}
- </SelectItem>
- ))}
- </SelectContent>
- </Select>
- </div>
- {errors.timezone && (
- <p className="flex items-center gap-space-1.5 text-xs text-state-error-text mt-space-1">
- <span className="inline-block h-1.5 w-1.5 rounded-full bg-state-error-text shrink-0"/>
- {errors.timezone.message}
- </p>
- )}
- </div>
- </PanelBody>
- <PanelFooter>
- <Button type="button"variant="outline"onClick={prevStep} className="gap-space-2">
- <ArrowLeft className="h-3.5 w-3.5"/> Back
- </Button>
- <Button type="button"onClick={nextStep} className="gap-space-2">
- Continue <ArrowRight className="h-3.5 w-3.5"/>
- </Button>
- </PanelFooter>
- </Panel>
- )}
+      {/* ── STEP 5: Loading ── */}
+      {step === 5 && (
+        <GlassPanel>
+          <div className="px-6 py-24 flex flex-col items-center text-center gap-8">
+            {/* Animated orb */}
+            <div className="relative flex items-center justify-center">
+              <div className="absolute h-32 w-32 rounded-full animate-ping [animation-duration:2.5s]"
+                style={{ border: "1px solid hsl(258,80%,60%,0.2)" }} />
+              <div className="absolute h-24 w-24 rounded-full animate-pulse [animation-duration:1.8s]"
+                style={{ background: "radial-gradient(circle, hsl(258,80%,60%,0.15), transparent)" }} />
+              <div className="relative flex h-20 w-20 items-center justify-center rounded-full"
+                style={{
+                  background: "linear-gradient(135deg, hsl(258,80%,50%), hsl(290,80%,45%))",
+                  boxShadow: "0 0 40px hsl(258,80%,60%,0.6), 0 0 80px hsl(258,80%,60%,0.2)",
+                }}>
+                <Bot className="h-9 w-9 text-white animate-bounce [animation-duration:1.5s]" />
+              </div>
+            </div>
 
- {/* ── Step 4: Review ── */}
- {step === 4 && (
- <Panel>
- <PanelHeader
- title="Everything look right?"
- desc="Review your details below. You can always change these from your settings later."
- />
- <PanelBody>
- {submitError && (
- <div className="mb-space-4 flex items-start gap-space-3 p-space-3.5 rounded-xl bg-state-error-bg border border-state-error-text/20 text-state-error-text text-xs">
- <span className="mt-space-0.5 h-4 w-4 shrink-0 rounded-full bg-state-error-text/10 flex items-center justify-center font-semibold">!</span>
- {submitError}
- </div>
- )}
+            <div className="space-y-2">
+              <h3 className="text-lg font-black text-white tracking-tight">Building your AI Receptionist…</h3>
+              <p className="text-[11px] text-white/40 leading-relaxed max-w-[260px] mx-auto">
+                Configuring templates, scheduling models, and tuning your AI for {formValues.industry}.
+              </p>
+            </div>
 
- <div className="rounded-xl border border-border/50 bg-background/30 overflow-hidden">
- {[
- { label:"Industry", value: formValues.industry },
- { label:"Business Name", value: formValues.name },
- { label:"Business Email", value: formValues.email },
- { label:"Phone Number", value: formValues.phone },
- ...(formValues.website ? [{ label:"Website", value: formValues.website }] : []),
- { label:"Address", value: formValues.address },
- {
- label:"Timezone",
- value: TIMEZONES.find((t) => t.value === formValues.timezone)?.label || formValues.timezone,
- },
- ].map(({ label, value }, i, arr) => (
- <div
- key={label}
- className={cn(
- "flex items-center justify-between px-space-4 py-space-3 gap-space-3",
- i < arr.length - 1 ?"border-b border-border/40":""
- )}
- >
- <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider shrink-0">{label}</span>
- <span className="text-sm font-medium text-foreground text-right truncate max-w-xs">{value}</span>
- </div>
- ))}
- </div>
-
- {/* Summary badge */}
- <div className="mt-space-4 flex items-center gap-space-2.5 p-space-3.5 rounded-xl bg-primary/6 border border-primary/20">
- <Rocket className="h-4 w-4 text-primary shrink-0"/>
- <p className="text-xs text-primary/80 leading-relaxed">
- <strong className="text-primary">Ready to launch.</strong> Your AI Receptionist for <strong>{formValues.industry}</strong> will be live immediately after creation.
- </p>
- </div>
- </PanelBody>
- <PanelFooter>
- <Button type="button"variant="outline"onClick={prevStep} disabled={isSubmitting} className="gap-space-2">
- <ArrowLeft className="h-3.5 w-3.5"/> Back
- </Button>
- <Button type="submit"disabled={isSubmitting} className="gap-space-2 min-w-40">
- {isSubmitting ? (
- <>
- <Loader2 className="h-3.5 w-3.5 animate-spin"/> Creating…
- </>
- ) : (
- <>
- Launch Workspace <Rocket className="h-3.5 w-3.5"/>
- </>
- )}
- </Button>
- </PanelFooter>
- </Panel>
- )}
-
- {/* ── Step 5: Loading / Success ── */}
- {step === 5 && (
- <Panel>
- <div className="px-space-6 py-space-14 flex flex-col items-center justify-center text-center gap-space-6">
-
- {/* Animated ring */}
- <div className="relative flex items-center justify-center">
- <div className="absolute h-20 w-20 rounded-full border-2 border-primary/20 animate-ping [animation-duration:2s]"/>
- <div className="absolute h-16 w-16 rounded-full border-2 border-primary/30 animate-pulse"/>
- <div className="relative flex h-14 w-14 items-center justify-center rounded-full bg-primary/10 border border-primary/30">
- <Bot className="h-7 w-7 text-primary animate-pulse"/>
- </div>
- </div>
-
- <div>
- <h3 className="text-lg font-semibold text-foreground tracking-tight mb-space-2">
- Building your AI Receptionist…
- </h3>
- <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
- Training with your business details and setting up your {formValues.industry ||"business"} templates. This only takes a moment.
- </p>
- </div>
-
- {/* Progress steps */}
- <div className="w-full max-w-xs space-y-space-2.5">
- {[
- { label:"Setting up your workspace", done: true },
- { label:`Loading ${formValues.industry ||"industry"} templates`, done: true },
- { label:"Preparing your AI knowledge base", done: false },
- ].map(({ label, done }) => (
- <div key={label} className="flex items-center gap-space-3 text-left">
- <div className={cn(
- "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs transition-all",
- done
- ?"bg-state-success-bg text-state-success-text border border-state-success-text/30"
- :"bg-primary/10 border border-primary/30"
- )}>
- {done
- ? <Check className="h-2.5 w-2.5"strokeWidth={3} />
- : <Loader2 className="h-2.5 w-2.5 text-primary animate-spin"/>
- }
- </div>
- <span className={cn(
- "text-xs",
- done ?"text-muted-foreground line-through":"text-foreground font-medium"
- )}>
- {label}
- </span>
- </div>
- ))}
- </div>
- </div>
- </Panel>
- )}
- </form>
- );
+            {/* Progress checklist */}
+            <div className="w-full max-w-[280px] space-y-3 p-5 rounded-2xl text-left"
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
+              {[
+                { label: "Setting up your organization profile", done: true },
+                { label: `Loading templates for ${formValues.industry}`, done: true },
+                { label: "Tuning AI conversational flow", done: false },
+              ].map(({ label, done }) => (
+                <div key={label} className="flex items-center gap-3">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-all duration-300"
+                    style={done
+                      ? { background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.3)" }
+                      : { background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)" }}>
+                    {done
+                      ? <Check className="h-3 w-3 text-emerald-400" strokeWidth={3} />
+                      : <Loader2 className="h-3 w-3 animate-spin" style={{ color: "hsl(258,100%,78%)" }} />}
+                  </div>
+                  <span className="text-[11px] leading-none" style={{ color: done ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.85)", fontWeight: done ? 400 : 700 }}>
+                    {label}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </GlassPanel>
+      )}
+    </form>
+  );
 }

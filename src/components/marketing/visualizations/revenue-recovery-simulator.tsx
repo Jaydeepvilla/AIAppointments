@@ -17,6 +17,7 @@ import {
  CalendarCheck,
 } from"lucide-react";
 import { Button } from"@/components/shared/button";
+import { Tabs, TabsList, TabsTrigger } from "@/components/shared/tabs";
 import { Input } from"@/components/shared/input";
 
 /* ── Industry Presets ──────────────────────────────────────────────────────── */
@@ -209,25 +210,20 @@ export function ROISimulatorSection() {
  </div>
 
  {/* Industry Selector */}
- <div className="flex flex-wrap justify-center gap-space-2 mb-space-12">
- {Object.entries(INDUSTRIES).map(([key, ind]) => {
- const active = industry === key;
- return (
- <button
- key={key}
- type="button"
- onClick={() => handleIndustryChange(key)}
- className={`inline-flex items-center gap-space-2 px-space-4 py-space-2 rounded-full border text-[13px] font-normal transition-all duration-200 cursor-pointer ${active
- ?"border-primary bg-primary text-white "
- :"border-border-muted text-zinc-500 hover:text-zinc-800 hover:border-primary/40 hover:bg-primary/5"
- }`}
- >
- <span className={active ?"text-white":"text-primary"}>{ind.icon}</span>
- {ind.name}
- </button>
- );
- })}
- </div>
+  <Tabs value={industry} onValueChange={(val: any) => handleIndustryChange(val)} variant="pills" className="w-full flex justify-center mb-space-12">
+  <TabsList className="bg-transparent border-none flex-wrap justify-center gap-space-2">
+  {Object.entries(INDUSTRIES).map(([key, ind]) => (
+    <TabsTrigger
+      key={key}
+      value={key}
+      className="inline-flex items-center gap-space-2 px-space-4 py-space-2 rounded-full border text-body-sm font-normal transition-all duration-200 cursor-pointer border-border-muted text-muted-foreground bg-background hover:text-foreground hover:border-primary/40 hover:bg-primary/5 data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary"
+    >
+      <span className="shrink-0">{ind.icon}</span>
+      {ind.name}
+    </TabsTrigger>
+  ))}
+  </TabsList>
+  </Tabs>
 
  {/* Main Calculator Grid */}
  <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-6 items-stretch">
@@ -348,20 +344,18 @@ export function ROISimulatorSection() {
  Deploy your AI receptionist in under 30 minutes. No hardware. No long-term contracts.
  </p>
  </div>
- <div className="relative z-10 flex flex-col sm:flex-row items-center gap-space-3 mt-space-6">
- <Link
- href="/sign-up"
- className="flex-1 flex items-center justify-center gap-space-2 radius-md bg-primary text-primary-foreground text-body-sm px-space-6 py-space-3 hover:bg-primary/90 transition-all hover:scale-[1.02] group cursor-pointer font-semibold"
- >
- Deploy Operator
- <ArrowRight className="h-4 w-4 group-hover:translate-x-space-1 transition-transform"/>
- </Link>
- <Link
- href="/contact"
- className="flex-1 flex items-center justify-center radius-md border border-border-muted text-body-sm text-muted-foreground hover:text-foreground hover:border-primary/40 px-space-6 py-space-3 transition-all cursor-pointer font-medium"
- >
- Talk to a specialist
- </Link>
+ <div className="relative z-10 flex flex-col sm:flex-row items-center gap-space-3 mt-space-6 w-full">
+  <Button asChild size="lg" className="flex-1 w-full">
+    <Link href="/sign-up">
+      Deploy Operator
+      <ArrowRight className="h-4 w-4" />
+    </Link>
+  </Button>
+  <Button asChild variant="outline" size="lg" className="flex-1 w-full">
+    <Link href="/contact">
+      Talk to a specialist
+    </Link>
+  </Button>
  </div>
  </div>
 

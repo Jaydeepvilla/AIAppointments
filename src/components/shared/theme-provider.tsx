@@ -4,7 +4,8 @@ import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 
 // Suppress the React 19 warning for next-themes' inline script
-if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
+const isDev = typeof window !== "undefined" && (process as any).env?.NODE_ENV === "development";
+if (isDev) {
   const orig = console.error;
   console.error = (...args: unknown[]) => {
     if (typeof args[0] === "string" && args[0].includes("Encountered a script tag")) {

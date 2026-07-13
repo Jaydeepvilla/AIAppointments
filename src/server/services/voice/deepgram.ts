@@ -7,18 +7,38 @@ export class DeepgramSttProvider implements SpeechToTextProvider {
   async processAudioStream(
     audioChunk: Buffer
   ): Promise<{ text: string; isFinal: boolean; confidence: number }> {
+    const apiKey = process.env.DEEPGRAM_API_KEY;
+    if (!apiKey) {
+      console.warn("[Deepgram STT] DEEPGRAM_API_KEY is not configured. Returning empty response.");
+      return { text: "", isFinal: false, confidence: 0.0 };
+    }
+
     try {
-      // In production, this relays the raw audio bytes (usually u-law or pcm) over a persistent WebSocket connection to Deepgram's streaming API.
-      // Deepgram returns partial and final transcripts.
-      
-      // Stub returning empty mock triggers
+      const response = await fetch("https://api.deepgram.com/v1/listen?model=nova-2&smart_format=true", {
+        method: "POST",
+        headers: {
+          Authorization: `Token ${apiKey}`,
+          "Content-Type": "application/octet-stream",
+        },
+        body: audioChunk as any,
+      });
+
+      if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(`Deepgram API returned HTTP ${response.status}: ${errText}`);
+      }
+
+      const data = await response.json();
+      const transcript = data.results?.channels?.[0]?.alternatives?.[0]?.transcript || "";
+      const confidence = data.results?.channels?.[0]?.alternatives?.[0]?.confidence || 1.0;
+
       return {
-        text: "",
-        isFinal: false,
-        confidence: 1.0
+        text: transcript,
+        isFinal: true, // For HTTP REST requests, it's immediately complete
+        confidence,
       };
-    } catch (e) {
-      console.error("[Deepgram STT] Stream processing failed:", e);
+    } catch (e: any) {
+      console.error("[Deepgram STT] API request failed:", e);
       return { text: "", isFinal: false, confidence: 0.0 };
     }
   }

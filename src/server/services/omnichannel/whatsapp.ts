@@ -23,9 +23,6 @@ export class WhatsAppProvider implements MessagingProvider, WebhookProvider {
     try {
       const accessToken = connectionConfig.accessToken || "mock-access-token";
       const phoneId = connectionConfig.phoneId || "mock-phone-id";
-
-      console.log(`[WhatsApp SDK] Outgoing message to ${recipientId} using Phone ID ${phoneId}:`, content);
-
       // Perform a mock Meta API request
       // In production, this would make an HTTPS call to https://graph.facebook.com/v18.0/${phoneId}/messages
       const mockMetaId = "wa-msg-" + Math.random().toString(36).substring(2, 12);
@@ -53,8 +50,6 @@ export class WhatsAppProvider implements MessagingProvider, WebhookProvider {
   ): Promise<SendMessageResult> {
     try {
       const phoneId = connectionConfig.phoneId || "mock-phone-id";
-      console.log(`[WhatsApp SDK] Outgoing template ${templateName} to ${recipientId} using Phone ID ${phoneId}. Variables:`, variables);
-
       const mockMetaId = "wa-tpl-" + Math.random().toString(36).substring(2, 12);
 
       return {
@@ -175,7 +170,6 @@ export class WhatsAppProvider implements MessagingProvider, WebhookProvider {
 
     // In a live system, this would match a verification token saved in settings.
     if (hubMode === "subscribe" && hubToken) {
-      console.log("[WhatsApp SDK] Webhook challenge verified successfully");
       return hubChallenge || "";
     }
     return null;

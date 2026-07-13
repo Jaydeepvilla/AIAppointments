@@ -26,8 +26,6 @@ export async function GET(req: NextRequest) {
           console.warn("[Impersonate Gateway] Failed to log impersonation-end audit:", e);
         }
       }
-
-      console.log("[Impersonate Gateway] Terminating impersonation session cookies");
       const redirectResponse = NextResponse.redirect(new URL("/agency/clients", req.url));
       
       // Clear cookies
@@ -44,9 +42,6 @@ export async function GET(req: NextRequest) {
 
     // Verify token
     const payload = agencyImpersonation.verifyImpersonationToken(token);
-
-    console.log(`[Impersonate Gateway] Activating session: Actor ${payload.actorUserId} ➜ Org ${payload.targetOrganizationId}`);
-
     // Redirect to standard dashboard path
     const redirectResponse = NextResponse.redirect(new URL("/dashboard", req.url));
 

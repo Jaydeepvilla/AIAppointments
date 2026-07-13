@@ -15,12 +15,14 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/shared/sheet";
 import { SidebarNavGroup } from "@/components/shared/sidebar-nav";
 import { useSidebar } from "@/components/shared/sidebar-context";
 import { cn } from "@/components/shared/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 // ─── Sidebar Section Definitions ─────────────────────────────────────────────
 // 4 clear groups that map to how business owners think.
 
 const HOME_LINKS = [
   { href: "/dashboard", icon: "LayoutDashboard" as const, label: "Dashboard" },
+  { href: "/intelligence", icon: "Brain" as const, label: "Intelligence" },
   { href: "/inbox", icon: "Inbox" as const, label: "Inbox" },
   { href: "/analytics", icon: "LineChart" as const, label: "Analytics" },
 ];
@@ -35,6 +37,7 @@ const AI_LINKS = [
   { href: "/channels", icon: "Radio" as const, label: "Channels" },
   { href: "/voice/dashboard", icon: "PhoneCall" as const, label: "Voice" },
   { href: "/kb", icon: "BookOpen" as const, label: "Knowledge" },
+  { href: "/faqs", icon: "HelpCircle" as const, label: "FAQs" },
   { href: "/automations", icon: "Zap" as const, label: "Automations" },
   { href: "/flows", icon: "ClipboardList" as const, label: "Intake Questions" },
   { href: "/templates", icon: "Settings" as const, label: "Templates" },
@@ -151,7 +154,7 @@ export function DashboardShell({
     const collapsed = isMobile ? false : isCollapsed;
 
     return (
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col overflow-hidden">
         {/* Org Header */}
         <div
           className={cn(
@@ -195,7 +198,7 @@ export function DashboardShell({
         </div>
 
         {/* Scrollable Nav */}
-        <div className="flex flex-col flex-1 overflow-y-auto sidebar-scroll">
+        <ScrollArea className="flex flex-col flex-1 min-h-0" horizontal={false}>
           <div
             className={cn(
               "flex flex-col gap-space-0 py-space-3",
@@ -214,7 +217,7 @@ export function DashboardShell({
               </>
             )}
           </div>
-        </div>
+        </ScrollArea>
 
         {/* User Footer */}
         <div className="border-t border-[hsl(var(--foreground)/0.06)] p-space-3 shrink-0">
@@ -251,29 +254,29 @@ export function DashboardShell({
   };
 
   return (
-    <div className="flex min-h-screen bg-background text-foreground">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* Desktop Sidebar */}
       <aside
         className={cn(
-                        "fixed inset-y-space-0 left-space-0 z-20 hidden border-r border-[hsl(var(--foreground)/0.06)] bg-background md:flex md:flex-col sidebar-transition",
-                        isCollapsed ? "w-18" : "w-64"
-                      )}
+          "fixed inset-y-0 left-0 z-20 hidden border-r border-[hsl(var(--foreground)/0.06)] bg-background md:flex md:flex-col sidebar-transition",
+          isCollapsed ? "w-18" : "w-64"
+        )}
       >
         <SidebarContent />
       </aside>
 
-      {/* Main content */}
+      {/* Main content column */}
       <div
         className={cn(
-          "flex flex-1 flex-col sidebar-transition",
-          isCollapsed ? "md:pl-space-18" : "md:pl-[var(--sidebar-width)]"
+          "flex flex-1 flex-col min-h-0 overflow-hidden sidebar-transition",
+          isCollapsed ? "md:pl-[72px]" : "md:pl-[var(--sidebar-width)]"
         )}
       >
         {/* Trial Banner */}
         {trialBanner}
 
         {/* Top Header */}
-        <header className="sticky top-space-0 z-10 flex h-14 w-full items-center justify-between page-header px-space-5">
+        <header className="sticky top-0 z-10 flex h-14 shrink-0 w-full items-center justify-between page-header px-space-5">
           {/* Left: Mobile menu + breadcrumb */}
           <div className="flex items-center gap-space-3">
             <Sheet>
@@ -295,8 +298,8 @@ export function DashboardShell({
           {headerActions}
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 p-space-6 md:p-space-8 animate-page-enter">
+        {/* Page Content — scrolls within the shell, never the browser */}
+        <main className="flex-1 min-h-0 overflow-y-auto p-space-6 md:p-space-8 animate-page-enter sidebar-scroll">
           {children}
         </main>
       </div>

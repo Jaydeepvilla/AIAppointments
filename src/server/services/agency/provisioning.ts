@@ -34,8 +34,6 @@ export const agencyProvisioning = {
     } = options;
 
     return await db.transaction(async (tx) => {
-      console.log(`[Agency Provisioning] Starting workspace setup for: ${clientName}`);
-
       // 1. Create client profile entry linked to agency
       const [client] = await tx
         .insert(agencyClients)
@@ -114,9 +112,6 @@ export const agencyProvisioning = {
             slug 
           },
         });
-
-      console.log(`[Agency Provisioning] Workspace provisioned successfully. OrgID: ${org.id}, ClientID: ${client.id}`);
-
       return {
         clientId: client.id,
         organizationId: org.id,
@@ -129,8 +124,6 @@ export const agencyProvisioning = {
    * Suspends a client business workspace
    */
   async suspendClient(agencyId: string, actorUserId: string, clientId: string) {
-    console.log(`[Agency Provisioning] Suspending client ID: ${clientId}`);
-
     await db.transaction(async (tx) => {
       await tx
         .update(agencyClients)
@@ -156,8 +149,6 @@ export const agencyProvisioning = {
    * Restores a suspended client business workspace
    */
   async activateClient(agencyId: string, actorUserId: string, clientId: string) {
-    console.log(`[Agency Provisioning] Re-activating client ID: ${clientId}`);
-
     await db.transaction(async (tx) => {
       await tx
         .update(agencyClients)
@@ -183,8 +174,6 @@ export const agencyProvisioning = {
    * Archives a client business workspace
    */
   async archiveClient(agencyId: string, actorUserId: string, clientId: string) {
-    console.log(`[Agency Provisioning] Archiving client ID: ${clientId}`);
-
     await db.transaction(async (tx) => {
       await tx
         .update(agencyClients)

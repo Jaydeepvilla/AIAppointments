@@ -38,6 +38,7 @@ import {
 } from"@/server/actions/services";
 import { z } from"zod";
 import { cn } from"@/components/shared/utils";
+import { NativeButton, NativeTextarea } from "@/components/shared/native";
 
 const serviceFormSchema = z.object({
  name: z.string().min(2,"Service name must be at least 2 characters"),
@@ -215,9 +216,9 @@ export function ServicesManager({ initialServices, categories }: ServicesManager
  <div>
  {/* Card Badge and Status Row */}
  <div className="flex justify-between items-center gap-space-2">
- <span className="inline-flex text-caption font-semibold text-primary bg-primary/8 border border-primary/15 px-space-1.5 py-space-0.5 rounded-md uppercase tracking-wider">
- {catName}
- </span>
+              <span className="inline-flex text-caption font-semibold text-[hsl(var(--primary))] bg-[hsl(var(--primary)/0.08)] border border-[hsl(var(--primary)/0.15)] px-space-2.5 py-space-0.5 rounded-full uppercase tracking-wider">
+                {catName}
+              </span>
  <span
  className={cn(
  "inline-flex text-caption font-normal border px-space-2 py-space-0.5 rounded-full uppercase tracking-wider",
@@ -256,29 +257,29 @@ export function ServicesManager({ initialServices, categories }: ServicesManager
 
  {/* Action Toolbar */}
  <div className="pt-space-2 border-t border-[hsl(var(--foreground)/0.05)] flex justify-end">
- <div className="flex items-center gap-space-2 shrink-0">
- <Button 
- onClick={() => handleOpenDialog(service)} 
- className="h-8 w-8 rounded-full flex items-center justify-center bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer p-0"
- title="Edit service"
- >
- <Edit2 className="h-3.5 w-3.5"/>
- </Button>
- <Button 
- onClick={() => handleArchive(service.id)} 
- className="h-8 w-8 rounded-full flex items-center justify-center bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer p-0"
- title="Archive service"
- >
- <Archive className="h-3.5 w-3.5"/>
- </Button>
- <Button 
- onClick={() => handleDelete(service.id)} 
- className="h-8 w-8 rounded-full flex items-center justify-center bg-primary text-white hover:opacity-90 transition-opacity cursor-pointer p-0"
- title="Delete service"
- >
- <Trash2 className="h-3.5 w-3.5"/>
- </Button>
- </div>
+            <div className="flex items-center gap-space-2 shrink-0">
+              <NativeButton 
+                onClick={() => handleOpenDialog(service)} 
+                className="h-9 w-9 flex items-center justify-center text-muted-foreground hover:text-primary bg-[hsl(var(--foreground)/0.02)] hover:bg-[hsl(var(--foreground)/0.04)] border border-[hsl(var(--foreground)/0.08)] hover:border-[hsl(var(--primary)/0.25)] rounded-xl transition-all cursor-pointer p-space-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-1"
+                title="Edit service"
+              >
+                <Edit2 className="h-4 w-4"/>
+              </NativeButton>
+              <NativeButton 
+                onClick={() => handleArchive(service.id)} 
+                className="h-9 w-9 flex items-center justify-center text-muted-foreground hover:text-primary bg-[hsl(var(--foreground)/0.02)] hover:bg-[hsl(var(--foreground)/0.04)] border border-[hsl(var(--foreground)/0.08)] hover:border-[hsl(var(--primary)/0.25)] rounded-xl transition-all cursor-pointer p-space-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-1"
+                title="Archive service"
+              >
+                <Archive className="h-4 w-4"/>
+              </NativeButton>
+              <NativeButton 
+                onClick={() => handleDelete(service.id)} 
+                className="h-9 w-9 flex items-center justify-center text-rose-500 hover:text-rose-600 bg-rose-500/5 hover:bg-rose-500/10 border border-rose-500/20 hover:border-rose-500/40 rounded-xl transition-all cursor-pointer p-space-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/20 focus-visible:ring-offset-1"
+                title="Delete service"
+              >
+                <Trash2 className="h-4 w-4"/>
+              </NativeButton>
+            </div>
  </div>
  </div>
  </div>
@@ -345,7 +346,7 @@ export function ServicesManager({ initialServices, categories }: ServicesManager
  <Label htmlFor="service_desc"className="text-caption uppercase tracking-wider font-semibold text-muted-foreground/55">Description</Label>
  <div className="relative">
  <FileText className="absolute left-space-3 top-space-3 h-3.5 w-3.5 text-muted-foreground/50 z-10 pointer-events-none"/>
- <textarea
+ <NativeTextarea
  id="service_desc"
  rows={3}
  placeholder="Briefly describe what this service involves..."
@@ -397,21 +398,21 @@ export function ServicesManager({ initialServices, categories }: ServicesManager
  <p className="text-caption text-muted-foreground/55 mt-space-0.5">Available for customer calendar booking</p>
  </div>
  </div>
- <Button
- type="button"
- role="switch"
- aria-checked={isActiveValue}
- onClick={() => setValue("isActive", !isActiveValue)}
- className={cn(
- "relative inline-flex h-5.5 w-9.5 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200",
- isActiveValue ?"bg-primary":"bg-[hsl(var(--foreground)/0.12)]"
- )}
- >
- <span className={cn(
- "pointer-events-none block h-4 w-4 rounded-full bg-background transition-transform duration-200",
- isActiveValue ?"translate-x-[18px]":"translate-x-space-0.5"
- )} />
- </Button>
+            <NativeButton
+              type="button"
+              role="switch"
+              aria-checked={isActiveValue}
+              onClick={() => setValue("isActive", !isActiveValue)}
+              className={cn(
+                "relative inline-flex h-5.5 w-9.5 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-1 border border-transparent",
+                isActiveValue ? "bg-[hsl(var(--primary))] border-[hsl(var(--primary))]" : "bg-[hsl(var(--foreground)/0.12)]"
+              )}
+            >
+              <span className={cn(
+                "pointer-events-none block h-4 w-4 rounded-full bg-background transition-transform duration-200 shadow-sm",
+                isActiveValue ? "translate-x-space-4" : "translate-x-space-0.5"
+              )} />
+            </NativeButton>
  </div>
  )}
 

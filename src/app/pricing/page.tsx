@@ -6,6 +6,8 @@ import { MarketingNav } from"@/components/marketing/nav";
 import { MarketingFooter } from"@/components/marketing/footer";
 import { Check, X, ArrowRight, ChevronRight, Shield, Building2 } from"lucide-react";
 import { Button } from"@/components/shared/button";
+import { NativeTable } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 const PLANS = [
  {
@@ -151,8 +153,8 @@ export default function PricingPage() {
  <main className="flex-1 overflow-x-hidden">
  {/* Hero */}
  <section className="relative overflow-hidden">
- <div className="absolute inset-0 dot-grid grid-fade-b pointer-events-none"/>
- <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none"/>
+ <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none"/>
 
  <div className="relative mx-auto max-w-6xl px-space-6 pt-space-24 pb-space-16 text-center">
  <p className="text-body-sm text-primary mb-space-4">Pricing</p>
@@ -167,19 +169,20 @@ export default function PricingPage() {
 
  {/* Toggle */}
  <div className="inline-flex items-center gap-space-1 radius-lg border border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.03)] p-space-1 mb-space-12">
- <Button
- onClick={() => setYearly(false)}
- className={`radius-md px-space-5 py-space-2 text-body-sm transition-colors ${!yearly ?"bg-primary text-primary-foreground":"text-muted-foreground hover:text-foreground"}`}
- >
- Monthly
- </Button>
- <Button
- onClick={() => setYearly(true)}
- className={`flex items-center gap-space-2 radius-md px-space-5 py-space-2 text-body-sm transition-colors ${yearly ?"bg-primary text-primary-foreground":"text-muted-foreground hover:text-foreground"}`}
- >
- Yearly
- <span className={`radius-full px-space-2 py-space-1 text-caption transition-colors ${yearly ?"bg-primary-foreground/20 text-primary-foreground":"bg-primary/20 text-primary"}`}>Save 20%</span>
- </Button>
+ <Button onClick={() => setYearly(false)}
+  variant={!yearly ? "default" : "ghost"}
+  size="sm"
+  >
+  Monthly
+  </Button>
+  <Button onClick={() => setYearly(true)}
+  variant={yearly ? "default" : "ghost"}
+  size="sm"
+  className="flex items-center gap-space-2"
+  >
+  Yearly
+  <span className={`radius-full px-space-2 py-space-1 text-caption transition-colors ${yearly ?"bg-primary-foreground/20 text-primary-foreground":"bg-primary/20 text-primary"}`}>Save 20%</span>
+  </Button>
  </div>
  </div>
  </section>
@@ -196,7 +199,7 @@ export default function PricingPage() {
  }`}
  >
  {plan.badge && (
- <div className={`absolute top-0 left-space-1/2 -translate-x-1/2 -translate-y-1/2 z-10 radius-full px-space-4 py-space-1 text-caption whitespace-nowrap ${plan.id ==="professional"?"bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] text-primary-foreground":"bg-primary/80 text-primary-foreground"
+ <div className={`absolute top-space-0 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 radius-full px-space-4 py-space-1 text-caption whitespace-nowrap ${plan.id ==="professional"?"bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] text-primary-foreground":"bg-primary/80 text-primary-foreground"
  } font-semibold`}>
  {plan.id ==="professional"?"✦":""}{plan.badge}
  </div>
@@ -234,15 +237,13 @@ export default function PricingPage() {
  </ul>
 
  <div className="space-y-space-3">
- <Link
- href="/sign-up"
- className={`block w-full radius-full py-space-2 text-center text-body-sm transition-all ${plan.highlight
- ?"bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] text-primary-foreground hover:opacity-95 "
- :"border border-[hsl(var(--foreground)/0.08)] text-foreground hover:bg-[hsl(var(--foreground)/0.04)] hover:border-[hsl(var(--foreground)/0.15)]"
- } font-semibold`}
- >
- Start Free Trial
- </Link>
+ <Button
+  asChild
+  variant={plan.highlight ? "default" : "outline"}
+  className="w-full"
+>
+  <Link href="/sign-up">Start Free Trial</Link>
+</Button>
  <p className="text-center text-caption text-muted-foreground">14-day free trial · No credit card</p>
  </div>
  </div>
@@ -283,8 +284,8 @@ export default function PricingPage() {
  <span className="text-primary">Full Feature Comparison</span>
  </h2>
  </div>
- <div className="overflow-x-auto radius-xl border border-[hsl(var(--foreground)/0.06)]">
- <table className="w-full text-body-sm min-w-full">
+ <ScrollArea className="radius-xl border border-[hsl(var(--foreground)/0.06)]" vertical={false}>
+ <NativeTable className="w-full text-body-sm min-w-full">
  <thead>
  <tr className="border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)]">
  <th className="px-space-6 py-space-4 text-left text-body-sm text-foreground/70 w-48">Feature</th>
@@ -320,8 +321,8 @@ export default function PricingPage() {
  </Fragment>
  ))}
  </tbody>
- </table>
- </div>
+ </NativeTable>
+ </ScrollArea>
  </section>
 
  {/* Trust Signals */}
@@ -382,7 +383,7 @@ export default function PricingPage() {
 
  {/* Final CTA */}
  <section className="relative py-space-28 md:py-space-36 overflow-hidden border-t border-[hsl(var(--foreground)/0.06)]">
- <div className="absolute inset-0 dot-grid grid-fade-y pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid grid-fade-y pointer-events-none"/>
  <div className="relative mx-auto max-w-2xl px-space-6 text-center">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
  <span className="text-caption uppercase tracking-widest text-primary font-semibold">Get Started</span>
@@ -393,12 +394,9 @@ export default function PricingPage() {
  Ready to <span className="text-primary">get started?</span>
  </h2>
  <p className="text-muted-foreground text-title-lg mb-space-8">Start your 14-day free trial today. Full access. No credit card required.</p>
- <Link
- href="/sign-up"
- className="inline-flex items-center gap-space-2 radius-lg bg-primary px-space-6 py-space-3 text-body-sm text-primary-foreground hover:bg-primary/90 transition-colors"
- >
- Start free trial <ArrowRight className="h-4 w-4"/>
- </Link>
+ <Button asChild size="lg">
+  <Link href="/sign-up">Start free trial <ArrowRight className="h-4 w-4"/></Link>
+</Button>
  </div>
  </section>
  </main>

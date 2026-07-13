@@ -48,9 +48,6 @@ export const escalationService = {
         notes: escalation.notes,
       },
     });
-
-    console.log(`[EscalationService] Escalated conversation ${conversationId}. Reason: ${reason}`);
-
     return escalation;
   },
 

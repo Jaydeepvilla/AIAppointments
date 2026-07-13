@@ -1,0 +1,37 @@
+{
+  "name": "docs",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "npm run lint:mdx && next build",
+    "start": "next start",
+    "lint": "eslint",
+    "lint:mdx": "eslint \"content/**/*.mdx\""
+  },
+  "dependencies": {
+    "@types/rss": "^0.0.32",
+    "fumadocs-core": "^16.10.7",
+    "fumadocs-mdx": "^15.0.13",
+    "fumadocs-ui": "^16.10.7",
+    "lucide-react": "^1.23.0",
+    "next": "16.2.10",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remark-reading-time": "^2.1.0",
+    "rss": "^1.2.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.10",
+    "eslint-plugin-mdx": "^3.8.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

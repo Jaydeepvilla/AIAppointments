@@ -23,6 +23,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
 import { createClientWorkspaceAction, updateClientStatusAction, triggerImpersonateAction } from "@/server/actions/agency";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { NativeSelect } from "@/components/shared/native";
 
 interface Client {
   id: string;
@@ -47,6 +49,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
   const [clients, setClients] = useState<Client[]>(initialClients as Client[]);
   const [isOpen, setIsOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [confirmDialogId, setConfirmDialogId] = useState<string | null>(null);
 
   // Create Client Form state
   const [clientName, setClientName] = useState("");
@@ -135,7 +138,13 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
   };
 
   const handleArchive = (clientId: string) => {
-    if (!confirm("Are you sure you want to archive this client? The tenant will be marked archived.")) return;
+    setConfirmDialogId(clientId);
+  };
+
+  const handleConfirmArchive = () => {
+    if (!confirmDialogId) return;
+    const clientId = confirmDialogId;
+    setConfirmDialogId(null);
 
     setClients(prev =>
       prev.map(c => c.id === clientId ? { ...c, status: "archived" } : c)
@@ -157,7 +166,6 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
     try {
       const res = await triggerImpersonateAction(clientId);
       if (res.success && res.redirectUrl) {
-        console.log(`[Client Switcher] Impersonation token verified. Redirecting...`);
         window.location.href = res.redirectUrl;
       } else {
         alert("Impersonate trigger failed: " + res.error);
@@ -193,7 +201,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
         </div>
 
         <div className="flex items-center gap-space-4">
-          <select
+          <NativeSelect
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
             className="h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
@@ -202,11 +210,11 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
             <option value="active">Active Workspaces</option>
             <option value="suspended">Suspended Workspaces</option>
             <option value="archived">Archived Workspaces</option>
-          </select>
+          </NativeSelect>
 
           <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-              <Button className="gap-space-2 cursor-pointer bg-primary text-primary-foreground  px-space-4 py-space-2">
+              <Button className="text-primary-foreground px-space-4 py-space-2">
                 <Plus className="h-4 w-4" />
                 Add Client Workspace
               </Button>
@@ -252,7 +260,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
                 <div className="grid grid-cols-2 gap-space-4">
                   <div className="space-y-space-2">
                     <Label className="text-body-sm ">Industry Verticals</Label>
-                    <select
+                    <NativeSelect
                       value={clientIndustry}
                       onChange={(e) => setClientIndustry(e.target.value)}
                       className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
@@ -265,12 +273,12 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
                       <option value="Consultant">Consultant Desk</option>
                       <option value="Real Estate">Real Estate Agency</option>
                       <option value="Gym">Gym & Fitness Center</option>
-                    </select>
+                    </NativeSelect>
                   </div>
 
                   <div className="space-y-space-2">
                     <Label className="text-body-sm ">Timezone</Label>
-                    <select
+                    <NativeSelect
                       value={clientTimezone}
                       onChange={(e) => setClientTimezone(e.target.value)}
                       className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
@@ -280,7 +288,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
                       <option value="America/Denver">Mountain Time (MT)</option>
                       <option value="America/Los_Angeles">Pacific Time (PT)</option>
                       <option value="UTC">Coordinated Universal Time (UTC)</option>
-                    </select>
+                    </NativeSelect>
                   </div>
                 </div>
 
@@ -298,7 +306,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
 
               <DialogFooter>
                 <Button variant="ghost" onClick={() => { setIsOpen(false); setStatusMessage(null); }}>Cancel</Button>
-                <Button onClick={handleCreateClient} disabled={isPending} className="bg-primary text-primary-foreground ">
+                <Button onClick={handleCreateClient} disabled={isPending} className="text-primary-foreground">
                   {isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-space-2" /> : null}
                   Provision Tenant
                 </Button>
@@ -369,9 +377,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
 
                 <CardFooter className="pt-space-3 pb-space-4 border-t border-border/10 flex items-center justify-between gap-space-2">
                   {/* Access button */}
-                  <Button
-                    size="sm"
-                    onClick={() => handleImpersonate(client.id)}
+                  <Button size="sm" onClick={() => handleImpersonate(client.id)}
                     disabled={client.status !== "active" || activeImpersonationId === client.id}
                     className="flex-1 gap-space-2 cursor-pointer bg-primary text-primary-foreground text-caption"
                   >
@@ -385,10 +391,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
 
                   {/* Actions dropdown simulated */}
                   <div className="flex gap-space-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleToggleStatus(client.id, client.status)}
+                    <Button size="sm" variant="ghost" onClick={() => handleToggleStatus(client.id, client.status)}
                       className={`h-8 w-8 p-space-0 cursor-pointer ${
                         client.status === "active" ? "text-destructive hover:bg-destructive/10" : "text-success hover:bg-success-500/10"
                       }`}
@@ -397,10 +400,7 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
                       <Power className="h-4 w-4" />
                     </Button>
                     
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => handleArchive(client.id)}
+                    <Button size="sm" variant="ghost" onClick={() => handleArchive(client.id)}
                       disabled={client.status === "archived"}
                       className="h-8 w-8 p-space-0 text-muted-foreground hover:text-foreground hover:bg-accent/40 cursor-pointer"
                       title="Archive Workspace"
@@ -414,6 +414,15 @@ export function AgencyClientsClient({ initialClients }: { initialClients: any[] 
           })}
         </div>
       )}
+
+      <ConfirmDialog
+        open={!!confirmDialogId}
+        onOpenChange={(open) => !open && setConfirmDialogId(null)}
+        title="Archive Client"
+        description="Are you sure you want to archive this client? The tenant will be marked archived."
+        onConfirm={handleConfirmArchive}
+        confirmText="Archive"
+      />
     </div>
   );
 }

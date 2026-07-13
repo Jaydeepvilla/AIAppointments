@@ -85,3 +85,134 @@ export async function triggerWebsiteImportAction(url: string) {
     return { success: false, error: error?.message || "Failed to import website" };
   }
 }
+
+export async function saveEscalationRulesAction(rules: Record<string, any>) {
+  try {
+    const orgId = await getVerifiedOrgId();
+    const settings = await settingsRepository.getByOrg(orgId);
+    const existingNotificationPrefs = (settings?.notificationPreferences as Record<string, any>) || {};
+
+    await settingsRepository.update(orgId, {
+      notificationPreferences: {
+        ...existingNotificationPrefs,
+        humanEscalationRules: rules,
+      },
+    });
+    revalidatePath("/settings/rules");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save human escalation rules" };
+  }
+}
+
+export async function saveBookingPreferencesAction(bookingPreferences: Record<string, any>) {
+  try {
+    const orgId = await getVerifiedOrgId();
+    await settingsRepository.update(orgId, { bookingPreferences });
+    revalidatePath("/settings/booking");
+    revalidatePath("/settings");
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save booking preferences" };
+  }
+}
+
+// ── Global Localization & Regionalization Settings Actions ──
+
+import { db } from "../db";
+import { 
+  countries as countriesTable, 
+  languages as languagesTable, 
+  currencies as currenciesTable, 
+  businessLocalization as businessLocalizationTable 
+} from "../db/schema";
+import { eq } from "drizzle-orm";
+
+export async function getLocalizationMetadataAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    const [countryList, langList, curList] = await Promise.all([
+      db.select().from(countriesTable),
+      db.select().from(languagesTable),
+      db.select().from(currenciesTable)
+    ]);
+
+    let businessSettings = await db.query.businessLocalization.findFirst({
+      where: eq(businessLocalizationTable.organizationId, orgId),
+    });
+
+    if (!businessSettings) {
+      // Seed default organization localization settings
+      const [newSettings] = await db
+        .insert(businessLocalizationTable)
+        .values({
+          organizationId: orgId,
+          countryCode: "US",
+          primaryLanguage: "en",
+          currencyCode: "USD",
+          timezone: "UTC",
+          dateFormat: "YYYY-MM-DD",
+          timeFormat: "24h",
+          weekStart: 1,
+          measurementUnit: "metric",
+        })
+        .returning();
+      businessSettings = newSettings;
+    }
+
+    return {
+      success: true,
+      countries: countryList,
+      languages: langList,
+      currencies: curList,
+      businessLocalization: businessSettings
+    };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to load localization metadata" };
+  }
+}
+
+export async function updateBusinessLocalizationAction(data: {
+  countryCode: string;
+  primaryLanguage: string;
+  currencyCode: string;
+  timezone: string;
+  dateFormat: string;
+  timeFormat: string;
+  weekStart: number;
+  measurementUnit: string;
+}) {
+  try {
+    const orgId = await getVerifiedOrgId();
+
+    const existing = await db.query.businessLocalization.findFirst({
+      where: eq(businessLocalizationTable.organizationId, orgId),
+    });
+
+    if (existing) {
+      await db
+        .update(businessLocalizationTable)
+        .set({
+          ...data,
+        })
+        .where(eq(businessLocalizationTable.id, existing.id));
+    } else {
+      await db
+        .insert(businessLocalizationTable)
+        .values({
+          organizationId: orgId,
+          ...data,
+        });
+    }
+
+    revalidatePath("/settings");
+    revalidatePath("/settings/localization");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to update localization settings" };
+  }
+}
+

@@ -27,7 +27,7 @@ export async function checkUserOrganization() {
   const userMemberships = await membershipRepository.getByUser(userId);
   if (userMemberships.length > 0) {
     const org = await organizationRepository.getById(userMemberships[0].organizationId);
-    return { hasOrg: true, org };
+    return { hasOrg: !!org, org };
   }
 
   return { hasOrg: false, org: null };

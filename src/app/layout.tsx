@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { ToastProvider } from "@/components/shared/toast";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
 import "./globals.css";
 
 import { GeistSans } from "geist/font/sans";

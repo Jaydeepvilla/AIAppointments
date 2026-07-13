@@ -19,6 +19,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Input } from"@/components/shared/input";
 import { Label } from"@/components/shared/label";
 import { saveAgencyBrandingAction } from"@/server/actions/agency";
+import { NativeSelect } from "@/components/shared/native";
 
 interface Branding {
  platformName: string;
@@ -150,7 +151,7 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
 
  <div className="space-y-space-2">
  <Label className="text-body-sm">System Typography Font</Label>
- <select
+ <NativeSelect
  value={branding.typography}
  onChange={(e) => setBranding({ ...branding, typography: e.target.value })}
  className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
@@ -159,7 +160,7 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
  <option value="Outfit">Outfit (Geometric Modern)</option>
  <option value="Roboto">Roboto (Neo-Grotesque)</option>
  <option value="Playfair Display">Playfair Display (Premium Serif)</option>
- </select>
+ </NativeSelect>
  </div>
 
  <div className="border-t border-border/10 pt-space-4 space-y-space-4">
@@ -198,11 +199,7 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
  )}
  </CardContent>
  <CardFooter className="border-t border-border/10 pt-space-4 flex justify-end">
- <Button 
- onClick={handleSaveBranding} 
- disabled={isPending}
- className="cursor-pointer bg-primary text-primary-foreground px-space-4 py-space-2"
- >
+ <Button onClick={handleSaveBranding} disabled={isPending} className="text-primary-foreground px-space-4 py-space-2">
  {isPending ? (
  <>
  <RefreshCw className="h-4 w-4 animate-spin mr-space-2"/>
@@ -235,18 +232,12 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
 
  {/* Toggle Preview Mode */}
  <div className="flex gap-space-1 bg-muted/20 p-space-1 radius-lg border border-border/20">
- <Button 
- size="sm"
- variant={previewTab ==="login"?"secondary":"ghost"}
- onClick={() => setPreviewTab("login")}
+ <Button size="sm" variant={previewTab ==="login"?"secondary":"ghost"} onClick={() => setPreviewTab("login")}
  className="text-caption h-7 cursor-pointer"
  >
  Login Form
  </Button>
- <Button 
- size="sm"
- variant={previewTab ==="email"?"secondary":"ghost"}
- onClick={() => setPreviewTab("email")}
+ <Button size="sm" variant={previewTab ==="email"?"secondary":"ghost"} onClick={() => setPreviewTab("email")}
  className="text-caption h-7 cursor-pointer"
  >
  E-Mail Template
@@ -287,11 +278,7 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
  </div>
  </div>
 
- <Button 
- disabled
- className="w-full text-foreground text-caption h-9 cursor-pointer"
- style={{ backgroundColor: branding.primaryColor }}
- >
+ <Button disabled width="full" className="text-foreground text-caption" style={{ backgroundColor: branding.primaryColor }}>
  Login Account
  </Button>
  </div>
@@ -319,11 +306,7 @@ export function AgencyBrandingClient({ initialBranding }: { initialBranding: any
  </p>
  
  <div className="py-space-2 text-center">
- <Button 
- disabled
- className="px-space-4 py-space-2 rounded text-foreground text-caption cursor-pointer"
- style={{ backgroundColor: branding.primaryColor }}
- >
+ <Button disabled className="px-space-4 py-space-2 text-foreground text-caption" style={{ backgroundColor: branding.primaryColor }}>
  Configure Client Portal
  </Button>
  </div>

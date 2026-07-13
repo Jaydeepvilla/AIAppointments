@@ -6,7 +6,7 @@ import { staffRepository } from "../repositories/staff";
 import { providerRegistry } from "./calendar-provider";
 import { availabilityService } from "./availability";
 import { db } from "../db";
-import { services, appointmentEvents } from "../db/schema";
+import { services, appointmentEvents, organizations } from "../db/schema";
 import { eq, and } from "drizzle-orm";
 
 export interface CreateBookingInput {
@@ -24,6 +24,13 @@ export const bookingService = {
   async createAppointment(input: CreateBookingInput) {
     const { organizationId, serviceId, staffMemberId, startTime } = input;
 
+    const [org] = await db
+      .select()
+      .from(organizations)
+      .where(eq(organizations.id, organizationId));
+    if (!org) throw new Error("Organization not found");
+    const timezone = org.timezone || "UTC";
+
     // 1. Fetch Service duration
     const [service] = await db
       .select()
@@ -34,15 +41,32 @@ export const bookingService = {
     const endTime = new Date(startTime.getTime() + service.duration * 60 * 1000);
 
     // 2. Validate availability (Conflict check)
-    const dateStr = startTime.toISOString().split("T")[0];
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(startTime);
+    const p = parts.reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const dateStr = `${p.year}-${p.month}-${p.day}`;
+    let hour = p.hour;
+    if (hour === "24") hour = "00";
+    const slotTimeStr = `${hour}:${p.minute}`;
+
     const availableSlots = await availabilityService.getAvailableSlots(
       organizationId,
       serviceId,
       dateStr,
       staffMemberId
     );
-
-    const slotTimeStr = `${startTime.getHours().toString().padStart(2, "0")}:${startTime.getMinutes().toString().padStart(2, "0")}`;
     const isSlotAvailable = availableSlots.some(
       (s) => s.startTime === slotTimeStr && s.staffId === staffMemberId
     );
@@ -131,6 +155,12 @@ export const bookingService = {
     const { appointment, service } = aptDetails;
     if (!service) throw new Error("Mapped service details not found");
 
+    const [org] = await db
+      .select()
+      .from(organizations)
+      .where(eq(organizations.id, appointment.organizationId));
+    const timezone = org?.timezone || "UTC";
+
     // Check rules
     const rules = await rulesRepository.getByOrganization(appointment.organizationId);
     if (rules && !rules.allowRescheduling) {
@@ -141,15 +171,32 @@ export const bookingService = {
     const newEndTime = new Date(newStartTime.getTime() + duration * 60 * 1000);
 
     // Verify slot availability
-    const dateStr = newStartTime.toISOString().split("T")[0];
+    const formatter = new Intl.DateTimeFormat("en-US", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(newStartTime);
+    const p = parts.reduce((acc, part) => {
+      acc[part.type] = part.value;
+      return acc;
+    }, {} as Record<string, string>);
+
+    const dateStr = `${p.year}-${p.month}-${p.day}`;
+    let hour = p.hour;
+    if (hour === "24") hour = "00";
+    const slotTimeStr = `${hour}:${p.minute}`;
+
     const availableSlots = await availabilityService.getAvailableSlots(
       appointment.organizationId,
       appointment.serviceId!,
       dateStr,
       appointment.staffMemberId!
     );
-
-    const slotTimeStr = `${newStartTime.getHours().toString().padStart(2, "0")}:${newStartTime.getMinutes().toString().padStart(2, "0")}`;
     const isSlotAvailable = availableSlots.some(
       (s) => s.startTime === slotTimeStr && s.staffId === appointment.staffMemberId
     );

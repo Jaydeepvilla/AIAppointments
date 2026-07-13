@@ -63,6 +63,8 @@ import {
 } from"@/server/actions/flows";
 import { z } from"zod";
 import { cn } from"@/components/shared/utils";
+import { NativeButton } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 /* ─── Schema ────────────────────────────────────────────────── */
 const questionFormSchema = z.object({
@@ -207,7 +209,7 @@ function SortableCard({
  {/* Answer Type Badge */}
  <span
  className={cn(
- "inline-flex items-center gap-space-1 text-[10px] font-normal px-space-1.5 py-space-0.5 rounded-md border uppercase tracking-wider",
+ "inline-flex items-center gap-space-1 text-caption font-normal px-space-1.5 py-space-0.5 rounded-md border uppercase tracking-wider",
  typeConfig.color,
  typeConfig.bg
  )}
@@ -218,7 +220,7 @@ function SortableCard({
 
  {/* Enhanced Required Pill */}
  {q.isRequired && (
- <span className="inline-flex items-center gap-space-1 text-[10px] font-normal px-space-1.5 py-space-0.5 rounded-md uppercase tracking-wider bg-gradient-to-r from-rose-500/15 to-orange-500/10 border border-rose-400/25 text-rose-500 dark:text-rose-400 inset_0_1px_0_rgba(255,255,255,0.08)]">
+ <span className="inline-flex items-center gap-space-1 text-caption font-normal px-space-1.5 py-space-0.5 rounded-md uppercase tracking-wider bg-gradient-to-r from-rose-500/15 to-orange-500/10 border border-rose-400/25 text-rose-500 dark:text-rose-400 inset_0_1px_0_rgba(255,255,255,0.08)]">
  <ShieldCheck className="h-2.5 w-2.5"/>
  Required
  </span>
@@ -470,54 +472,54 @@ export function QualificationBuilder({ initialQuestions }: Props) {
  />
  </div>
  ) : (
- <div className="flex-1 overflow-y-auto min-h-0 pb-space-4 sidebar-scroll">
- <DndContext
- sensors={sensors}
- collisionDetection={closestCenter}
- onDragStart={handleDragStart}
- onDragEnd={handleDragEnd}
- >
- <SortableContext
- items={questions.map((q) => q.id)}
- strategy={verticalListSortingStrategy}
- >
- {/* Timeline */}
- <div className="relative">
- {/* Vertical connector line */}
- <div className="absolute left-space-5 top-space-10 bottom-space-10 w-px bg-gradient-to-b from-primary/25 via-primary/10 to-transparent pointer-events-none"/>
+ <ScrollArea className="flex-1 min-h-0 pb-space-4" horizontal={false}>
+                      <DndContext
+                      sensors={sensors}
+                      collisionDetection={closestCenter}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                      >
+                      <SortableContext
+                      items={questions.map((q) => q.id)}
+                      strategy={verticalListSortingStrategy}
+                      >
+                      {/* Timeline */}
+                      <div className="relative">
+                      {/* Vertical connector line */}
+                      <div className="absolute left-space-5 top-space-10 bottom-space-10 w-px bg-gradient-to-b from-primary/25 via-primary/10 to-transparent pointer-events-none"/>
 
- <div className="space-y-space-3">
- {questions.map((q, idx) => (
- <SortableCard
- key={q.id}
- q={q}
- idx={idx}
- totalCount={questions.length}
- onEdit={handleOpenDialog}
- onDelete={handleDelete}
- deletingId={deletingId}
- />
- ))}
- </div>
- </div>
- </SortableContext>
+                      <div className="space-y-space-3">
+                      {questions.map((q, idx) => (
+                      <SortableCard
+                      key={q.id}
+                      q={q}
+                      idx={idx}
+                      totalCount={questions.length}
+                      onEdit={handleOpenDialog}
+                      onDelete={handleDelete}
+                      deletingId={deletingId}
+                      />
+                      ))}
+                      </div>
+                      </div>
+                      </SortableContext>
 
- {/* Drag Overlay — floating ghost card */}
- <DragOverlay dropAnimation={{ duration: 180, easing:"ease"}}>
- {activeQuestion && (
- <SortableCard
- q={activeQuestion}
- idx={questions.findIndex((q) => q.id === activeQuestion.id)}
- totalCount={questions.length}
- onEdit={() => {}}
- onDelete={() => {}}
- deletingId={null}
- isDragOverlay
- />
- )}
- </DragOverlay>
- </DndContext>
- </div>
+                      {/* Drag Overlay — floating ghost card */}
+                      <DragOverlay dropAnimation={{ duration: 180, easing:"ease"}}>
+                      {activeQuestion && (
+                      <SortableCard
+                      q={activeQuestion}
+                      idx={questions.findIndex((q) => q.id === activeQuestion.id)}
+                      totalCount={questions.length}
+                      onEdit={() => {}}
+                      onDelete={() => {}}
+                      deletingId={null}
+                      isDragOverlay
+                      />
+                      )}
+                      </DragOverlay>
+                      </DndContext>
+                      </ScrollArea>
  )}
  </div>
 
@@ -651,13 +653,13 @@ export function QualificationBuilder({ initialQuestions }: Props) {
  </p>
  </div>
  </div>
- <button
+ <NativeButton
  type="button"
  role="switch"
  aria-checked={isRequiredValue}
  onClick={() => setValue("isRequired", !isRequiredValue)}
  className={cn(
- "relative inline-flex h-5.5 w-9.5 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200",
+ "relative inline-flex h-5.5 w-9.5 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 px-[2px] outline-none focus:outline-none focus:ring-2 focus:ring-primary/20",
  isRequiredValue
  ?"bg-primary"
  :"bg-[hsl(var(--foreground)/0.12)]"
@@ -665,11 +667,11 @@ export function QualificationBuilder({ initialQuestions }: Props) {
  >
  <span
  className={cn(
- "pointer-events-none block h-4 w-4 rounded-full bg-background transition-transform duration-200",
- isRequiredValue ?"translate-x-[18px]":"translate-x-space-0.5"
+ "pointer-events-none block h-4 w-4 rounded-full bg-background shadow-sm transition-transform duration-200",
+ isRequiredValue ?"translate-x-space-4":"translate-x-0"
  )}
  />
- </button>
+ </NativeButton>
  </div>
 
  {/* Footer */}

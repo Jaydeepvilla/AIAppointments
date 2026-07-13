@@ -17,6 +17,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import type { Metadata } from "next";
+import { NativeA } from "@/components/shared/native";
 
 export const metadata: Metadata = {
   title: "Features | Operator— Full Capability Overview",
@@ -219,8 +220,8 @@ export default function FeaturesPage() {
       <main className="flex-1 overflow-x-hidden">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0 dot-grid grid-fade-b pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none" />
+          <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
 
           <div className="relative mx-auto max-w-6xl px-space-6 pt-space-24 pb-space-16 text-center">
             <p className="text-body-sm text-primary  mb-space-4">Full Feature List</p>
@@ -234,13 +235,13 @@ export default function FeaturesPage() {
             </p>
             <div className="flex flex-wrap justify-center gap-space-2">
               {FEATURE_SECTIONS.map((s) => (
-                <a
+                <NativeA
                   key={s.id}
                   href={`#${s.id}`}
                   className="radius-full border border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.03)] px-space-4 py-space-2 text-caption  text-muted-foreground hover:text-foreground hover:border-[hsl(var(--foreground)/0.15)] transition-colors"
                 >
                   {s.title}
-                </a>
+                </NativeA>
               ))}
             </div>
           </div>
@@ -328,7 +329,7 @@ export default function FeaturesPage() {
 
         {/* Final CTA */}
         <section className="relative py-space-28 md:py-space-36 overflow-hidden">
-          <div className="absolute inset-0 dot-grid grid-fade-y pointer-events-none" />
+          <div className="absolute inset-space-0 dot-grid grid-fade-y pointer-events-none" />
           <div className="relative mx-auto max-w-2xl px-space-6 text-center">
             <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
               <span className="text-caption uppercase tracking-widest text-primary font-semibold">Live Demo</span>

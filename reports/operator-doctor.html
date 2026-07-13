@@ -51,19 +51,19 @@
     </div>
     <div class="stats">
       <div class="stat">
-        <div class="stat-val score-green">100%</div>
+        <div class="stat-val score-yellow">80%</div>
         <div class="stat-label">Health Score</div>
       </div>
       <div class="stat">
-        <div class="stat-val score-green">100%</div>
+        <div class="stat-val score-yellow">80%</div>
         <div class="stat-label">Rules Passed</div>
       </div>
       <div class="stat">
-        <div class="stat-val" style="color: #6b7280;">0</div>
+        <div class="stat-val" style="color: #6b7280;">199</div>
         <div class="stat-label">Violations</div>
       </div>
       <div class="stat">
-        <div class="stat-val" style="color: #6b7280;">264</div>
+        <div class="stat-val" style="color: #6b7280;">480</div>
         <div class="stat-label">Files</div>
       </div>
       
@@ -75,14 +75,49 @@
       <h3>Violations by Category</h3>
       <ul style="list-style: none; padding: 0;">
         
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Quality & Compliance</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">175</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>AI Quality</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">4</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>UI & Components</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">3</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Design System & Tokens</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">1</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Runtime Verification</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">12</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>Architecture</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">2</span>
+          </li>
+        
+          <li style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+            <span>UI Quality</span>
+            <span style="font-weight: bold; background: #eaeaea; padding: 0.1rem 0.5rem; border-radius: 999px;">2</span>
+          </li>
+        
       </ul>
     </div>
     <div class="card">
       <h3>Run Details</h3>
       <table style="width: 100%; text-align: left; border-collapse: collapse;">
         <tr><th style="padding: 0.5rem 0; border-bottom: 1px solid #eaeaea;">Metric</th><th style="padding: 0.5rem 0; border-bottom: 1px solid #eaeaea;">Value</th></tr>
-        <tr><td style="padding: 0.5rem 0;">Total Runtime</td><td style="padding: 0.5rem 0;">3191ms</td></tr>
-        <tr><td style="padding: 0.5rem 0;">Rules Executed</td><td style="padding: 0.5rem 0;">1</td></tr>
+        <tr><td style="padding: 0.5rem 0;">Total Runtime</td><td style="padding: 0.5rem 0;">335701ms</td></tr>
+        <tr><td style="padding: 0.5rem 0;">Rules Executed</td><td style="padding: 0.5rem 0;">15</td></tr>
         <tr><td style="padding: 0.5rem 0;">Mode</td><td style="padding: 0.5rem 0;">Summary</td></tr>
         <tr><td style="padding: 0.5rem 0;">Strict Mode</td><td style="padding: 0.5rem 0;">No</td></tr>
       </table>
@@ -90,6 +125,1637 @@
   </div>
 
   <h2>Rule Results</h2>
+  
+    <div class="card">
+      <div class="category-title">Quality & Compliance</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Accessibility</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-accessibility-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-accessibility-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Accessibility Risk: onClick on <div> without keyboard support. Suggestion: Use a <button> or add tabIndex={0} and onKeyDown.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/SmartNotificationsWidget.tsx:143">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/SmartNotificationsWidget.tsx:143</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Hardcoded Values</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <span style="font-size: 0.875rem; color: #666;">Score: 0%</span>
+              <span class="rule-status status-fail">
+                ✕ FAIL (172)
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-hardcoded-1')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-hardcoded-1" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: -top-[15%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/changelog/page.tsx:160">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/changelog/page.tsx:160</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: left-[5%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/changelog/page.tsx:160">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/changelog/page.tsx:160</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/demo/page.tsx:182">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/demo/page.tsx:182</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: -top-[15%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:202">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:202</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: right-[10%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:202">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:202</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:281">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/integrations/page.tsx:281</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/security/page.tsx:248">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/security/page.tsx:248</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/widget-frame/page.tsx:308">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/widget-frame/page.tsx:308</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:47">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:47</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:48">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:48</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:51">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/area-chart-card.tsx:51</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:53">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:53</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:54">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:54</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:57">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/bar-chart-card.tsx:57</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/chart-legend.tsx:13">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/chart-legend.tsx:13</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/chart-tooltip.tsx:12">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/chart-tooltip.tsx:12</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:53">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:53</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:54">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:54</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:57">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/donut-chart-card.tsx:57</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:49">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:49</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:50">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:50</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:53">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/line-chart-card.tsx:53</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/sparkline-card.tsx:24">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/charts/sparkline-card.tsx:24</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: top-[20%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/docs/search.tsx:52">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/docs/search.tsx:52</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/docs/search.tsx:63">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/docs/search.tsx:63</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:253">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:253</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:258">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:258</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:281">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:281</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:289">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:289</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:294">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:294</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:309">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-branding-client.tsx:309</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-dashboard-client.tsx:166">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/agency-dashboard-client.tsx:166</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:260">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:260</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:276">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:276</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:292">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:292</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:308">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/billing-portal-client.tsx:308</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: px-[2px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/business-settings-form.tsx:381">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/forms/business-settings-form.tsx:381</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/health/health-dashboard-client.tsx:248">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/health/health-dashboard-client.tsx:248</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/health/health-dashboard-client.tsx:515">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/health/health-dashboard-client.tsx:515</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:167">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:167</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:185">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:185</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:229">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:229</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:360">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:360</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:373">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:373</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:560">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:560</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:601">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/interactive-architecture.tsx:601</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/progress/setup-progress-card.tsx:40">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/progress/setup-progress-card.tsx:40</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/automation-dialog.tsx:93">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/automation-dialog.tsx:93</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/crm-intelligence-card.tsx:44">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/crm-intelligence-card.tsx:44</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/gap-analysis-card.tsx:28">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/gap-analysis-card.tsx:28</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/industry-readiness-card.tsx:44">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/industry-readiness-card.tsx:44</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/knowledge-intelligence-card.tsx:44">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/recommendations/knowledge-intelligence-card.tsx:44</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/setup/readiness-dashboard.tsx:106">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/setup/readiness-dashboard.tsx:106</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/setup/setup-wizard.tsx:64">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/setup/setup-wizard.tsx:64</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: shadow-[0_0_12px_-3px_rgba(124,58,237,0.04)].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/card.tsx:11">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/card.tsx:11</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: left-[50%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: top-[50%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: data-[state=closed]:slide-out-to-top-[48%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: data-[state=open]:slide-in-from-top-[48%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/dialog.tsx:37</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/progress.tsx:21">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/progress.tsx:21</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/toast.tsx:132">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/shared/toast.tsx:132</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/analytics/page.tsx:351">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/analytics/page.tsx:351</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: p-[2px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/channels/page.tsx:631">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/channels/page.tsx:631</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: mt-[1px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/channels/page.tsx:750">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/channels/page.tsx:750</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: p-0.5.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:451">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:451</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: max-w-[75%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:666">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:666</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: p-0.5.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:722">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:722</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: p-1.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:775">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:775</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: gap-1.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:787">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:787</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: p-1.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:792">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:792</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:804">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:804</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: pt-1.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:804">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:804</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:920">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:920</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[9px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:927">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:927</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: mt-0.5.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:930">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:930</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[9px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:938">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:938</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: mt-0.5.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:941">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:941</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:951">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:951</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:958">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:958</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:974">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:974</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:992">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:992</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1008">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1008</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1030">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1030</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: text-[10px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1046">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:1046</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:718">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:718</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: pt-[1px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:755">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:755</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: pt-[1px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:760">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:760</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: active:translate-y-[0px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:985">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:985</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:2172">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:2172</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/team/page.tsx:217">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/team/page.tsx:217</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:645">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:645</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:667">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:667</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:689">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:689</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:827">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:827</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:832">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:832</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:935">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:935</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:943">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:943</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1057">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1057</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1067">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1067</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1093">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1093</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1102">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1102</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1114">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1114</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1127">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1127</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1135">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1135</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1144">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1144</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1150">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1150</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1152">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1152</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1155">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1155</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1158">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1158</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1179">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1179</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1181">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1181</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1185">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1185</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1200">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1200</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1213">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1213</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1215">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1215</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1219">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1219</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1229">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1229</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1233">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1233</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1235">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1235</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1238">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1238</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1239">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1239</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1245">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1245</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1262">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1262</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1274">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1274</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1279">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1279</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1288">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1288</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1289">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1289</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1294">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1294</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1304">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1304</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1310">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1310</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1311">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1311</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1317">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1317</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1323">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1323</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1325">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1325</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1326">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1326</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1337">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1337</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1338">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1338</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1339">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1339</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1341">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1341</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1342">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1342</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1354">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1354</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1361">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/widget/page.tsx:1361</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:46">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:46</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:74">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:74</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:82">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/shared/score-ring.tsx:82</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: shadow-[0_0_15px_-3px_rgba(124,58,237,0.06)].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/AIRecommendationsWidget.tsx:32">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/AIRecommendationsWidget.tsx:32</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/AIRecommendationsWidget.tsx:33">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/AIRecommendationsWidget.tsx:33</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/ProgressTimelineWidget.tsx:56">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/ProgressTimelineWidget.tsx:56</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: before:left-[17px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: before:top-2.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Hardcoded spacing used: before:bottom-2.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: before:w-[2px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:84</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: pt-[3px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:108">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/dashboard/widgets/RecentActivityWidget.tsx:108</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: p-[1.5px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:348">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:348</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:493">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:493</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: gap-[3px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:588">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:588</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:600">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:600</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: -left-[37px].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:623">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:623</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:643">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:643</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:697">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:697</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:834">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/dashboard-preview.tsx:834</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:739">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:739</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:784">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:784</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:819">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/ecosystem-viewer.tsx:819</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/industry-explorer.tsx:199">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/industry-explorer.tsx:199</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/industry-explorer.tsx:336">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/industry-explorer.tsx:336</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/revenue-recovery-simulator.tsx:249">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/revenue-recovery-simulator.tsx:249</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Dynamic inline style used.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/revenue-recovery-simulator.tsx:272">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/components/marketing/visualizations/revenue-recovery-simulator.tsx:272</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: -top-[10%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-in/[[...sign-in]]/page.tsx:10">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-in/[[...sign-in]]/page.tsx:10</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: left-[20%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-in/[[...sign-in]]/page.tsx:10">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-in/[[...sign-in]]/page.tsx:10</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: -top-[10%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-up/[[...sign-up]]/page.tsx:10">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-up/[[...sign-up]]/page.tsx:10</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Info">Info</div>
+                  <div style="flex: 1;">
+                    <div class="message">Arbitrary value used: left-[20%].</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-up/[[...sign-up]]/page.tsx:10">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(auth)/sign-up/[[...sign-up]]/page.tsx:10</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Responsive Risks</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-responsive-2')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-responsive-2" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Risk: 'h-screen' does not account for mobile browser UI (address bar). Suggestion: Use 'h-dvh' or 'min-h-screen'.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/page.tsx:140">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/page.tsx:140</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Unused Tokens</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-unused-3')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-unused-3" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Unused shared component: 'progress' is exported but never imported anywhere.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:\AI  PRojects\Nexx Services\receptionist\dynamicos\src\components\shared\progress.tsx:1">D:\AI  PRojects\Nexx Services\receptionist\dynamicos\src\components\shared\progress.tsx:1</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+    </div>
+  
+    <div class="card">
+      <div class="category-title">AI Quality</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">AI Compliance</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-ai-compliance-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-ai-compliance-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">Component exceeds 2500 lines (2893).</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/server/db/schema.ts:1">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/server/db/schema.ts:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <input> used. Could reuse <Input>.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:734">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:734</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <button> used. Could reuse <Button>.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:771">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:771</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <button> used. Could reuse <Button>.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:789">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:789</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+    </div>
+  
+    <div class="card">
+      <div class="category-title">UI & Components</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Components</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <span style="font-size: 0.875rem; color: #666;">Score: 70%</span>
+              <span class="rule-status status-fail">
+                ✕ FAIL (3)
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-components-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-components-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <button> used. Suggestion: Use shared <Button> component instead.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:771">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:771</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <button> used. Suggestion: Use shared <Button> component instead.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:789">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:789</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Raw HTML <input> used. Suggestion: Use shared <Input> component instead.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:734">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/inbox/page.tsx:734</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Icons</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              
+            </div>
+          </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Motion</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              
+            </div>
+          </div>
+          
+        </div>
+      
+    </div>
   
     <div class="card">
       <div class="category-title">Design System & Tokens</div>
@@ -105,9 +1771,278 @@
               <span class="rule-status status-pass">
                 ✓ PASS
               </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-design-system-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-design-system-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Unregistered CSS variable used: --primary-rgb</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:616">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/(dashboard)/kb/kb-client.tsx:616</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+    </div>
+  
+    <div class="card">
+      <div class="category-title">Runtime Verification</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Verify Functionality</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              <span style="font-size: 0.875rem; color: #666;">Score: 0%</span>
+              <span class="rule-status status-fail">
+                ✕ FAIL (12)
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-functionality-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-functionality-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">Button interaction failed on /</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">404 Not Found: /pricing</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">404 Not Found: /about</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">404 Not Found: /contact</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">404 Not Found: /features</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Console Error: Failed to load resource: the server responded with a status of 404 (Not Found)</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Protected route /agency returned error 404</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+    </div>
+  
+    <div class="card">
+      <div class="category-title">Architecture</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Performance</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
               
             </div>
           </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Routing</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-routing-1')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-routing-1" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Directory in app router contains no Next.js route files. Suggestion: Move non-route files outside of src/app/.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/actions:1">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/actions:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Error">Error</div>
+                  <div style="flex: 1;">
+                    <div class="message">Directory in app router contains no Next.js route files. Suggestion: Move non-route files outside of src/app/.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/api/cron:1">D:/AI  PRojects/Nexx Services/receptionist/dynamicos/src/app/api/cron:1</a>
+                  </div>
+                </div>
+              
+            </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Security</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              
+            </div>
+          </div>
+          
+        </div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">SEO</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              
+            </div>
+          </div>
+          
+        </div>
+      
+    </div>
+  
+    <div class="card">
+      <div class="category-title">UI Quality</div>
+      
+        <div>
+          <div class="rule-row">
+            <div>
+              <span class="rule-name">Verify UI Quality</span>
+              <span class="rule-desc"></span>
+            </div>
+            <div style="display: flex; gap: 1rem; align-items: center;">
+              
+              <span class="rule-status status-pass">
+                ✓ PASS
+              </span>
+              <button class="toggle-btn" onclick="toggleViolations('v-ui-quality-0')">View Details</button>
+            </div>
+          </div>
+          
+            <div id="v-ui-quality-0" class="violations">
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">[/] Inconsistent button styles detected (11 unique variations). Standardize padding and radius.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+                <div class="violation-row">
+                  <div class="severity v-Warning">Warning</div>
+                  <div style="flex: 1;">
+                    <div class="message">[/] 3 empty buttons missing aria-labels.</div>
+                    <a class="file" title="Click to open file if IDE supports URL handlers" href="vscode://file/runtime:1">runtime:1</a>
+                  </div>
+                </div>
+              
+            </div>
           
         </div>
       

@@ -26,13 +26,16 @@ import {
  Sun,
  Moon
 } from"lucide-react";
-import { Button } from"@/components/shared/button";
+import { Button } from "@/components/shared/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shared/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from"@/components/shared/card";
 import { Input } from"@/components/shared/input";
 import { Label } from"@/components/shared/label";
 import { PageTitle } from"@/components/shared/page-title";
 import { cn } from"@/components/shared/utils";
 import { AreaChartCard } from"@/components/charts";
+import { NativeSelect } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export default function WidgetSettingsPage() {
  const [loading, setLoading] = useState(true);
@@ -284,37 +287,33 @@ export default function WidgetSettingsPage() {
  <div className="flex flex-col lg:flex-row gap-space-8 items-start w-full">
  
  {/* Sidebar Sub-Navigation */}
- <aside className="w-full lg:w-56 shrink-0 flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible pb-space-2 lg:pb-0 border-b lg:border-b-0 lg:border-r border-border/60 lg:pr-space-6 gap-space-1.5 scrollbar-none whitespace-nowrap lg:whitespace-normal">
- {[
- { id:"install", label:"Installation", icon: Code },
- { id:"branding", label:"Branding", icon: Sparkles },
- { id:"appearance", label:"Appearance", icon: Palette },
- { id:"triggers", label:"Triggers & Actions", icon: Settings },
- { id:"analytics", label:"Analytics", icon: BarChart2 }
- ].map((tab) => {
- const Icon = tab.icon;
- const isSelected = activeTab === tab.id;
- return (
- <Button
- key={tab.id}
- type="button"
- onClick={() => { setActiveTab(tab.id as any); setSaveSuccess(false); }}
- className={cn(
- "flex items-center gap-space-2.5 px-space-3.5 py-space-2.5 text-caption font-medium transition-all duration-200 cursor-pointer w-auto lg:w-full text-left radius-lg relative select-none",
- isSelected
- ?"bg-[hsl(var(--primary)/0.08)] text-primary font-semibold"
- :"text-muted-foreground/85 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.035)]"
- )}
- >
- {isSelected && (
- <span className="absolute left-0 top-space-2.5 bottom-space-2.5 w-0.75 bg-primary radius-full hidden lg:block"/>
- )}
- <Icon className="h-4 w-4 shrink-0 text-current"/>
- <span className="leading-none">{tab.label}</span>
- </Button>
- );
- })}
- </aside>
+ <Tabs value={activeTab} onValueChange={(val: any) => { setActiveTab(val); setSaveSuccess(false); }} variant="default" orientation="vertical" className="w-full lg:w-56 shrink-0">
+  <TabsList className="w-full flex flex-row lg:flex-col lg:overflow-x-visible pb-space-2 lg:pb-space-0 border-b lg:border-b-0 lg:border-r border-border/60 lg:pr-space-6 gap-space-1.5 whitespace-nowrap lg:whitespace-normal bg-transparent border-none"><ScrollArea className="h-full w-full" vertical={false}>
+                   {[
+                   { id:"install", label:"Installation", icon: Code },
+                   { id:"branding", label:"Branding", icon: Sparkles },
+                   { id:"appearance", label:"Appearance", icon: Palette },
+                   { id:"triggers", label:"Triggers & Actions", icon: Settings },
+                   { id:"analytics", label:"Analytics", icon: BarChart2 }
+                   ].map((tab) => {
+                   const Icon = tab.icon;
+                   const isSelected = activeTab === tab.id;
+                   return (
+                   <TabsTrigger
+                   key={tab.id}
+                   value={tab.id}
+                   className="flex items-center gap-space-2.5 px-space-3.5 py-space-2.5 text-caption font-medium transition-all duration-200 cursor-pointer w-auto lg:w-full text-left radius-lg relative select-none border-none"
+                   >
+                   {isSelected && (
+                   <span className="absolute left-space-0 top-space-2.5 bottom-space-2.5 w-0.75 bg-primary radius-full hidden lg:block"/>
+                   )}
+                   <Icon className="h-4 w-4 shrink-0 text-current"/>
+                   <span className="leading-none">{tab.label}</span>
+                   </TabsTrigger>
+                   );
+                   })}
+                   </ScrollArea></TabsList>
+  </Tabs>
 
  {/* Center: Configuration Panels */}
  <div className="flex-1 min-w-0 space-y-space-6">
@@ -343,7 +342,7 @@ export default function WidgetSettingsPage() {
  <Button 
  type="button"
  variant="outline"
- className="h-8 shrink-0 text-caption gap-space-1.5 border-border/40 bg-background/80 hover:bg-background text-muted-foreground hover:text-foreground cursor-pointer radius-lg px-space-4"
+ className="h-8 shrink-0 text-caption gap-space-1.5 border-border/40 bg-background/80 hover:bg-background text-muted-foreground hover:text-foreground cursor-pointer px-space-4"
  onClick={copySnippet}
  >
  {copied ? <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0"/> : <Copy className="h-3.5 w-3.5 shrink-0"/>}
@@ -386,7 +385,7 @@ export default function WidgetSettingsPage() {
  type="button"
  onClick={handleAddDomain} 
  disabled={addingDomain || !newDomain.trim()}
- className="h-9.5 text-caption font-semibold text-white cursor-pointer gap-space-1.5 radius-lg px-space-5 shrink-0 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200"
+ className="h-9.5 text-caption font-semibold text-white cursor-pointer gap-space-1.5 px-space-5 shrink-0 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200"
  >
  {addingDomain ? (
  <>
@@ -443,7 +442,7 @@ export default function WidgetSettingsPage() {
  <Button
  type="button"
  variant="ghost"
- className="h-7 w-7 text-rose-500 hover:bg-rose-500/5 cursor-pointer radius-md flex items-center justify-center p-0"
+ className="h-7 w-7 text-error-500 hover:bg-error-500/5 cursor-pointer radius-md flex items-center justify-center p-space-0"
  onClick={() => handleDeleteDomain(d.id)}
  >
  <Trash2 className="h-3.5 w-3.5"/>
@@ -559,7 +558,7 @@ export default function WidgetSettingsPage() {
  </div>
  </div>
  <div className="pt-space-3 px-space-6 py-space-4 border-t border-border/10 flex gap-space-2 justify-end bg-transparent">
- <Button type="submit"disabled={isSaving} className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 radius-lg px-space-5 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200">
+ <Button type="submit"disabled={isSaving} className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 px-space-5 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200">
  {isSaving ? (
  <>
  <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0"/>
@@ -642,7 +641,7 @@ export default function WidgetSettingsPage() {
  type="color"
  value={theme.primaryColor}
  onChange={(e) => setTheme({ ...theme, primaryColor: e.target.value })}
- className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+ className="absolute inset-space-0 h-full w-full opacity-0 cursor-pointer"
  />
  <div className="h-full w-full"style={{ backgroundColor: theme.primaryColor }} />
  </div>
@@ -650,7 +649,7 @@ export default function WidgetSettingsPage() {
  type="text"
  value={theme.primaryColor}
  onChange={(e) => setTheme({ ...theme, primaryColor: e.target.value })}
- className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-0"
+ className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-space-0"
  />
  </div>
  </div>
@@ -664,7 +663,7 @@ export default function WidgetSettingsPage() {
  type="color"
  value={theme.backgroundColor}
  onChange={(e) => setTheme({ ...theme, backgroundColor: e.target.value })}
- className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+ className="absolute inset-space-0 h-full w-full opacity-0 cursor-pointer"
  />
  <div className="h-full w-full"style={{ backgroundColor: theme.backgroundColor }} />
  </div>
@@ -672,7 +671,7 @@ export default function WidgetSettingsPage() {
  type="text"
  value={theme.backgroundColor}
  onChange={(e) => setTheme({ ...theme, backgroundColor: e.target.value })}
- className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-0"
+ className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-space-0"
  />
  </div>
  </div>
@@ -686,7 +685,7 @@ export default function WidgetSettingsPage() {
  type="color"
  value={theme.textColor}
  onChange={(e) => setTheme({ ...theme, textColor: e.target.value })}
- className="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+ className="absolute inset-space-0 h-full w-full opacity-0 cursor-pointer"
  />
  <div className="h-full w-full"style={{ backgroundColor: theme.textColor }} />
  </div>
@@ -694,7 +693,7 @@ export default function WidgetSettingsPage() {
  type="text"
  value={theme.textColor}
  onChange={(e) => setTheme({ ...theme, textColor: e.target.value })}
- className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-0"
+ className="h-7 bg-transparent text-caption text-center font-mono flex-1 border-none focus-visible:ring-0 p-space-0"
  />
  </div>
  </div>
@@ -703,7 +702,7 @@ export default function WidgetSettingsPage() {
  <div className="grid gap-space-4 sm:grid-cols-2 border-t border-border/10 pt-space-4">
  <div className="space-y-space-1.5">
  <Label htmlFor="borderRadius"className="text-caption uppercase tracking-wider font-semibold text-muted-foreground/75">Border Radius</Label>
- <select
+ <NativeSelect
  id="borderRadius"
  value={theme.borderRadius}
  onChange={(e) => setTheme({ ...theme, borderRadius: e.target.value })}
@@ -714,12 +713,12 @@ export default function WidgetSettingsPage() {
  <option value="0.5rem">Medium (8px)</option>
  <option value="0.75rem">Large (12px)</option>
  <option value="1rem">X-Large (16px)</option>
- </select>
+ </NativeSelect>
  </div>
 
  <div className="space-y-space-1.5">
  <Label htmlFor="launcherPosition"className="text-caption uppercase tracking-wider font-semibold text-muted-foreground/75">Launcher Position</Label>
- <select
+ <NativeSelect
  id="launcherPosition"
  value={launcher.position}
  onChange={(e) => setLauncher({ ...launcher, position: e.target.value })}
@@ -727,7 +726,7 @@ export default function WidgetSettingsPage() {
  >
  <option value="bottom_right">Bottom Right</option>
  <option value="bottom_left">Bottom Left</option>
- </select>
+ </NativeSelect>
  </div>
  </div>
 
@@ -764,11 +763,11 @@ export default function WidgetSettingsPage() {
  type="button"
  variant="outline"
  onClick={handleResetTheme} 
- className="h-9 text-caption font-semibold border-border/40 hover:bg-rose-500/5 hover:text-rose-500 transition-all radius-lg px-space-4"
+ className="h-9 text-caption font-semibold border-border/40 hover:bg-error-500/5 hover:text-error-500 transition-all px-space-4"
  >
  Reset to Brand Defaults
  </Button>
- <Button type="submit"disabled={isSaving} className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 radius-lg px-space-5 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200">
+ <Button type="submit"disabled={isSaving} className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 px-space-5 flex items-center bg-primary hover:bg-primary/90 transition-all duration-200">
  {isSaving ? (
  <>
  <Loader2 className="h-3.5 w-3.5 animate-spin shrink-0"/>
@@ -876,7 +875,7 @@ export default function WidgetSettingsPage() {
  type="button"
  onClick={handleAddQuestion} 
  disabled={!newQuestion.trim()}
- className="h-9.5 text-caption font-semibold text-white cursor-pointer gap-space-1.5 radius-lg px-space-5 shrink-0 flex items-center hover:brightness-110 active:brightness-95 transition-all duration-200 bg-primary hover:bg-primary/95"
+ className="h-9.5 text-caption font-semibold text-white cursor-pointer gap-space-1.5 px-space-5 shrink-0 flex items-center hover:brightness-110 active:brightness-95 transition-all duration-200 bg-primary hover:bg-primary/95"
  >
  <Plus className="h-3.5 w-3.5 shrink-0"/>
  <span className="leading-none">Add Question</span>
@@ -893,7 +892,7 @@ export default function WidgetSettingsPage() {
  <Button 
  type="button"
  variant="ghost"
- className="h-7 w-7 text-rose-500 hover:bg-rose-500/5 cursor-pointer radius-md flex items-center justify-center p-0"
+ className="h-7 w-7 text-error-500 hover:bg-error-500/5 cursor-pointer radius-md flex items-center justify-center p-space-0"
  onClick={() => handleRemoveQuestion(idx)}
  >
  <X className="h-3.5 w-3.5"/>
@@ -976,7 +975,7 @@ export default function WidgetSettingsPage() {
  <Button 
  type="submit"
  disabled={isSaving} 
- className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 radius-lg px-space-5 flex items-center hover:brightness-110 active:brightness-95 transition-all duration-200 bg-primary hover:bg-primary/90"
+ className="h-9 text-caption font-semibold text-white cursor-pointer gap-space-1.5 px-space-5 flex items-center hover:brightness-110 active:brightness-95 transition-all duration-200 bg-primary hover:bg-primary/90"
  >
  {isSaving ? (
  <>
@@ -1020,7 +1019,7 @@ export default function WidgetSettingsPage() {
  <h3 className="text-body-sm font-semibold">Engagement Trend</h3>
  <p className="text-caption text-muted-foreground">Widget opens vs active chats over time</p>
  </div>
- <div className="flex-1 p-space-5 pt-0">
+ <div className="flex-1 p-space-5 pt-space-0">
  <AreaChartCard 
  data={[
  { date:"Mon", opens: 120, chats: 45 },
@@ -1154,7 +1153,7 @@ export default function WidgetSettingsPage() {
  <Sparkles className="h-4.5 w-4.5"style={{ color: theme.primaryColor }} />
  </div>
  )}
- <span className="absolute bottom-0 right-0 h-2 w-2 radius-full bg-emerald-500 animate-pulse"style={{ boxShadow:`0 0 0 2px ${theme.backgroundColor}`}} />
+ <span className="absolute bottom-space-0 right-space-0 h-2 w-2 radius-full bg-emerald-500 animate-pulse"style={{ boxShadow:`0 0 0 2px ${theme.backgroundColor}`}} />
  </div>
  <div>
  <h4 className="text-caption font-semibold tracking-tight leading-none"style={{ color: theme.textColor }}>
@@ -1172,118 +1171,118 @@ export default function WidgetSettingsPage() {
  </div>
 
  {/* Preview Chat list content */}
- <div className="flex-1 p-space-5 space-y-space-5 overflow-y-auto bg-background/2 flex flex-col scrollbar-none">
- 
- {/* AI Welcome Message */}
- <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in">
- <div 
- className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
- style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
- >
- <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
- </div>
- <div 
- className="p-space-3.5 text-caption leading-relaxed border"
- style={{ 
- backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
- borderColor: theme.borderColor,
- color: theme.textColor,
- borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
- }}
- >
- {branding.welcomeMessage ||"Hello! How can I help you book or view services today?"}
- </div>
- </div>
+ <ScrollArea className="flex-1 p-space-5 space-y-space-5 bg-background/2 flex flex-col" horizontal={false}>
+                          
+                          {/* AI Welcome Message */}
+                          <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in">
+                          <div 
+                          className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
+                          style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
+                          >
+                          <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
+                          </div>
+                          <div 
+                          className="p-space-3.5 text-caption leading-relaxed border"
+                          style={{ 
+                          backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
+                          borderColor: theme.borderColor,
+                          color: theme.textColor,
+                          borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
+                          }}
+                          >
+                          {branding.welcomeMessage ||"Hello! How can I help you book or view services today?"}
+                          </div>
+                          </div>
 
- {/* User Mock Message */}
- <div className="flex items-start justify-end gap-space-2.5 max-w-5/6 self-end animate-fade-in [animation-delay:200ms]">
- <div 
- className="p-space-3.5 text-caption leading-relaxed text-white bg-gradient-to-br font-semibold bg-[linear-gradient(135deg,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.05)_100%)]"
- style={{ 
- backgroundColor: theme.primaryColor,
- borderRadius:`${theme.borderRadius} 0px ${theme.borderRadius} ${theme.borderRadius}`
- }}
- >
- Can I book an appointment for tomorrow?
- </div>
- </div>
+                          {/* User Mock Message */}
+                          <div className="flex items-start justify-end gap-space-2.5 max-w-5/6 self-end animate-fade-in [animation-delay:200ms]">
+                          <div 
+                          className="p-space-3.5 text-caption leading-relaxed text-white bg-gradient-to-br font-semibold bg-[linear-gradient(135deg,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.05)_100%)]"
+                          style={{ 
+                          backgroundColor: theme.primaryColor,
+                          borderRadius:`${theme.borderRadius} 0px ${theme.borderRadius} ${theme.borderRadius}`
+                          }}
+                          >
+                          Can I book an appointment for tomorrow?
+                          </div>
+                          </div>
 
- {/* AI Mock Response */}
- <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in [animation-delay:400ms]">
- <div 
- className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
- style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
- >
- <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
- </div>
- <div 
- className="p-space-3.5 text-caption leading-relaxed border space-y-space-3.5"
- style={{ 
- backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
- borderColor: theme.borderColor,
- color: theme.textColor,
- borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
- }}
- >
- <p>Sure! I can help you book an appointment. Select a quick action below to schedule instantly.</p>
- 
- {/* Calendar Mock Card in Chat */}
- <div className="p-space-3.5 radius-xl border flex items-center justify-between gap-space-3"style={{ borderColor: theme.borderColor, backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.02)"}}>
- <div className="flex items-center gap-space-2.5">
- <div 
- className="h-8.5 w-8.5 radius-lg flex items-center justify-center shrink-0"
- style={{ color: theme.primaryColor, backgroundColor:`${theme.primaryColor}15`}}
- >
- <Sparkles className="h-4 w-4"style={{ color: theme.primaryColor }} />
- </div>
- <div className="text-left">
- <span className="text-caption font-semibold block leading-none"style={{ color: theme.textColor }}>Schedule Appointment</span>
- <span className="text-caption block mt-space-1"style={{ color: theme.themeMode ==="dark"?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.45)"}}>Takes less than 1 minute</span>
- </div>
- </div>
- <Button 
- type="button"
- className="h-7.5 px-space-3 text-caption font-semibold text-white shrink-0 radius-lg hover:brightness-105 active:brightness-95 transition-all"
- style={{ backgroundColor: theme.primaryColor }}
- >
- Book Now
- </Button>
- </div>
- </div>
- </div>
+                          {/* AI Mock Response */}
+                          <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in [animation-delay:400ms]">
+                          <div 
+                          className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
+                          style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
+                          >
+                          <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
+                          </div>
+                          <div 
+                          className="p-space-3.5 text-caption leading-relaxed border space-y-space-3.5"
+                          style={{ 
+                          backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
+                          borderColor: theme.borderColor,
+                          color: theme.textColor,
+                          borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
+                          }}
+                          >
+                          <p>Sure! I can help you book an appointment. Select a quick action below to schedule instantly.</p>
+                          
+                          {/* Calendar Mock Card in Chat */}
+                          <div className="p-space-3.5 radius-xl border flex items-center justify-between gap-space-3"style={{ borderColor: theme.borderColor, backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.02)"}}>
+                          <div className="flex items-center gap-space-2.5">
+                          <div 
+                          className="h-8.5 w-8.5 radius-lg flex items-center justify-center shrink-0"
+                          style={{ color: theme.primaryColor, backgroundColor:`${theme.primaryColor}15`}}
+                          >
+                          <Sparkles className="h-4 w-4"style={{ color: theme.primaryColor }} />
+                          </div>
+                          <div className="text-left">
+                          <span className="text-caption font-semibold block leading-none"style={{ color: theme.textColor }}>Schedule Appointment</span>
+                          <span className="text-caption block mt-space-1"style={{ color: theme.themeMode ==="dark"?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.45)"}}>Takes less than 1 minute</span>
+                          </div>
+                          </div>
+                          <Button 
+                          type="button"
+                          className="h-7.5 px-space-3 text-caption font-semibold text-white shrink-0 hover:brightness-105 active:brightness-95 transition-all"
+                          style={{ backgroundColor: theme.primaryColor }}
+                          >
+                          Book Now
+                          </Button>
+                          </div>
+                          </div>
+                          </div>
 
- {/* Starter questions stubs */}
- {customization.starterQuestions.length > 0 && (
- <div className="space-y-space-2 pt-space-3 mt-auto">
- <span className="text-caption font-semibold text-muted-foreground/75 uppercase tracking-wider block">Suggested Questions</span>
- <div className="grid gap-space-2 grid-cols-2">
- {customization.starterQuestions.slice(0, 4).map((q, i) => (
- <div 
- key={i} 
- className="p-space-2.5 px-space-3 border text-caption font-medium text-muted-foreground/80 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.02)] transition-all duration-200 truncate text-center cursor-pointer select-none"
- style={{ borderColor: theme.borderColor, borderRadius: theme.borderRadius }}
- >
- {q}
- </div>
- ))}
- </div>
- </div>
- )}
- </div>
+                          {/* Starter questions stubs */}
+                          {customization.starterQuestions.length > 0 && (
+                          <div className="space-y-space-2 pt-space-3 mt-auto">
+                          <span className="text-caption font-semibold text-muted-foreground/75 uppercase tracking-wider block">Suggested Questions</span>
+                          <div className="grid gap-space-2 grid-cols-2">
+                          {customization.starterQuestions.slice(0, 4).map((q, i) => (
+                          <div 
+                          key={i} 
+                          className="p-space-2.5 px-space-3 border text-caption font-medium text-muted-foreground/80 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.02)] transition-all duration-200 truncate text-center cursor-pointer select-none"
+                          style={{ borderColor: theme.borderColor, borderRadius: theme.borderRadius }}
+                          >
+                          {q}
+                          </div>
+                          ))}
+                          </div>
+                          </div>
+                          )}
+                          </ScrollArea>
 
  {/* Suggestions Footer */}
  {customization.suggestedActions.length > 0 && (
- <div className="flex gap-space-2 overflow-x-auto p-space-3 bg-background/15 border-t scrollbar-none shrink-0"style={{ borderColor: theme.borderColor }}>
- {customization.suggestedActions.map((act: any, idx: number) => (
- <div
- key={idx}
- className="text-caption font-semibold border px-space-3.5 py-space-1.5 bg-background/55 text-foreground/90 shrink-0 select-none cursor-pointer hover:bg-background/80 transition-colors radius-full"
- style={{ borderColor: theme.borderColor }}
- >
- {act.label}
- </div>
- ))}
- </div>
+ <ScrollArea className="flex gap-space-2 p-space-3 bg-background/15 border-t shrink-0"style={{ borderColor: theme.borderColor }} vertical={false}>
+                              {customization.suggestedActions.map((act: any, idx: number) => (
+                              <div
+                              key={idx}
+                              className="text-caption font-semibold border px-space-3.5 py-space-1.5 bg-background/55 text-foreground/90 shrink-0 select-none cursor-pointer hover:bg-background/80 transition-colors radius-full"
+                              style={{ borderColor: theme.borderColor }}
+                              >
+                              {act.label}
+                              </div>
+                              ))}
+                              </ScrollArea>
  )}
 
  {/* Input preview */}

@@ -1,28 +1,32 @@
-"use client";
+"use client";import { Badge } from "@/components/shared/badge";
 
 import { useState, useTransition } from "react";
-import { 
-  CreditCard, 
-  Plus, 
-  Trash2, 
-  CheckCircle2, 
-  AlertCircle, 
-  RefreshCw, 
-  Check, 
+import {
+  CreditCard,
+  Plus,
+  Trash2,
+  CheckCircle2,
+  AlertCircle,
+  RefreshCw,
+  Check,
   Sliders,
   DollarSign,
   TrendingUp,
   Activity,
   Tag,
-  Gift
-} from "lucide-react";
+  Gift } from
+"lucide-react";
 import { Button } from "@/components/shared/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shared/tabs";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/shared/card";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/shared/dialog";
 import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
 import { createResellerPlanAction, deleteResellerPlanAction } from "@/server/actions/agency";
 import { createCouponAction } from "@/server/actions/billing";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
+import { NativeSelect, NativeTable } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ResellerPlan {
   id: string;
@@ -33,17 +37,18 @@ interface ResellerPlan {
   createdAt: Date;
 }
 
-export function AgencyBillingClient({ 
+export function AgencyBillingClient({
   initialPlans,
-  initialCoupons 
-}: { 
-  initialPlans: any[];
-  initialCoupons: any[];
-}) {
+  initialCoupons
+
+
+
+}: {initialPlans: any[];initialCoupons: any[];}) {
   const [plans, setPlans] = useState<ResellerPlan[]>(initialPlans as ResellerPlan[]);
   const [coupons, setCoupons] = useState<any[]>(initialCoupons);
   const [activeTab, setActiveTab] = useState<"plans" | "coupons">("plans");
-  
+  const [confirmDialogId, setConfirmDialogId] = useState<string | null>(null);
+
   // Plans Form State
   const [isPlanOpen, setIsPlanOpen] = useState(false);
   const [planName, setPlanName] = useState("");
@@ -86,7 +91,7 @@ export function AgencyBillingClient({
       });
 
       if (res.success && res.plan) {
-        setPlans(prev => [res.plan as unknown as ResellerPlan, ...prev]);
+        setPlans((prev) => [res.plan as unknown as ResellerPlan, ...prev]);
         setPlanName("");
         setPlanPrice("");
         setIsPlanOpen(false);
@@ -96,11 +101,17 @@ export function AgencyBillingClient({
     });
   };
 
-  const handleDeletePlan = async (planId: string) => {
-    if (!confirm("Are you sure you want to delete this custom plan?")) return;
+  const handleDeletePlan = (planId: string) => {
+    setConfirmDialogId(planId);
+  };
+
+  const handleConfirmDeletePlan = async () => {
+    if (!confirmDialogId) return;
+    const planId = confirmDialogId;
+    setConfirmDialogId(null);
 
     const originalPlans = [...plans];
-    setPlans(prev => prev.filter(p => p.id !== planId));
+    setPlans((prev) => prev.filter((p) => p.id !== planId));
 
     const res = await deleteResellerPlanAction(planId);
     if (!res.success) {
@@ -125,11 +136,11 @@ export function AgencyBillingClient({
         code: couponCode,
         type: couponType,
         value: couponValue,
-        expirationDays: parseInt(couponDays, 10) || undefined,
+        expirationDays: parseInt(couponDays, 10) || undefined
       });
 
       if (res.success && res.coupon) {
-        setCoupons(prev => [res.coupon, ...prev]);
+        setCoupons((prev) => [res.coupon, ...prev]);
         setCouponCode("");
         setCouponValue("");
         setIsCouponOpen(false);
@@ -142,32 +153,24 @@ export function AgencyBillingClient({
   return (
     <div className="space-y-space-6">
       {/* Sub Tabs */}
-      <div className="flex gap-space-2 p-space-1 bg-muted/20 border border-border/20 radius-lg max-w-xs backdrop-blur-xs">
-        <Button 
-          variant={activeTab === "plans" ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("plans")}
-          className="flex-1 text-caption cursor-pointer"
-        >
+      <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)} variant="segmented" className="w-full max-w-xs">
+      <TabsList className="w-full bg-muted/20 border border-border/20 p-space-1 radius-lg">
+        <TabsTrigger value="plans" className="flex-1 text-caption cursor-pointer border-none">
           <Sliders className="h-3.5 w-3.5 mr-space-2 text-primary" />
           Pricing Plans
-        </Button>
-        <Button 
-          variant={activeTab === "coupons" ? "secondary" : "ghost"}
-          size="sm"
-          onClick={() => setActiveTab("coupons")}
-          className="flex-1 text-caption cursor-pointer"
-        >
+        </TabsTrigger>
+        <TabsTrigger value="coupons" className="flex-1 text-caption cursor-pointer border-none">
           <Tag className="h-3.5 w-3.5 mr-space-2 text-warning-500" />
           Coupons
-        </Button>
-      </div>
+        </TabsTrigger>
+      </TabsList>
+      </Tabs>
 
       <div className="grid gap-space-8 lg:grid-cols-12">
         <div className="lg:col-span-8 space-y-space-6">
           {activeTab === "plans" ? (
-            /* PLANS TAB */
-            <Card className="bg-card/30 border border-border/50 overflow-hidden">
+          /* PLANS TAB */
+          <Card className="bg-card/30 border border-border/50 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-space-4 border-b border-border/20">
                 <div>
                   <CardTitle className="text-body-md  flex items-center gap-space-2">
@@ -181,7 +184,7 @@ export function AgencyBillingClient({
 
                 <Dialog open={isPlanOpen} onOpenChange={setIsPlanOpen}>
                   <DialogTrigger asChild>
-                    <Button className="gap-space-1 cursor-pointer bg-primary text-primary-foreground  px-space-4 py-space-2">
+                    <Button className="gap-space-1 text-primary-foreground px-space-4 py-space-2">
                       <Plus className="h-4 w-4" />
                       Add Package Plan
                     </Button>
@@ -197,69 +200,69 @@ export function AgencyBillingClient({
                     <div className="space-y-space-4 py-space-3">
                       <div className="space-y-space-2">
                         <Label className="text-body-sm ">Plan Name</Label>
-                        <Input 
-                          placeholder="e.g. Agency Pro Call Tier" 
-                          value={planName}
-                          onChange={(e) => setPlanName(e.target.value)}
-                        />
+                        <Input
+                        placeholder="e.g. Agency Pro Call Tier"
+                        value={planName}
+                        onChange={(e) => setPlanName(e.target.value)} />
+                      
                       </div>
 
                       <div className="grid grid-cols-2 gap-space-4">
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Price per Period ($)</Label>
-                          <Input 
-                            placeholder="199.00" 
-                            value={planPrice}
-                            onChange={(e) => setPlanPrice(e.target.value)}
-                          />
+                          <Input
+                          placeholder="199.00"
+                          value={planPrice}
+                          onChange={(e) => setPlanPrice(e.target.value)} />
+                        
                         </div>
 
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Billing Period</Label>
-                          <select
-                            value={planInterval}
-                            onChange={(e) => setPlanInterval(e.target.value)}
-                            className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-                          >
+                          <NativeSelect
+                          value={planInterval}
+                          onChange={(e) => setPlanInterval(e.target.value)}
+                          className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground">
+                          
                             <option value="month">Monthly Interval</option>
                             <option value="year">Annual Interval</option>
-                          </select>
+                          </NativeSelect>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-space-4">
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Seat User Limit</Label>
-                          <Input 
-                            type="number" 
-                            placeholder="5" 
-                            value={seatsLimit}
-                            onChange={(e) => setSeatsLimit(e.target.value)}
-                          />
+                          <Input
+                          type="number"
+                          placeholder="5"
+                          value={seatsLimit}
+                          onChange={(e) => setSeatsLimit(e.target.value)} />
+                        
                         </div>
 
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Call Minutes Limit</Label>
-                          <Input 
-                            type="number" 
-                            placeholder="500" 
-                            value={minutesLimit}
-                            onChange={(e) => setMinutesLimit(e.target.value)}
-                          />
+                          <Input
+                          type="number"
+                          placeholder="500"
+                          value={minutesLimit}
+                          onChange={(e) => setMinutesLimit(e.target.value)} />
+                        
                         </div>
                       </div>
 
-                      {planError && (
-                        <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
+                      {planError &&
+                    <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
                           <AlertCircle className="h-4 w-4" />
                           <span>{planError}</span>
                         </div>
-                      )}
+                    }
                     </div>
 
                     <DialogFooter>
                       <Button variant="ghost" onClick={() => setIsPlanOpen(false)}>Cancel</Button>
-                      <Button onClick={handleCreatePlan} disabled={isPending} className="bg-primary text-primary-foreground ">
+                      <Button onClick={handleCreatePlan} disabled={isPending} className="text-primary-foreground">
                         {isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-space-2" /> : null}
                         Save Package Plan
                       </Button>
@@ -268,52 +271,49 @@ export function AgencyBillingClient({
                 </Dialog>
               </CardHeader>
               <CardContent className="p-space-0">
-                {plans.length === 0 ? (
-                  <div className="py-space-16 text-center text-muted-foreground text-body-sm">
+                {plans.length === 0 ?
+              <div className="py-space-16 text-center text-muted-foreground text-body-sm">
                     No pricing plans defined yet. Create your first reseller package to begin selling.
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse text-body-sm">
-                      <thead>
-                        <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
-                          <th className="px-space-6 py-space-4">Package Name</th>
-                          <th className="px-space-6 py-space-4">Billing Rate</th>
-                          <th className="px-space-6 py-space-4">Seat Limit</th>
-                          <th className="px-space-6 py-space-4">Monthly Call Minutes</th>
-                          <th className="px-space-6 py-space-4 text-right">Action</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border/10 text-foreground">
-                        {plans.map((plan) => (
-                          <tr key={plan.id} className="hover:bg-accent/5 transition-colors">
-                            <td className="px-space-6 py-space-4  text-foreground">{plan.name}</td>
-                            <td className="px-space-6 py-space-4 font-mono text-caption text-primary ">
-                              ${plan.price} / {plan.interval}
-                            </td>
-                            <td className="px-space-6 py-space-4 font-mono text-caption">{plan.limits?.seatsLimit || 5} seats</td>
-                            <td className="px-space-6 py-space-4 font-mono text-caption">{plan.limits?.callMinutesLimit || 500} minutes</td>
-                            <td className="px-space-6 py-space-4 text-right">
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handleDeletePlan(plan.id)}
-                                className="text-destructive hover:text-error-500 hover:bg-destructive/10 cursor-pointer h-8 w-8 p-space-0"
-                              >
-                                <Trash2 className="h-4 w-4" />
-                              </Button>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                  </div> :
+
+              <ScrollArea className="" vertical={false}>
+                                                      <NativeTable className="w-full text-left border-collapse text-body-sm">
+                                                        <thead>
+                                                          <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
+                                                            <th className="px-space-6 py-space-4">Package Name</th>
+                                                            <th className="px-space-6 py-space-4">Billing Rate</th>
+                                                            <th className="px-space-6 py-space-4">Seat Limit</th>
+                                                            <th className="px-space-6 py-space-4">Monthly Call Minutes</th>
+                                                            <th className="px-space-6 py-space-4 text-right">Action</th>
+                                                          </tr>
+                                                        </thead>
+                                                        <tbody className="divide-y divide-border/10 text-foreground">
+                                                          {plans.map((plan) =>
+                                                      <tr key={plan.id} className="hover:bg-accent/5 transition-colors">
+                                                              <td className="px-space-6 py-space-4  text-foreground">{plan.name}</td>
+                                                              <td className="px-space-6 py-space-4 font-mono text-caption text-primary ">
+                                                                ${plan.price} / {plan.interval}
+                                                              </td>
+                                                              <td className="px-space-6 py-space-4 font-mono text-caption">{plan.limits?.seatsLimit || 5} seats</td>
+                                                              <td className="px-space-6 py-space-4 font-mono text-caption">{plan.limits?.callMinutesLimit || 500} minutes</td>
+                                                              <td className="px-space-6 py-space-4 text-right">
+                                                                <Button variant="ghost" size="icon" onClick={() => handleDeletePlan(plan.id)}
+                                                          className="text-destructive hover:text-error-500 hover:bg-destructive/10 cursor-pointer h-8 w-8 p-space-0">
+                                                            
+                                                                  <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                              </td>
+                                                            </tr>
+                                                      )}
+                                                        </tbody>
+                                                      </NativeTable>
+                                                    </ScrollArea>
+              }
               </CardContent>
-            </Card>
-          ) : (
-            /* COUPONS TAB */
-            <Card className="bg-card/30 border border-border/50 overflow-hidden">
+            </Card>) : (
+
+          /* COUPONS TAB */
+          <Card className="bg-card/30 border border-border/50 overflow-hidden">
               <CardHeader className="flex flex-row items-center justify-between pb-space-4 border-b border-border/20">
                 <div>
                   <CardTitle className="text-body-md  flex items-center gap-space-2">
@@ -327,7 +327,7 @@ export function AgencyBillingClient({
 
                 <Dialog open={isCouponOpen} onOpenChange={setIsCouponOpen}>
                   <DialogTrigger asChild>
-                    <Button className="gap-space-1 cursor-pointer bg-primary text-primary-foreground  px-space-4 py-space-2">
+                    <Button className="gap-space-1 text-primary-foreground px-space-4 py-space-2">
                       <Plus className="h-4 w-4" />
                       Add Coupon Code
                     </Button>
@@ -343,58 +343,58 @@ export function AgencyBillingClient({
                     <div className="space-y-space-4 py-space-3">
                       <div className="space-y-space-2">
                         <Label className="text-body-sm ">Coupon Code (Uppercase)</Label>
-                        <Input 
-                          placeholder="e.g. SUMMER50" 
-                          value={couponCode}
-                          onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
-                        />
+                        <Input
+                        placeholder="e.g. SUMMER50"
+                        value={couponCode}
+                        onChange={(e) => setCouponCode(e.target.value.toUpperCase())} />
+                      
                       </div>
 
                       <div className="grid grid-cols-2 gap-space-4">
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Discount Type</Label>
-                          <select
-                            value={couponType}
-                            onChange={(e) => setCouponType(e.target.value)}
-                            className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground"
-                          >
+                          <NativeSelect
+                          value={couponType}
+                          onChange={(e) => setCouponType(e.target.value)}
+                          className="w-full h-9 radius-md border border-input bg-transparent px-space-3 text-body-sm focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-ring text-foreground">
+                          
                             <option value="percent">Percentage Reduction</option>
                             <option value="fixed">Fixed Dollar Value</option>
                             <option value="free_months">Free Months Offset</option>
-                          </select>
+                          </NativeSelect>
                         </div>
 
                         <div className="space-y-space-2">
                           <Label className="text-body-sm ">Discount Value</Label>
-                          <Input 
-                            placeholder="e.g. 50" 
-                            value={couponValue}
-                            onChange={(e) => setCouponValue(e.target.value)}
-                          />
+                          <Input
+                          placeholder="e.g. 50"
+                          value={couponValue}
+                          onChange={(e) => setCouponValue(e.target.value)} />
+                        
                         </div>
                       </div>
 
                       <div className="space-y-space-2">
                         <Label className="text-body-sm ">Expiration Duration (Days)</Label>
-                        <Input 
-                          type="number" 
-                          placeholder="30" 
-                          value={couponDays}
-                          onChange={(e) => setCouponDays(e.target.value)}
-                        />
+                        <Input
+                        type="number"
+                        placeholder="30"
+                        value={couponDays}
+                        onChange={(e) => setCouponDays(e.target.value)} />
+                      
                       </div>
 
-                      {couponError && (
-                        <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
+                      {couponError &&
+                    <div className="p-space-3 bg-destructive/10 text-destructive border border-error-500/20 text-caption radius-lg flex items-center gap-space-2">
                           <AlertCircle className="h-4 w-4" />
                           <span>{couponError}</span>
                         </div>
-                      )}
+                    }
                     </div>
 
                     <DialogFooter>
                       <Button variant="ghost" onClick={() => setIsCouponOpen(false)}>Cancel</Button>
-                      <Button onClick={handleCreateCoupon} disabled={isPending} className="bg-primary text-primary-foreground ">
+                      <Button onClick={handleCreateCoupon} disabled={isPending} className="text-primary-foreground">
                         {isPending ? <RefreshCw className="h-4 w-4 animate-spin mr-space-2" /> : null}
                         Save Coupon Code
                       </Button>
@@ -403,47 +403,47 @@ export function AgencyBillingClient({
                 </Dialog>
               </CardHeader>
               <CardContent className="p-space-0">
-                {coupons.length === 0 ? (
-                  <div className="py-space-16 text-center text-muted-foreground text-body-sm">
+                {coupons.length === 0 ?
+              <div className="py-space-16 text-center text-muted-foreground text-body-sm">
                     No active discount coupons defined. Generate code campaigns to incentivize subscriptions.
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse text-body-sm">
-                      <thead>
-                        <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
-                          <th className="px-space-6 py-space-4">Promo Code</th>
-                          <th className="px-space-6 py-space-4">Type</th>
-                          <th className="px-space-6 py-space-4">Discount Value</th>
-                          <th className="px-space-6 py-space-4">Status</th>
-                          <th className="px-space-6 py-space-4">Expirations</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-border/10 text-foreground">
-                        {coupons.map((c) => (
-                          <tr key={c.id} className="hover:bg-accent/5 transition-colors">
-                            <td className="px-space-6 py-space-4 font-mono  text-primary">{c.code}</td>
-                            <td className="px-space-6 py-space-4 capitalize">{c.type.replace("_", " ")}</td>
-                            <td className="px-space-6 py-space-4 font-mono text-caption ">
-                              {c.type === "percent" ? `${c.value}%` : c.type === "fixed" ? `$${c.value}` : `${c.value} month(s)`}
-                            </td>
-                            <td className="px-space-6 py-space-4">
-                              <span className="inline-flex items-center px-space-2 py-space-1 radius-md text-caption  uppercase tracking-wider bg-success-500/10 text-success-500 border border-success-500/20">
-                                Active
-                              </span>
-                            </td>
-                            <td className="px-space-6 py-space-4 font-mono text-caption text-muted-foreground">
-                              {c.expirationDate ? new Date(c.expirationDate).toLocaleDateString() : "Never Expires"}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
+                  </div> :
+
+              <ScrollArea className="" vertical={false}>
+                                                          <NativeTable className="w-full text-left border-collapse text-body-sm">
+                                                            <thead>
+                                                              <tr className="border-b border-border/30 bg-muted/20 text-caption  uppercase tracking-wider text-muted-foreground">
+                                                                <th className="px-space-6 py-space-4">Promo Code</th>
+                                                                <th className="px-space-6 py-space-4">Type</th>
+                                                                <th className="px-space-6 py-space-4">Discount Value</th>
+                                                                <th className="px-space-6 py-space-4">Status</th>
+                                                                <th className="px-space-6 py-space-4">Expirations</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody className="divide-y divide-border/10 text-foreground">
+                                                              {coupons.map((c) =>
+                                                          <tr key={c.id} className="hover:bg-accent/5 transition-colors">
+                                                                  <td className="px-space-6 py-space-4 font-mono  text-primary">{c.code}</td>
+                                                                  <td className="px-space-6 py-space-4 capitalize">{c.type.replace("_", " ")}</td>
+                                                                  <td className="px-space-6 py-space-4 font-mono text-caption ">
+                                                                    {c.type === "percent" ? `${c.value}%` : c.type === "fixed" ? `$${c.value}` : `${c.value} month(s)`}
+                                                                  </td>
+                                                                  <td className="px-space-6 py-space-4">
+                                                                    <Badge variant="success">
+                                                                      Active
+                                                                    </Badge>
+                                                                  </td>
+                                                                  <td className="px-space-6 py-space-4 font-mono text-caption text-muted-foreground">
+                                                                    {c.expirationDate ? new Date(c.expirationDate).toLocaleDateString() : "Never Expires"}
+                                                                  </td>
+                                                                </tr>
+                                                          )}
+                                                            </tbody>
+                                                          </NativeTable>
+                                                        </ScrollArea>
+              }
               </CardContent>
-            </Card>
-          )}
+            </Card>)
+          }
         </div>
 
         {/* Metering stats column */}
@@ -503,6 +503,15 @@ export function AgencyBillingClient({
           </Card>
         </div>
       </div>
-    </div>
-  );
+
+      <ConfirmDialog
+        open={!!confirmDialogId}
+        onOpenChange={(open) => !open && setConfirmDialogId(null)}
+        title="Delete Custom Plan"
+        description="Are you sure you want to delete this custom plan?"
+        onConfirm={handleConfirmDeletePlan}
+        confirmText="Delete" />
+      
+    </div>);
+
 }

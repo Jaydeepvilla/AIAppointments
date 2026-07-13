@@ -4,8 +4,6 @@ import { migrate } from "drizzle-orm/postgres-js/migrator";
 import postgres from "postgres";
 
 async function runMigration() {
-  console.log("Starting migration...");
-  
   if (!process.env.DATABASE_URL) {
     throw new Error("DATABASE_URL is not set");
   }
@@ -17,7 +15,6 @@ async function runMigration() {
   try {
     // Run the migrations
     await migrate(db, { migrationsFolder: "./src/server/db/migrations" });
-    console.log("[OK] Migration completed successfully!");
   } catch (error) {
     console.error("[ERROR] Migration failed:", error);
   } finally {

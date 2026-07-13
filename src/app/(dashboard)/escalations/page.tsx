@@ -1,6 +1,8 @@
 "use client";
 
-import { useState, useEffect } from"react";
+import { Badge } from "@/components/shared/badge";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useState, useEffect } from "react";
 import {
  getEscalationsAction,
  resolveEscalationAction
@@ -153,7 +155,7 @@ export default function EscalationsPage() {
  const resolvedCount = escalations.filter((e) => e.status ==="resolved").length;
 
  return (
- <div className="space-y-space-4 animate-fade-in w-full h-[calc(100vh-8.5rem)] flex flex-col">
+ <div className="space-y-space-4 animate-fade-in w-full h-full flex flex-col">
  {/* Header */}
  <PageTitle
  title="Escalations"
@@ -189,104 +191,106 @@ export default function EscalationsPage() {
  </Button>
  </div>
 
- <div className="flex-1 overflow-y-auto p-space-4 space-y-space-3 bg-[hsl(var(--foreground)/0.002)] sidebar-scroll">
- {loading ? (
- <LoadingState message="Loading triage queue"/>
- ) : escalations.length === 0 ? (
- <EmptyState
- icon={ShieldCheck}
- title="Queue is clean!"
- description="No customer escalations requiring human attention found."
- className="border-none bg-transparent"
- />
- ) : (
- escalations.map((esc) => {
- const leadName = esc.leadProfile?.name ||"Anonymous Guest";
- const isPending = esc.status ==="pending";
- const initials = getInitials(leadName);
- const gradient = getAvatarGradient(leadName);
+ <ScrollArea className="flex-1 bg-[hsl(var(--foreground)/0.002)]" horizontal={false} vertical={escalations.length > 2}>
+    <div className="p-space-4 space-y-space-3">
+      {loading ? (
+        <LoadingState message="Loading triage queue"/>
+      ) : escalations.length === 0 ? (
+        <EmptyState
+          icon={ShieldCheck}
+          title="Queue is clean!"
+          description="No customer escalations requiring human attention found."
+          className="border-none bg-transparent"
+        />
+      ) : (
+        escalations.map((esc) => {
+          const leadName = esc.leadProfile?.name ||"Anonymous Guest";
+          const isPending = esc.status ==="pending";
+          const initials = getInitials(leadName);
+          const gradient = getAvatarGradient(leadName);
 
- return (
- <div 
- key={esc.id} 
- className={cn(
- "p-space-4 radius-lg border transition-all duration-200 bg-background/50",
- isPending 
- ?"border-[hsl(var(--primary)/0.12)] hover:border-[hsl(var(--primary)/0.25)]"
- :"border-[hsl(var(--foreground)/0.05)] hover:border-[hsl(var(--foreground)/0.1)]"
- )}
- >
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-4">
- <div className="space-y-space-3 flex-1 min-w-0">
- {/* Badge / Status Row */}
- <div className="flex flex-wrap items-center gap-space-2">
- {getReasonBadge(esc.reason)}
- {getStatusBadge(esc.status)}
- <span className="text-caption text-muted-foreground/60 flex items-center gap-space-1">
- <Clock className="h-3 w-3"/>
- {new Date(esc.createdAt).toLocaleString([], { dateStyle:'short', timeStyle:'short'})}
- </span>
- </div>
+          return (
+            <div 
+              key={esc.id} 
+              className={cn(
+                "p-space-4 radius-lg border transition-all duration-200 bg-background/50",
+                isPending 
+                  ?"border-[hsl(var(--primary)/0.12)] hover:border-[hsl(var(--primary)/0.25)]"
+                  :"border-[hsl(var(--foreground)/0.05)] hover:border-[hsl(var(--foreground)/0.1)]"
+              )}
+            >
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-4">
+                <div className="space-y-space-3 flex-1 min-w-0">
+                  {/* Badge / Status Row */}
+                  <div className="flex flex-wrap items-center gap-space-2">
+                    {getReasonBadge(esc.reason)}
+                    {getStatusBadge(esc.status)}
+                    <span className="text-caption text-muted-foreground/60 flex items-center gap-space-1">
+                      <Clock className="h-3 w-3"/>
+                      {new Date(esc.createdAt).toLocaleString([], { dateStyle:'short', timeStyle:'short'})}
+                    </span>
+                  </div>
 
- {/* Content details */}
- <div className="space-y-space-2">
- <div className="flex items-center gap-space-2 text-caption font-semibold text-foreground">
- <div className={`h-6.5 w-6.5 radius-full bg-gradient-to-br ${gradient} text-white text-caption font-semibold flex items-center justify-center shrink-0`}>
- {initials}
- </div>
- <span>Customer: {leadName}</span>
- </div>
- 
- {esc.notes && (
- <div className="bg-background border border-[hsl(var(--foreground)/0.05)] radius-md p-space-3 text-caption text-muted-foreground/90 max-w-2xl leading-relaxed">
- <span className="text-caption font-semibold uppercase tracking-wider text-foreground/50 block mb-space-1">Issue Details</span>
- "{esc.notes}"
- </div>
- )}
- </div>
+                  {/* Content details */}
+                  <div className="space-y-space-2">
+                    <div className="flex items-center gap-space-2 text-caption font-semibold text-foreground">
+                      <div className={`h-6.5 w-6.5 radius-full bg-gradient-to-br ${gradient} text-white text-caption font-semibold flex items-center justify-center shrink-0`}>
+                        {initials}
+                      </div>
+                      <span>Customer: {leadName}</span>
+                    </div>
+                    
+                    {esc.notes && (
+                      <div className="bg-background border border-[hsl(var(--foreground)/0.05)] radius-md p-space-3 text-caption text-muted-foreground/90 max-w-2xl leading-relaxed">
+                        <span className="text-caption font-semibold uppercase tracking-wider text-foreground/50 block mb-space-1">Issue Details</span>
+                        "{esc.notes}"
+                      </div>
+                    )}
+                  </div>
 
- {/* Contact metadata profile */}
- {esc.leadProfile && (
- <div className="flex flex-wrap gap-x-space-4 gap-y-space-1 pt-space-2.5 border-t border-[hsl(var(--foreground)/0.04)] text-caption text-muted-foreground/75 leading-none">
- {esc.leadProfile.email && <span className="flex items-center gap-space-1.5"><Mail className="h-3 w-3 text-muted-foreground/45"/>{esc.leadProfile.email}</span>}
- {esc.leadProfile.phone && <span className="flex items-center gap-space-1.5"><Phone className="h-3 w-3 text-muted-foreground/45"/>{esc.leadProfile.phone}</span>}
- <span className="font-medium">Score: <strong className="text-primary">{esc.leadProfile.leadScore}/100</strong></span>
- </div>
- )}
- </div>
+                  {/* Contact metadata profile */}
+                  {esc.leadProfile && (
+                    <div className="flex flex-wrap gap-x-space-4 gap-y-space-1 pt-space-2.5 border-t border-[hsl(var(--foreground)/0.04)] text-caption text-muted-foreground/75 leading-none">
+                      {esc.leadProfile.email && <span className="flex items-center gap-space-1.5"><Mail className="h-3 w-3 text-muted-foreground/45"/>{esc.leadProfile.email}</span>}
+                      {esc.leadProfile.phone && <span className="flex items-center gap-space-1.5"><Phone className="h-3 w-3 text-muted-foreground/45"/>{esc.leadProfile.phone}</span>}
+                      <span className="font-medium">Score: <strong className="text-primary">{esc.leadProfile.leadScore}/100</strong></span>
+                    </div>
+                  )}
+                </div>
 
- {/* Actions */}
- <div className="flex items-center gap-space-2 shrink-0 md:pl-space-4">
- {isPending ? (
- <>
- <Button
- onClick={() => openResolveDialog(esc)}
- size="sm"
- className="text-caption font-semibold px-space-3 h-8"
- >
- <ShieldCheck className="h-3.5 w-3.5 mr-space-1"/> Mark Resolved
- </Button>
- <Button
- variant="outline"
- size="sm"
- className="text-caption font-semibold px-space-3 h-8 border-[hsl(var(--foreground)/0.06)] opacity-40 cursor-not-allowed"
- disabled
- >
- Ignore
- </Button>
- </>
- ) : (
- <span className="text-caption text-muted-foreground/80 font-semibold italic flex items-center gap-space-1 bg-emerald-500/10 text-emerald-600 border border-emerald-500/15 py-space-1 px-space-2.5 radius-full">
- <CheckCircle className="h-3.5 w-3.5 text-emerald-500"/> Resolved Action Saved
- </span>
- )}
- </div>
- </div>
- </div>
- );
- })
- )}
- </div>
+                {/* Actions */}
+                <div className="flex items-center gap-space-2 shrink-0 md:pl-space-4">
+                  {isPending ? (
+                    <>
+                      <Button
+                        onClick={() => openResolveDialog(esc)}
+                        size="sm"
+                        className="text-caption font-semibold px-space-3 h-8"
+                      >
+                        <ShieldCheck className="h-3.5 w-3.5 mr-space-1"/> Mark Resolved
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-caption font-semibold px-space-3 h-8 border-[hsl(var(--foreground)/0.06)] opacity-40 cursor-not-allowed"
+                        disabled
+                      >
+                        Ignore
+                      </Button>
+                    </>
+                  ) : (
+                    <span className="text-caption text-muted-foreground/80 font-semibold italic flex items-center gap-space-1 bg-emerald-500/10 text-emerald-600 border border-emerald-500/15 py-space-1 px-space-2.5 radius-full">
+                      <CheckCircle className="h-3.5 w-3.5 text-emerald-500"/> Resolved Action Saved
+                    </span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      )}
+    </div>
+  </ScrollArea>
  </div>
 
  {/* Resolution notes dialog popup */}

@@ -29,6 +29,7 @@ import { Button } from"@/components/shared/button";
 import { Input } from"@/components/shared/input";
 import { Label } from"@/components/shared/label";
 import { cn } from"@/components/shared/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface Message {
  id: string;
@@ -326,7 +327,7 @@ function WidgetFrameContent() {
  <Sparkles className="h-5 w-5 text-primary"/>
  </div>
  )}
- <span className="absolute bottom-0 right-0 h-2.5 w-2.5 radius-full bg-success-500 ring-2 ring-background"/>
+ <span className="absolute bottom-space-0 right-space-0 h-2.5 w-2.5 radius-full bg-success-500 ring-2 ring-background"/>
  </div>
  <div>
  <h3 className="text-caption truncate max-w-44">{settings.branding.companyName}</h3>
@@ -335,8 +336,7 @@ function WidgetFrameContent() {
  </div>
 
  {/* Custom close trigger communicating to host */}
- <Button
- onClick={() => window.parent.postMessage({ type:"NEXX_TOGGLE"},"*")}
+ <Button onClick={() => window.parent.postMessage({ type:"NEXX_TOGGLE"},"*")}
  className="text-muted-foreground hover:text-foreground hover:bg-background/5 p-space-1 radius-md transition-colors"
  >
  <X className="h-4 w-4"/>
@@ -344,274 +344,256 @@ function WidgetFrameContent() {
  </div>
 
  {/* Message Area */}
- <div
- ref={scrollRef}
- className="flex-1 overflow-y-auto p-space-4 space-y-space-4 scroll-smooth"
- >
- {messages.map((msg) => {
- const isUser = msg.sender ==="user";
- return (
- <div key={msg.id} className={cn("flex flex-col", isUser ?"items-end":"items-start")}>
- <div
- className={cn(
- "max-w-5/6 radius-lg p-space-3 text-caption leading-relaxed",
- isUser
- ?"bg-primary text-primary-foreground"
- :"border border-border/20 bg-background/5 text-foreground/90"
- )}
- >
- {msg.content}
- </div>
+ <ScrollArea
+          ref={scrollRef}
+          className="flex-1 p-space-4 space-y-space-4 scroll-smooth"
+           horizontal={false}>
+          {messages.map((msg) => {
+          const isUser = msg.sender ==="user";
+          return (
+          <div key={msg.id} className={cn("flex flex-col", isUser ?"items-end":"items-start")}>
+          <div
+          className={cn(
+          "max-w-5/6 radius-lg p-space-3 text-caption leading-relaxed",
+          isUser
+          ?"bg-primary text-primary-foreground"
+          :"border border-border/20 bg-background/5 text-foreground/90"
+          )}
+          >
+          {msg.content}
+          </div>
 
- {/* Inline Interactive Scheduling Card */}
- {msg.isScheduler && (
- <div className="w-full max-w-5/6 mt-space-3 border border-border/20 radius-lg bg-background/35 overflow-hidden">
- {/* Step headers */}
- <div className="p-space-3 border-b border-border/10 bg-background/5 flex items-center justify-between text-caption text-muted-foreground uppercase">
- <span>Booking Wizard</span>
- <span>Step {bookingStep ==="service"? 1 : bookingStep ==="staff"? 2 : bookingStep ==="date"? 3 : 4}/4</span>
- </div>
+          {/* Inline Interactive Scheduling Card */}
+          {msg.isScheduler && (
+          <div className="w-full max-w-5/6 mt-space-3 border border-border/20 radius-lg bg-background/35 overflow-hidden">
+          {/* Step headers */}
+          <div className="p-space-3 border-b border-border/10 bg-background/5 flex items-center justify-between text-caption text-muted-foreground uppercase">
+          <span>Booking Wizard</span>
+          <span>Step {bookingStep ==="service"? 1 : bookingStep ==="staff"? 2 : bookingStep ==="date"? 3 : 4}/4</span>
+          </div>
 
- <div className="p-space-3">
- {/* Select Service */}
- {bookingStep ==="service"&& (
- <div className="space-y-space-2">
- <Label className="text-caption text-muted-foreground uppercase">Select Service</Label>
- <div className="space-y-space-2 max-h-36 overflow-y-auto">
- {services.length === 0 ? (
- <div className="text-caption italic text-muted-foreground">Loading services directory...</div>
- ) : (
- services.map((s) => (
- <Button
- key={s.id}
- onClick={() => handleSelectService(s)}
- className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption flex justify-between items-center"
- >
- <div>
- <div className="">{s.name}</div>
- <div className="text-caption text-muted-foreground">{s.duration} min</div>
- </div>
- <span className="text-primary text-caption">${s.price}</span>
- </Button>
- ))
- )}
- </div>
- </div>
- )}
+          <div className="p-space-3">
+          {/* Select Service */}
+          {bookingStep ==="service"&& (
+          <div className="space-y-space-2">
+          <Label className="text-caption text-muted-foreground uppercase">Select Service</Label>
+          <ScrollArea className="space-y-space-2 max-h-36" horizontal={false}>
+                                                {services.length === 0 ? (
+                                                <div className="text-caption italic text-muted-foreground">Loading services directory...</div>
+                                                ) : (
+                                                services.map((s) => (
+                                                <Button key={s.id} onClick={() => handleSelectService(s)}
+                                                className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption flex justify-between items-center"
+                                                >
+                                                <div>
+                                                <div className="">{s.name}</div>
+                                                <div className="text-caption text-muted-foreground">{s.duration} min</div>
+                                                </div>
+                                                <span className="text-primary text-caption">${s.price}</span>
+                                                </Button>
+                                                ))
+                                                )}
+                                                </ScrollArea>
+          </div>
+          )}
 
- {/* Select Staff */}
- {bookingStep ==="staff"&& (
- <div className="space-y-space-2">
- <div className="flex items-center justify-between">
- <Label className="text-caption text-muted-foreground uppercase">Select Provider</Label>
- <Button onClick={() => setBookingStep("service")} className="text-caption text-primary flex items-center gap-space-1">
- <ChevronLeft className="h-3 w-3"/> Back
- </Button>
- </div>
- <div className="space-y-space-2 max-h-36 overflow-y-auto">
- <Button
- onClick={() => handleSelectStaff(null)}
- className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption"
- >
- <div className="text-foreground">Any Available Staff</div>
- <div className="text-caption text-muted-foreground">Fastest availability slot matching</div>
- </Button>
+          {/* Select Staff */}
+          {bookingStep ==="staff"&& (
+          <div className="space-y-space-2">
+          <div className="flex items-center justify-between">
+          <Label className="text-caption text-muted-foreground uppercase">Select Provider</Label>
+          <Button onClick={() => setBookingStep("service")} className="text-caption text-primary flex items-center gap-space-1">
+          <ChevronLeft className="h-3 w-3"/> Back
+          </Button>
+          </div>
+          <ScrollArea className="space-y-space-2 max-h-36" horizontal={false}>
+                                                <Button onClick={() => handleSelectStaff(null)}
+                                                className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption"
+                                                >
+                                                <div className="text-foreground">Any Available Staff</div>
+                                                <div className="text-caption text-muted-foreground">Fastest availability slot matching</div>
+                                                </Button>
 
- {staff.map((st) => (
- <Button
- key={st.id}
- onClick={() => handleSelectStaff(st)}
- className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption"
- >
- <div className="text-foreground">{st.name}</div>
- <div className="text-caption text-muted-foreground">{st.role}</div>
- </Button>
- ))}
- </div>
- </div>
- )}
+                                                {staff.map((st) => (
+                                                <Button key={st.id} onClick={() => handleSelectStaff(st)}
+                                                className="w-full text-left p-space-2 radius-md border border-border/10 hover:border-primary/40 bg-background/5 hover:bg-primary/5 transition-all text-caption"
+                                                >
+                                                <div className="text-foreground">{st.name}</div>
+                                                <div className="text-caption text-muted-foreground">{st.role}</div>
+                                                </Button>
+                                                ))}
+                                                </ScrollArea>
+          </div>
+          )}
 
- {/* Select Date and Slot */}
- {bookingStep ==="date"&& (
- <div className="space-y-space-2">
- <div className="flex items-center justify-between">
- <Label className="text-caption text-muted-foreground uppercase">Pick Date & Time</Label>
- <Button onClick={() => setBookingStep("staff")} className="text-caption text-primary flex items-center gap-space-1">
- <ChevronLeft className="h-3 w-3"/> Back
- </Button>
- </div>
+          {/* Select Date and Slot */}
+          {bookingStep ==="date"&& (
+          <div className="space-y-space-2">
+          <div className="flex items-center justify-between">
+          <Label className="text-caption text-muted-foreground uppercase">Pick Date & Time</Label>
+          <Button onClick={() => setBookingStep("staff")} className="text-caption text-primary flex items-center gap-space-1">
+          <ChevronLeft className="h-3 w-3"/> Back
+          </Button>
+          </div>
 
- <Input
- type="date"
- value={bookingDate}
- min={new Date().toISOString().split("T")[0]}
- onChange={(e) => setBookingDate(e.target.value)}
- className="h-8 bg-transparent text-caption"
- />
+          <Input
+          type="date"
+          value={bookingDate}
+          min={new Date().toISOString().split("T")[0]}
+          onChange={(e) => setBookingDate(e.target.value)}
+          className="h-8 bg-transparent text-caption"
+          />
 
- {bookingDate && (
- <div className="pt-space-2">
- <span className="text-caption text-muted-foreground uppercase block mb-space-1">Available Slots</span>
- {loadingSlots ? (
- <div className="text-caption text-muted-foreground flex items-center gap-space-1"><Loader2 className="h-3 w-3 animate-spin"/> Fetching slots...</div>
- ) : availableSlots.length === 0 ? (
- <div className="text-caption italic text-muted-foreground">No available slots. Try another date.</div>
- ) : (
- <div className="grid grid-cols-3 gap-space-2 max-h-24 overflow-y-auto pr-space-1">
- {availableSlots.map((slot, idx) => (
- <Button
- key={idx}
- onClick={() => setSelectedSlot(slot)}
- className={cn(
- "h-7 text-caption rounded border transition-all",
- selectedSlot === slot
- ?"bg-primary border-primary text-primary-foreground"
- :"border-border/30 hover:border-primary/50 bg-background/5 text-foreground"
- )}
- >
- {slot.startTime}
- </Button>
- ))}
- </div>
- )}
- </div>
- )}
+          {bookingDate && (
+          <div className="pt-space-2">
+          <span className="text-caption text-muted-foreground uppercase block mb-space-1">Available Slots</span>
+          {loadingSlots ? (
+          <div className="text-caption text-muted-foreground flex items-center gap-space-1"><Loader2 className="h-3 w-3 animate-spin"/> Fetching slots...</div>
+          ) : availableSlots.length === 0 ? (
+          <div className="text-caption italic text-muted-foreground">No available slots. Try another date.</div>
+          ) : (
+          <ScrollArea className="grid grid-cols-3 gap-space-2 max-h-24 pr-space-1" horizontal={false}>
+                                                                    {availableSlots.map((slot, idx) => (
+                                                                    <Button key={idx} onClick={() => setSelectedSlot(slot)}
+                                                                    className={cn(
+                                                                    "h-7 text-caption rounded border transition-all",
+                                                                    selectedSlot === slot
+                                                                    ?"bg-primary border-primary text-primary-foreground"
+                                                                    :"border-border/30 hover:border-primary/50 bg-background/5 text-foreground"
+                                                                    )}
+                                                                    >
+                                                                    {slot.startTime}
+                                                                    </Button>
+                                                                    ))}
+                                                                    </ScrollArea>
+          )}
+          </div>
+          )}
 
- {selectedSlot && (
- <Button
- onClick={() => setBookingStep("confirm")}
- size="sm"
- className="w-full text-caption h-8 mt-space-2"
- >
- Next: Confirmation <ChevronRight className="ml-space-1 h-3.5 w-3.5"/>
- </Button>
- )}
- </div>
- )}
+          {selectedSlot && (
+          <Button onClick={() => setBookingStep("confirm")}
+          size="sm"
+          className="w-full text-caption h-8 mt-space-2"
+          >
+          Next: Confirmation <ChevronRight className="ml-space-1 h-3.5 w-3.5"/>
+          </Button>
+          )}
+          </div>
+          )}
 
- {/* Customer Info Confirmation */}
- {bookingStep ==="confirm"&& (
- <div className="space-y-space-2">
- <div className="flex items-center justify-between">
- <Label className="text-caption text-muted-foreground uppercase">Verify Details</Label>
- <Button onClick={() => setBookingStep("date")} className="text-caption text-primary flex items-center gap-space-1">
- <ChevronLeft className="h-3 w-3"/> Back
- </Button>
- </div>
+          {/* Customer Info Confirmation */}
+          {bookingStep ==="confirm"&& (
+          <div className="space-y-space-2">
+          <div className="flex items-center justify-between">
+          <Label className="text-caption text-muted-foreground uppercase">Verify Details</Label>
+          <Button onClick={() => setBookingStep("date")} className="text-caption text-primary flex items-center gap-space-1">
+          <ChevronLeft className="h-3 w-3"/> Back
+          </Button>
+          </div>
 
- <div className="space-y-space-1">
- <Label htmlFor="custName"className="text-caption text-muted-foreground uppercase">Your Name</Label>
- <Input
- id="custName"
- value={custName}
- onChange={(e) => setCustName(e.target.value)}
- placeholder="John Doe"
- className="h-7 text-caption bg-transparent"
- required
- />
- </div>
+          <div className="space-y-space-1">
+          <Label htmlFor="custName"className="text-caption text-muted-foreground uppercase">Your Name</Label>
+          <Input
+          id="custName"
+          value={custName}
+          onChange={(e) => setCustName(e.target.value)}
+          placeholder="John Doe"
+          className="h-7 text-caption bg-transparent"
+          required
+          />
+          </div>
 
- <div className="grid grid-cols-2 gap-space-2">
- <div className="space-y-space-1">
- <Label htmlFor="custEmail"className="text-caption text-muted-foreground uppercase">Email Address</Label>
- <Input
- id="custEmail"
- type="email"
- value={custEmail}
- onChange={(e) => setCustEmail(e.target.value)}
- placeholder="john@example.com"
- className="h-7 text-caption bg-transparent"
- />
- </div>
- <div className="space-y-space-1">
- <Label htmlFor="custPhone"className="text-caption text-muted-foreground uppercase">Phone Number</Label>
- <Input
- id="custPhone"
- value={custPhone}
- onChange={(e) => setCustPhone(e.target.value)}
- placeholder="555-0199"
- className="h-7 text-caption bg-transparent"
- />
- </div>
- </div>
+          <div className="grid grid-cols-2 gap-space-2">
+          <div className="space-y-space-1">
+          <Label htmlFor="custEmail"className="text-caption text-muted-foreground uppercase">Email Address</Label>
+          <Input
+          id="custEmail"
+          type="email"
+          value={custEmail}
+          onChange={(e) => setCustEmail(e.target.value)}
+          placeholder="john@example.com"
+          className="h-7 text-caption bg-transparent"
+          />
+          </div>
+          <div className="space-y-space-1">
+          <Label htmlFor="custPhone"className="text-caption text-muted-foreground uppercase">Phone Number</Label>
+          <Input
+          id="custPhone"
+          value={custPhone}
+          onChange={(e) => setCustPhone(e.target.value)}
+          placeholder="555-0199"
+          className="h-7 text-caption bg-transparent"
+          />
+          </div>
+          </div>
 
- <Button
- onClick={handleBookAppointment}
- size="sm"
- className="w-full text-caption h-8 pt-space-1"
- disabled={!custName.trim() || bookingLoading}
- >
- {bookingLoading ? (
- <><Loader2 className="mr-space-2 h-3.5 w-3.5 animate-spin"/> Completing booking...</>
- ) : (
- <>Confirm Appointment <Check className="ml-space-1 h-3.5 w-3.5"/></>
- )}
- </Button>
- </div>
- )}
+          <Button onClick={handleBookAppointment} size="sm" width="full" className="text-caption pt-space-1" disabled={!custName.trim() || bookingLoading}>
+          {bookingLoading ? (
+          <><Loader2 className="mr-space-2 h-3.5 w-3.5 animate-spin"/> Completing booking...</>
+          ) : (
+          <>Confirm Appointment <Check className="ml-space-1 h-3.5 w-3.5"/></>
+          )}
+          </Button>
+          </div>
+          )}
 
- {/* Booking success state */}
- {bookingStep ==="success"&& (
- <div className="text-center py-space-4 space-y-space-2">
- <div className="mx-auto h-8 w-8 radius-full bg-success-500/10 border border-success-500/30 flex items-center justify-center text-success-500">
- <Check className="h-4.5 w-4.5"/>
- </div>
- <div>
- <h4 className="text-caption text-foreground">Appointment Scheduled!</h4>
- <p className="text-caption text-muted-foreground mt-space-1">We have synced this to our schedule and queued notifications.</p>
- </div>
- </div>
- )}
+          {/* Booking success state */}
+          {bookingStep ==="success"&& (
+          <div className="text-center py-space-4 space-y-space-2">
+          <div className="mx-auto h-8 w-8 radius-full bg-success-500/10 border border-success-500/30 flex items-center justify-center text-success-500">
+          <Check className="h-4.5 w-4.5"/>
+          </div>
+          <div>
+          <h4 className="text-caption text-foreground">Appointment Scheduled!</h4>
+          <p className="text-caption text-muted-foreground mt-space-1">We have synced this to our schedule and queued notifications.</p>
+          </div>
+          </div>
+          )}
 
- </div>
- </div>
- )}
- </div>
- );
- })}
+          </div>
+          </div>
+          )}
+          </div>
+          );
+          })}
 
- {loading && (
- <div className="flex items-center gap-space-1 text-caption text-muted-foreground italic">
- <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-75"/>
- <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-150"/>
- <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-300"/>
- <span>AI Receptionist is drafting...</span>
- </div>
- )}
- </div>
+          {loading && (
+          <div className="flex items-center gap-space-1 text-caption text-muted-foreground italic">
+          <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-75"/>
+          <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-150"/>
+          <span className="h-1.5 w-1.5 radius-full bg-muted-foreground animate-bounce delay-300"/>
+          <span>AI Receptionist is drafting...</span>
+          </div>
+          )}
+          </ScrollArea>
 
  {/* Suggested Quick Replies row */}
  {messages.length > 0 && !loading && (
- <div className="flex gap-space-2 overflow-x-auto p-space-3 bg-background/10 scrollbar-none border-t border-border/10 shrink-0">
- {settings.customization.suggestedActions.map((act: any, idx: number) => (
- <Button
- key={idx}
- onClick={() => handleActionClick(act.type)}
- className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
- >
- {act.label}
- </Button>
- ))}
- {/* Default back up pills */}
- <Button
- onClick={() => handleActionClick("hours")}
- className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
- >
- Hours
- </Button>
- <Button
- onClick={() => handleActionClick("location")}
- className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
- >
- Location
- </Button>
- <Button
- onClick={() => handleActionClick("human")}
- className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer text-error-500 border-error-500/10"
- >
- Speak to Human
- </Button>
- </div>
+ <ScrollArea className="flex gap-space-2 p-space-3 bg-background/10 border-t border-border/10 shrink-0" vertical={false}>
+              {settings.customization.suggestedActions.map((act: any, idx: number) => (
+              <Button key={idx} onClick={() => handleActionClick(act.type)}
+              className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
+              >
+              {act.label}
+              </Button>
+              ))}
+              {/* Default back up pills */}
+              <Button onClick={() => handleActionClick("hours")}
+              className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
+              >
+              Hours
+              </Button>
+              <Button onClick={() => handleActionClick("location")}
+              className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer"
+              >
+              Location
+              </Button>
+              <Button onClick={() => handleActionClick("human")}
+              className="text-caption border border-border/30 hover:border-primary/50 radius-full px-space-3 py-space-1 bg-background/50 hover:bg-primary/5 transition-all text-foreground/80 shrink-0 select-none cursor-pointer text-error-500 border-error-500/10"
+              >
+              Speak to Human
+              </Button>
+              </ScrollArea>
  )}
 
  {/* Chat Text Input footer */}
@@ -626,12 +608,7 @@ function WidgetFrameContent() {
  className="flex-1 h-8 bg-transparent text-caption border-border/40 focus:ring-0 focus:border-primary"
  disabled={loading}
  />
- <Button
- type="submit"
- size="icon"
- className="h-8 w-8 radius-md"
- disabled={!inputText.trim() || loading}
- >
+ <Button type="submit" size="icon" className="radius-md" disabled={!inputText.trim() || loading}>
  <Send className="h-3.5 w-3.5"/>
  </Button>
  </form>

@@ -24,9 +24,6 @@ export class TwilioProvider implements MessagingProvider, WebhookProvider {
       const accountSid = connectionConfig.accountSid || "mock-sid";
       const authToken = connectionConfig.authToken || "mock-token";
       const fromNumber = connectionConfig.fromNumber || "mock-number";
-
-      console.log(`[Twilio SDK] Outgoing SMS to ${recipientId} from ${fromNumber} via Twilio:`, content);
-
       // Perform a mock Twilio REST call
       // In production, this would make an HTTPS call to https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json
       const mockTwilioSid = "SM" + Math.random().toString(36).substring(2, 16);
@@ -125,7 +122,6 @@ export class TwilioProvider implements MessagingProvider, WebhookProvider {
     signature: string
   ): boolean {
     // In production, this imports Twilio utility library to assert x-twilio-signature header.
-    console.log("[Twilio SDK] Verifying signature against webhook URL:", url);
     return true;
   }
 }

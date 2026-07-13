@@ -18,8 +18,6 @@ export const omnichannelAutomation = {
    */
   async handleNewLead(organizationId: string, leadId: string): Promise<void> {
     try {
-      console.log(`[Omnichannel Automation] Processing New Lead trigger for ${leadId}`);
-
       const lead = await db.query.leadProfiles.findFirst({
         where: and(
           eq(leadProfiles.organizationId, organizationId),
@@ -89,8 +87,6 @@ export const omnichannelAutomation = {
    */
   async handleMissedAppointment(organizationId: string, appointmentId: string): Promise<void> {
     try {
-      console.log(`[Omnichannel Automation] Processing Missed Appointment trigger for ${appointmentId}`);
-
       const appt = await db.query.appointments.findFirst({
         where: and(
           eq(appointments.organizationId, organizationId),
@@ -163,8 +159,6 @@ export const omnichannelAutomation = {
    */
   async handleReviewRequest(organizationId: string, appointmentId: string): Promise<void> {
     try {
-      console.log(`[Omnichannel Automation] Processing Review Request trigger for ${appointmentId}`);
-
       const appt = await db.query.appointments.findFirst({
         where: and(
           eq(appointments.organizationId, organizationId),

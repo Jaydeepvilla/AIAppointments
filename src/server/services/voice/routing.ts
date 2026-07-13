@@ -68,7 +68,6 @@ export const voiceRouting = {
 
       // Check holidays
       if (settings.holidays && settings.holidays.includes(localDateStr)) {
-        console.log(`[Voice Routing] Organization ${organizationId} closed today due to holiday: ${localDateStr}`);
         return false;
       }
 
@@ -108,9 +107,6 @@ export const voiceRouting = {
         const isOpen = await this.isWithinBusinessHours(organizationId);
         trigger = isOpen ? "business-hours" : "after-hours";
       }
-
-      console.log(`[Voice Routing] Evaluating routing rules for org ${organizationId} under trigger: ${trigger}`);
-
       // 2. Fetch routing rules sorted by priority
       const rules = await db.query.callRoutingRules.findMany({
         where: and(
@@ -123,8 +119,6 @@ export const voiceRouting = {
 
       if (rules.length > 0) {
         const primaryRule = rules[0];
-        console.log(`[Voice Routing] Matched rule "${primaryRule.ruleName}": ${primaryRule.routingAction}`);
-
         return {
           action: primaryRule.routingAction as "ai-receptionist" | "staff-dial" | "voicemail" | "queue",
           targetId: primaryRule.targetId,

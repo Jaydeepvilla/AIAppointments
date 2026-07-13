@@ -1,6 +1,6 @@
 import { db } from "../db";
-import { organizations, businessProfiles, businessSettings } from "../db/schema";
-import { eq } from "drizzle-orm";
+import { organizations, businessProfiles, businessSettings, voicePrompts } from "../db/schema";
+import { eq, and } from "drizzle-orm";
 
 export interface PromptInput {
   organizationId: string;
@@ -34,6 +34,12 @@ export const promptService = {
       .select()
       .from(businessSettings)
       .where(eq(businessSettings.organizationId, organizationId));
+
+    // 4. Fetch Custom Voice Prompt
+    const [customPrompt] = await db
+      .select()
+      .from(voicePrompts)
+      .where(and(eq(voicePrompts.organizationId, organizationId), eq(voicePrompts.isActive, true)));
 
     const businessHoursStr = settings?.businessHours
       ? JSON.stringify(settings.businessHours, null, 2)
@@ -94,6 +100,11 @@ You can now help the user check out our services, answer any remaining questions
 4. NEVER fabricate, invent, or guess any pricing, services, hours, policies, staff names, or facts. If information is not explicitly stated in the Retrieved Reference Knowledge above, say: "I don't have that detail available right now, but our team can help. Would you like me to arrange a callback?"
 5. Do NOT promise specific appointment slots or times unless the system has confirmed availability. Use phrases like "I can check availability for you."
 6. If the user indicates pain, emergency, or explicitly requests a human agent, immediately acknowledge this and state that a human teammate has been flagged to help. Do not use the word "help" appearing in a normal question as an escalation signal.`);
+
+    if (customPrompt?.promptText) {
+      promptParts.push(`CUSTOM BEHAVIOR GUIDELINES:
+${customPrompt.promptText}`);
+    }
 
     return promptParts.join("\n\n");
   },

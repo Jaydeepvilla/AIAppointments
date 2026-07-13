@@ -10,8 +10,14 @@ export interface NewBusinessSettings {
   bookingPreferences?: Record<string, any>;
   notificationPreferences?: Record<string, any>;
   leadAssignmentRules?: Record<string, any>;
+  recommendationPreferences?: {
+    dismissed?: string[];
+    snoozed?: Record<string, string>;
+  };
   websiteImportUrl?: string | null;
   websiteImportStatus?: string;
+  qualityScoresHistory?: any[];
+  crmSegments?: any[];
 }
 
 export const settingsRepository = {

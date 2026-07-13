@@ -4,6 +4,9 @@ import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { voiceRepository } from "../repositories/voice";
 import { membershipRepository } from "../repositories/membership";
+import { db } from "../db";
+import { voicePrompts } from "../db/schema";
+import { eq, and } from "drizzle-orm";
 
 async function getVerifiedOrgId() {
   const { userId } = await auth();
@@ -192,5 +195,46 @@ export async function getVoiceAnalyticsAction() {
     return { success: true, analytics };
   } catch (error: any) {
     return { success: false, error: error?.message || "Failed to load voice analytics" };
+  }
+}
+
+// --- Voice Prompts / System Instructions ---
+export async function getVoicePromptAction() {
+  try {
+    const orgId = await getVerifiedOrgId();
+    const [prompt] = await db
+      .select()
+      .from(voicePrompts)
+      .where(and(eq(voicePrompts.organizationId, orgId), eq(voicePrompts.isActive, true)));
+    return { success: true, prompt: prompt || null };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to load custom prompt" };
+  }
+}
+
+export async function saveVoicePromptAction(promptText: string) {
+  try {
+    const orgId = await getVerifiedOrgId();
+    // 1. Deactivate existing active prompts for this org
+    await db
+      .update(voicePrompts)
+      .set({ isActive: false })
+      .where(eq(voicePrompts.organizationId, orgId));
+
+    // 2. Insert new prompt
+    const [inserted] = await db
+      .insert(voicePrompts)
+      .values({
+        organizationId: orgId,
+        name: "Custom Guidelines",
+        promptText,
+        isActive: true,
+      })
+      .returning();
+
+    revalidatePath("/settings/ai");
+    return { success: true, prompt: inserted };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save custom prompt" };
   }
 }

@@ -32,6 +32,16 @@ export const availabilityService = {
 
     const duration = service.duration; // in minutes
 
+    // 1.5 Check Holidays
+    const [settings] = await db
+      .select()
+      .from(businessSettings)
+      .where(eq(businessSettings.organizationId, organizationId));
+    
+    if (settings?.holidays?.includes(dateStr)) {
+      return []; // Closed on holidays
+    }
+
     // 2. Fetch Booking Rules (min lead time, buffers)
     const rules = await rulesRepository.getByOrganization(organizationId);
     const minLeadTime = rules?.minLeadTime ?? 2; // hours
@@ -154,8 +164,8 @@ export const availabilityService = {
 
             // Overlap boundary checks:
             // candidateStart - bufferAfter < aptEnd AND candidateEnd + bufferBefore > aptStart
-            const totalBufferBefore = bufferBefore * 60 * 1000;
-            const totalBufferAfter = bufferAfter * 60 * 1000;
+            const totalBufferBefore = (bufferBefore + (staff.bufferTime || 0)) * 60 * 1000;
+            const totalBufferAfter = (bufferAfter + (staff.bufferTime || 0)) * 60 * 1000;
 
             const blockStart = new Date(slotStart.getTime() - totalBufferBefore);
             const blockEnd = new Date(slotEnd.getTime() + totalBufferAfter);

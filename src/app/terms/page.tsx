@@ -3,6 +3,7 @@ import Link from "next/link";
 import { MarketingNav } from "@/components/marketing/nav";
 import { MarketingFooter } from "@/components/marketing/footer";
 import { FileText, ArrowRight } from "lucide-react";
+import { NativeA } from "@/components/shared/native";
 
 export const metadata: Metadata = {
   title: "Terms of Service | Operator Receptionist",
@@ -68,9 +69,9 @@ export default function TermsPage() {
                     ["changes", "Changes to Terms"],
                     ["contact-terms", "Contact"],
                   ].map(([id, label]) => (
-                    <a key={id} href={`#${id}`} className="block text-caption text-muted-foreground hover:text-foreground transition-colors py-space-1 hover:pl-space-1 transition-all">
+                    <NativeA key={id} href={`#${id}`} className="block text-caption text-muted-foreground hover:text-foreground transition-colors py-space-1 hover:pl-space-1 transition-all">
                       {label}
-                    </a>
+                    </NativeA>
                   ))}
                 </nav>
               </div>

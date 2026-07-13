@@ -23,9 +23,6 @@ export class InstagramProvider implements MessagingProvider, WebhookProvider {
     try {
       const pageAccessToken = connectionConfig.pageAccessToken || "mock-token";
       const igId = connectionConfig.instagramId || "mock-ig-id";
-
-      console.log(`[Instagram DM SDK] Outgoing Message to client IG scope ${recipientId} from Business IG ${igId}:`, content);
-
       // Perform mock Instagram Graph API message send
       // Endpoint: https://graph.facebook.com/v18.0/me/messages?access_token=${pageAccessToken}
       const mockMetaId = "ig-msg-" + Math.random().toString(36).substring(2, 12);

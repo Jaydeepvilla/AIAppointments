@@ -15,6 +15,7 @@ import { VoiceProviderRegistry } from "./types";
 import "./twilio";
 import "./deepgram";
 import "./elevenlabs";
+import "./vapi";
 
 export const voiceOrchestrator = {
   /**
@@ -28,8 +29,6 @@ export const voiceOrchestrator = {
     recipientNumber: string;
   }) {
     try {
-      console.log(`[Voice Orchestrator] Initializing Call Session for SID: ${options.externalSessionId}`);
-
       // Create central conversation
       const [conv] = await db
         .insert(conversations)
@@ -81,8 +80,6 @@ export const voiceOrchestrator = {
     const { organizationId, sessionId, conversationId, speaker, content } = options;
 
     try {
-      console.log(`[Voice Orchestrator] Processing transcript from ${speaker}: "${content}"`);
-
       // Save transcript line
       await db.insert(callTranscripts).values({
         organizationId,
@@ -181,8 +178,6 @@ export const voiceOrchestrator = {
     const { organizationId, sessionId, durationSeconds, endedReason } = options;
 
     try {
-      console.log(`[Voice Orchestrator] Finalizing Call Session: ${sessionId}`);
-
       // Update Call Session status
       await db
         .update(callSessions)

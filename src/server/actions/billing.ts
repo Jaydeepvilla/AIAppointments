@@ -210,3 +210,113 @@ export async function getRevenueMetricsAction() {
     return { success: false, error: error?.message || "Failed to compile financial metrics" };
   }
 }
+
+// ── Global Billing Infrastructure Actions ──
+
+import { PaymentRecommendationEngine } from "../services/billing/recommendation";
+import { businessPaymentSettings as businessPaymentSettingsTable, organizations as organizationsTable } from "../db/schema";
+import { and as dbAnd } from "drizzle-orm";
+
+export async function getPaymentProvidersAction() {
+  try {
+    const orgId = await getVerifiedOrgContext();
+
+    // 1. Get organization profile context
+    const org = await db.query.organizations.findFirst({
+      where: eq(organizationsTable.id, orgId),
+    });
+
+    if (!org) {
+      throw new Error("Organization not found");
+    }
+
+    // 2. Perform region, currency and language auto-detection
+    let country = "US";
+    let currency = "USD";
+    let language = "en";
+
+    const timezoneLower = org.timezone.toLowerCase();
+    const addressLower = (org.address || "").toLowerCase();
+
+    if (timezoneLower.includes("kolkata") || timezoneLower.includes("calcutta") || addressLower.includes("india") || addressLower.includes("in")) {
+      country = "IN";
+      currency = "INR";
+      language = "hi";
+    } else if (timezoneLower.includes("europe") || addressLower.includes("germany") || addressLower.includes("france") || addressLower.includes("de")) {
+      country = "DE";
+      currency = "EUR";
+      language = "de";
+    }
+
+    // 3. Query compatible providers
+    const compat = await PaymentRecommendationEngine.getCompatibleProviders({
+      country,
+      currency,
+      language,
+    });
+
+    // 4. Fetch current business connection settings
+    const activeConnections = await db.query.businessPaymentSettings.findMany({
+      where: eq(businessPaymentSettingsTable.organizationId, orgId),
+    });
+
+    return {
+      success: true,
+      country,
+      currency,
+      language,
+      recommended: compat.recommended,
+      supported: compat.supported,
+      connections: activeConnections,
+    };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to load payment infrastructure setup" };
+  }
+}
+
+export async function updateProviderSettingsAction(data: {
+  providerId: string;
+  connectionStatus: "connected" | "disconnected" | "pending_verification";
+  isSandbox: boolean;
+  credentials: Record<string, string>;
+}) {
+  try {
+    const orgId = await getVerifiedOrgContext();
+
+    // Check if configuration already exists
+    const existing = await db.query.businessPaymentSettings.findFirst({
+      where: dbAnd(
+        eq(businessPaymentSettingsTable.organizationId, orgId),
+        eq(businessPaymentSettingsTable.providerId, data.providerId)
+      ),
+    });
+
+    if (existing) {
+      await db
+        .update(businessPaymentSettingsTable)
+        .set({
+          connectionStatus: data.connectionStatus,
+          isSandbox: data.isSandbox,
+          credentials: data.credentials,
+          updatedAt: new Date(),
+        })
+        .where(eq(businessPaymentSettingsTable.id, existing.id));
+    } else {
+      await db
+        .insert(businessPaymentSettingsTable)
+        .values({
+          organizationId: orgId,
+          providerId: data.providerId,
+          connectionStatus: data.connectionStatus,
+          isSandbox: data.isSandbox,
+          credentials: data.credentials,
+        });
+    }
+
+    revalidatePath("/billing");
+    return { success: true };
+  } catch (error: any) {
+    return { success: false, error: error?.message || "Failed to save payment settings" };
+  }
+}
+

@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/shared/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/shared/card";
 import { upgradeSubscriptionAction, cancelSubscriptionAction } from "@/server/actions/billing";
+import { PaymentProvidersClient } from "./payment-providers-client";
 
 interface BillingPortalClientProps {
   initialSubscription: any;
@@ -24,6 +25,14 @@ interface BillingPortalClientProps {
   initialInvoices: any[];
   initialPayments: any[];
   initialUsageCounters: any[];
+  paymentProvidersData?: {
+    country: string;
+    currency: string;
+    language: string;
+    recommended: any[];
+    supported: any[];
+    connections: any[];
+  };
 }
 
 export function BillingPortalClient({
@@ -32,8 +41,9 @@ export function BillingPortalClient({
   initialInvoices,
   initialPayments,
   initialUsageCounters,
+  paymentProvidersData
 }: BillingPortalClientProps) {
-  const [activeTab, setActiveTab] = useState<"plans" | "usage" | "invoices">("plans");
+  const [activeTab, setActiveTab] = useState<"plans" | "usage" | "invoices" | "providers">("plans");
   const [subscription, setSubscription] = useState(initialSubscription);
   const [invoices, setInvoices] = useState(initialInvoices);
   const [payments, setPayments] = useState(initialPayments);
@@ -146,6 +156,15 @@ export function BillingPortalClient({
         >
           <History className="h-3.5 w-3.5 mr-space-2 text-warning-500" />
           Statement Invoices
+        </Button>
+        <Button 
+          variant={activeTab === "providers" ? "secondary" : "ghost"}
+          size="sm"
+          onClick={() => setActiveTab("providers")}
+          className="flex-1 text-caption cursor-pointer"
+        >
+          <CreditCard className="h-3.5 w-3.5 mr-space-2 text-primary" />
+          Payment Providers
         </Button>
       </div>
 
@@ -401,6 +420,30 @@ export function BillingPortalClient({
                 </table>
               </div>
             )}
+          </CardContent>
+        </Card>
+      )}
+
+      {activeTab === "providers" && paymentProvidersData && (
+        <Card className="bg-card/45 border border-border/50 max-w-5xl">
+          <CardHeader>
+            <CardTitle className="text-body-md flex items-center gap-space-2">
+              <CreditCard className="h-5 w-5 text-primary" />
+              Global Payment Networks
+            </CardTitle>
+            <CardDescription className="text-caption">
+              Setup and manage multiple international checkout networks dynamically filtered for your region.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <PaymentProvidersClient
+              country={paymentProvidersData.country}
+              currency={paymentProvidersData.currency}
+              language={paymentProvidersData.language}
+              recommended={paymentProvidersData.recommended}
+              supported={paymentProvidersData.supported}
+              initialConnections={paymentProvidersData.connections}
+            />
           </CardContent>
         </Card>
       )}

@@ -33,7 +33,7 @@ export function EmptyState({
       {...props}
     >
       {/* Subtle ambient glow */}
-      <div className="absolute top-space-0 left-space-1/2 -translate-x-space-1/2 w-72 h-48 bg-[radial-gradient(ellipse,hsl(var(--primary)/0.05)_0%,transparent_70%)] pointer-events-none" />
+      <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-72 h-48 bg-[radial-gradient(ellipse,hsl(var(--primary)/0.05)_0%,transparent_70%)] pointer-events-none" />
 
       {/* Icon container */}
       <div className="relative flex h-12 w-12 items-center justify-center radius-xl bg-[hsl(var(--primary)/0.08)] text-primary ring-1 ring-[hsl(var(--primary)/0.10)]">

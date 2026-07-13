@@ -42,4 +42,11 @@ export const remindersRepository = {
       .delete(appointmentReminders)
       .where(eq(appointmentReminders.appointmentId, appointmentId));
   },
+
+  async listByOrganization(organizationId: string) {
+    return db
+      .select()
+      .from(appointmentReminders)
+      .where(eq(appointmentReminders.organizationId, organizationId));
+  }
 };

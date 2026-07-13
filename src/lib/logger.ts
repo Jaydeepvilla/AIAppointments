@@ -86,7 +86,6 @@ export const logger = {
 
   info(message: string, options?: Parameters<typeof buildEntry>[2]) {
     const entry = buildEntry("info", message, options);
-    console.log(formatLog(entry));
   },
 
   warn(message: string, options?: Parameters<typeof buildEntry>[2]) {

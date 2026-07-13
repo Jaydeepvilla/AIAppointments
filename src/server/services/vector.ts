@@ -54,11 +54,9 @@ export class MockVectorStore implements VectorStore {
     embedding: number[],
     metadata?: Record<string, any>
   ): Promise<void> {
-    console.log(`[VectorStore] Save embedding placeholder for chunk: ${chunkId} (Org: ${organizationId}). Vector dims: ${embedding.length}`);
   }
 
   async deleteEmbeddings(chunkIds: string[]): Promise<void> {
-    console.log(`[VectorStore] Delete embeddings placeholder for chunks: ${chunkIds.join(", ")}`);
   }
 }
 
@@ -68,8 +66,6 @@ export class MockRetrievalService implements RetrievalService {
     query: string,
     limit = 3
   ): Promise<SearchMatch[]> {
-    console.log(`[RetrievalService] Similarity search query placeholder for "${query}" (Org: ${organizationId})`);
-    
     // Returns empty array matches by default, ready for SQL pgvector vector similarity operators later
     return [];
   }

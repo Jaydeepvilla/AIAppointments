@@ -1,5 +1,6 @@
 import type { Metadata } from"next";
 import Link from"next/link";
+import { Button } from "@/components/shared/button";
 import { MarketingNav } from"@/components/marketing/nav";
 import { MarketingFooter } from"@/components/marketing/footer";
 import { ArrowRight, Check, Heart, Zap, Globe, Shield, Users, Target } from"lucide-react";
@@ -56,8 +57,8 @@ export default function AboutPage() {
  <main className="flex-1">
  {/* Hero */}
  <section className="relative overflow-hidden">
- <div className="absolute inset-0 dot-grid grid-fade-b pointer-events-none"/>
- <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none"/>
+ <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none"/>
 
  <div className="relative mx-auto max-w-6xl px-space-6 pt-space-24 pb-space-16 text-center">
  <p className="text-body-sm text-primary mb-space-4">Our story</p>
@@ -296,7 +297,7 @@ export default function AboutPage() {
 
  {/* CTA */}
  <section className="relative py-space-28 md:py-space-36 overflow-hidden border-t border-[hsl(var(--foreground)/0.06)]">
- <div className="absolute inset-0 dot-grid grid-fade-y pointer-events-none"/>
+ <div className="absolute inset-space-0 dot-grid grid-fade-y pointer-events-none"/>
  <div className="relative mx-auto max-w-2xl px-space-6 text-center">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
  <span className="text-caption uppercase tracking-widest text-primary font-semibold">Join Us</span>
@@ -308,12 +309,12 @@ export default function AboutPage() {
  </h2>
  <p className="text-muted-foreground text-title-lg mb-space-8">Start your AI receptionist today. Free for 14 days.</p>
  <div className="flex flex-col sm:flex-row gap-space-4 justify-center">
- <Link href="/sign-up"className="inline-flex items-center gap-space-2 radius-lg bg-primary px-space-6 py-space-3 text-body-sm text-primary-foreground hover:bg-primary/90 transition-colors">
- Start free trial <ArrowRight className="h-4 w-4"/>
- </Link>
- <Link href="/contact"className="inline-flex items-center gap-space-2 radius-lg border border-[hsl(var(--foreground)/0.08)] px-space-6 py-space-3 text-body-sm text-foreground hover:bg-[hsl(var(--foreground)/0.04)] transition-colors">
- Talk to Us
- </Link>
+ <Button asChild size="lg" className="w-full sm:w-auto">
+  <Link href="/sign-up">Start free trial <ArrowRight className="h-4 w-4"/></Link>
+  </Button>
+  <Button asChild variant="outline" size="lg" className="w-full sm:w-auto">
+  <Link href="/contact">Talk to Us</Link>
+  </Button>
  </div>
  </div>
  </section>

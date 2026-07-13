@@ -341,11 +341,11 @@ export default function ChannelsPage() {
  </CardHeader>
  <CardFooter className="pt-space-3 border-t border-border-muted flex gap-space-2 justify-end bg-card/5">
  {isConnected("email") ? (
- <Button size="sm"variant="outline"className="h-8 text-caption border-border-muted hover:border-amber-500/30 hover:bg-amber-500/5 hover:text-amber-500 transition-colors"onClick={() => openSettings(getChannelInstance("email"))}>
+ <Button size="sm" variant="outline" className="h-8 text-caption transition-colors" onClick={() => openSettings(getChannelInstance("email"))}>
  <Settings className="h-3.5 w-3.5 mr-space-1"/> Settings
  </Button>
  ) : (
- <Button size="sm"className="h-8 text-caption bg-amber-600 hover:bg-amber-500 text-white border-none transition-all"onClick={() => openSetup("email")}>
+ <Button size="sm" variant="warning" className="h-8 text-caption border-none transition-all" onClick={() => openSetup("email")}>
  Connect Host
  </Button>
  )}

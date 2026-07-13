@@ -56,7 +56,6 @@ export const agencyMetering = {
    */
   async recordUsage(organizationId: string, metric: MeteredMetric, amount = 1): Promise<number> {
     try {
-      console.log(`[Agency Metering] Recording +${amount} usage for ${metric} in organization ${organizationId}`);
       const activeRow = await this.getActiveUsageRow(organizationId, metric);
 
       const [updated] = await db

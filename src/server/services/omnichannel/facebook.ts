@@ -23,9 +23,6 @@ export class FacebookProvider implements MessagingProvider, WebhookProvider {
     try {
       const pageAccessToken = connectionConfig.pageAccessToken || "mock-token";
       const pageId = connectionConfig.pageId || "mock-page-id";
-
-      console.log(`[FB Messenger SDK] Outgoing Message to client PSID ${recipientId} from Page ID ${pageId}:`, content);
-
       // Perform mock Meta Graph API Messenger call
       // Endpoint: https://graph.facebook.com/v18.0/me/messages?access_token=${pageAccessToken}
       const mockMetaId = "fb-msg-" + Math.random().toString(36).substring(2, 12);

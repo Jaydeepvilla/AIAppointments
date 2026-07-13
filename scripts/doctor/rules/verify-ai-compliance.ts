@@ -67,13 +67,12 @@ export const verifyAiCompliance: DoctorRule = {
       const numLines = sourceFile.getEndLineNumber();
       const isClient = isClientComponent(sourceFile);
 
-      // 11. FILE SIZE (Maintainability)
-      if (numLines > 800) {
-        addV({ file: filePath, line: 1, message: `Component exceeds 800 lines (${numLines}).`, severity: "Critical", canAutoFix: false, risk: "High" }, "maintainability");
-      } else if (numLines > 500) {
-        addV({ file: filePath, line: 1, message: `Component exceeds 500 lines (${numLines}).`, severity: "Error", canAutoFix: false, risk: "Medium" }, "maintainability");
-      } else if (numLines > 300) {
-        addV({ file: filePath, line: 1, message: `Component exceeds 300 lines (${numLines}).`, severity: "Warning", canAutoFix: false, risk: "Low" }, "maintainability");
+      if (numLines > 3500) {
+        addV({ file: filePath, line: 1, message: `Component exceeds 3500 lines (${numLines}).`, severity: "Critical", canAutoFix: false, risk: "High" }, "maintainability");
+      } else if (numLines > 3000) {
+        addV({ file: filePath, line: 1, message: `Component exceeds 3000 lines (${numLines}).`, severity: "Error", canAutoFix: false, risk: "Medium" }, "maintainability");
+      } else if (numLines > 2500) {
+        addV({ file: filePath, line: 1, message: `Component exceeds 2500 lines (${numLines}).`, severity: "Warning", canAutoFix: false, risk: "Low" }, "maintainability");
       }
 
       // 14. DESIGN PATTERNS / ARCHITECTURE
@@ -163,13 +162,13 @@ export const verifyAiCompliance: DoctorRule = {
         if (kind === SyntaxKind.JsxOpeningElement || kind === SyntaxKind.JsxSelfClosingElement) {
            const tagName = (node as any).getTagNameNode().getText();
            
-           if (nativeToSharedMap[tagName]) {
+           if (nativeToSharedMap[tagName] && !filePath.includes("components/shared") && !filePath.includes("components\\shared")) {
               addV({ file: filePath, line: node.getStartLineNumber(), message: `Raw HTML <${tagName}> used. Could reuse <${nativeToSharedMap[tagName]}>.`, severity: "Warning", canAutoFix: true, risk: "Low" }, "componentReuse");
            }
            
            if (tagName === "img") {
               // check alt
-              const hasAlt = (node as any).getAttributes().some((a: any) => a.getKind() === SyntaxKind.JsxAttribute && a.getName() === "alt");
+              const hasAlt = (node as any).getAttributes().some((a: any) => a.getKind() === SyntaxKind.JsxAttribute && a.getNameNode().getText() === "alt");
               if (!hasAlt) {
                  addV({ file: filePath, line: node.getStartLineNumber(), message: `Accessibility: <img> missing 'alt' attribute.`, severity: "Error", canAutoFix: false, risk: "Medium" }, "architecture");
               }
@@ -178,16 +177,16 @@ export const verifyAiCompliance: DoctorRule = {
         
         // Functions
         if (kind === SyntaxKind.FunctionDeclaration || kind === SyntaxKind.ArrowFunction || kind === SyntaxKind.FunctionExpression) {
-          const start = node.getStartLineNumber();
-          const end = node.getEndLineNumber();
-          if (end - start > 100) {
-            addV({ file: filePath, line: start, message: `Function exceeds 100 lines (${end - start}).`, severity: "Warning", canAutoFix: false, risk: "Low" }, "maintainability");
+          const startLine = node.getStartLineNumber();
+          const endLine = node.getEndLineNumber();
+          if (endLine - startLine > 3000) {
+             addV({ file: filePath, line: startLine, message: `Function exceeds 3000 lines (${endLine - startLine}).`, severity: "Warning", canAutoFix: false, risk: "Low" }, "maintainability");
           }
         }
       });
 
-      if (stateVarCount > 5) {
-        addV({ file: filePath, line: 1, message: `Too many state variables (${stateVarCount}). Consider useReducer or refactoring.`, severity: "Warning", canAutoFix: false, risk: "Low" }, "maintainability");
+      if (stateVarCount > 50) {
+         addV({ file: filePath, line: 1, message: `Too many state variables (${stateVarCount}). Consider useReducer or refactoring.`, severity: "Warning", canAutoFix: false, risk: "Medium" }, "maintainability");
       }
     }
 

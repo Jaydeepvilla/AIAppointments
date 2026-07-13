@@ -46,6 +46,9 @@ export interface CalendarProvider {
   ): Promise<void>;
 }
 
+/* ─────────────────────────────────────────────────────────
+ * Google Calendar Provider (Direct HTTP API Integration)
+ * ───────────────────────────────────────────────────────── */
 export class GoogleCalendarProvider implements CalendarProvider {
   async getBusyPeriods(
     accessToken: string,
@@ -55,9 +58,36 @@ export class GoogleCalendarProvider implements CalendarProvider {
     start: Date,
     end: Date
   ): Promise<CalendarBusyPeriod[]> {
-    console.log(`[GoogleCalendarProvider] Fetch availability for: ${externalCalendarId || "primary"}`);
-    // Simulated busy blocks (stub)
-    return [];
+    try {
+      const response = await fetch("https://www.googleapis.com/calendar/v3/freeBusy", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          timeMin: start.toISOString(),
+          timeMax: end.toISOString(),
+          items: [{ id: externalCalendarId || "primary" }],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Google Calendar FreeBusy API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      const calendarKey = externalCalendarId || "primary";
+      const busyList = data.calendars?.[calendarKey]?.busy || [];
+
+      return busyList.map((item: any) => ({
+        start: new Date(item.start),
+        end: new Date(item.end),
+      }));
+    } catch (err) {
+      console.error("[GoogleCalendarProvider] Failed to fetch busy periods:", err);
+      return [];
+    }
   }
 
   async createEvent(
@@ -67,8 +97,28 @@ export class GoogleCalendarProvider implements CalendarProvider {
     externalCalendarId: string | null,
     event: ExternalEventInput
   ): Promise<{ externalId: string }> {
-    console.log(`[GoogleCalendarProvider] Create event: "${event.title}"`);
-    return { externalId: `google_event_${Math.random().toString(36).substr(2, 9)}` };
+    const calendarId = externalCalendarId || "primary";
+    const response = await fetch(`https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        summary: event.title,
+        description: event.description,
+        start: { dateTime: event.start.toISOString() },
+        end: { dateTime: event.end.toISOString() },
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Google Calendar CreateEvent failed: ${errText}`);
+    }
+
+    const data = await response.json();
+    return { externalId: data.id };
   }
 
   async updateEvent(
@@ -79,7 +129,28 @@ export class GoogleCalendarProvider implements CalendarProvider {
     externalId: string,
     event: ExternalEventInput
   ): Promise<void> {
-    console.log(`[GoogleCalendarProvider] Update event ${externalId}: "${event.title}"`);
+    const calendarId = externalCalendarId || "primary";
+    const response = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(externalId)}`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          summary: event.title,
+          description: event.description,
+          start: { dateTime: event.start.toISOString() },
+          end: { dateTime: event.end.toISOString() },
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Google Calendar UpdateEvent failed: ${errText}`);
+    }
   }
 
   async deleteEvent(
@@ -89,10 +160,27 @@ export class GoogleCalendarProvider implements CalendarProvider {
     externalCalendarId: string | null,
     externalId: string
   ): Promise<void> {
-    console.log(`[GoogleCalendarProvider] Delete event ${externalId}`);
+    const calendarId = externalCalendarId || "primary";
+    const response = await fetch(
+      `https://www.googleapis.com/calendar/v3/calendars/${encodeURIComponent(calendarId)}/events/${encodeURIComponent(externalId)}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
+    );
+
+    if (!response.ok && response.status !== 404) {
+      const errText = await response.text();
+      throw new Error(`Google Calendar DeleteEvent failed: ${errText}`);
+    }
   }
 }
 
+/* ─────────────────────────────────────────────────────────
+ * Outlook Calendar Provider (Direct HTTP API Integration)
+ * ───────────────────────────────────────────────────────── */
 export class OutlookCalendarProvider implements CalendarProvider {
   async getBusyPeriods(
     accessToken: string,
@@ -102,8 +190,39 @@ export class OutlookCalendarProvider implements CalendarProvider {
     start: Date,
     end: Date
   ): Promise<CalendarBusyPeriod[]> {
-    console.log(`[OutlookCalendarProvider] Fetch availability`);
-    return [];
+    try {
+      const response = await fetch("https://graph.microsoft.com/v1.0/me/calendar/getSchedule", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+          Prefer: 'outlook.timezone="UTC"',
+        },
+        body: JSON.stringify({
+          schedules: [externalCalendarId || "me"],
+          startTime: { dateTime: start.toISOString(), timeZone: "UTC" },
+          endTime: { dateTime: end.toISOString(), timeZone: "UTC" },
+          availabilityViewInterval: 15,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Outlook getSchedule API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      const scheduleItems = data.value?.[0]?.scheduleItems || [];
+
+      return scheduleItems
+        .filter((item: any) => item.status === "busy" || item.status === "oof")
+        .map((item: any) => ({
+          start: new Date(item.start.dateTime + "Z"),
+          end: new Date(item.end.dateTime + "Z"),
+        }));
+    } catch (err) {
+      console.error("[OutlookCalendarProvider] Failed to fetch busy periods:", err);
+      return [];
+    }
   }
 
   async createEvent(
@@ -113,8 +232,31 @@ export class OutlookCalendarProvider implements CalendarProvider {
     externalCalendarId: string | null,
     event: ExternalEventInput
   ): Promise<{ externalId: string }> {
-    console.log(`[OutlookCalendarProvider] Create event: "${event.title}"`);
-    return { externalId: `outlook_event_${Math.random().toString(36).substr(2, 9)}` };
+    const url = externalCalendarId
+      ? `https://graph.microsoft.com/v1.0/me/calendars/${encodeURIComponent(externalCalendarId)}/events`
+      : "https://graph.microsoft.com/v1.0/me/events";
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subject: event.title,
+        body: { contentType: "HTML", content: event.description || "" },
+        start: { dateTime: event.start.toISOString(), timeZone: "UTC" },
+        end: { dateTime: event.end.toISOString(), timeZone: "UTC" },
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Outlook CreateEvent failed: ${errText}`);
+    }
+
+    const data = await response.json();
+    return { externalId: data.id };
   }
 
   async updateEvent(
@@ -125,7 +267,24 @@ export class OutlookCalendarProvider implements CalendarProvider {
     externalId: string,
     event: ExternalEventInput
   ): Promise<void> {
-    console.log(`[OutlookCalendarProvider] Update event ${externalId}`);
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/events/${encodeURIComponent(externalId)}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        subject: event.title,
+        body: { contentType: "HTML", content: event.description || "" },
+        start: { dateTime: event.start.toISOString(), timeZone: "UTC" },
+        end: { dateTime: event.end.toISOString(), timeZone: "UTC" },
+      }),
+    });
+
+    if (!response.ok) {
+      const errText = await response.text();
+      throw new Error(`Outlook UpdateEvent failed: ${errText}`);
+    }
   }
 
   async deleteEvent(
@@ -135,11 +294,25 @@ export class OutlookCalendarProvider implements CalendarProvider {
     externalCalendarId: string | null,
     externalId: string
   ): Promise<void> {
-    console.log(`[OutlookCalendarProvider] Delete event ${externalId}`);
+    const response = await fetch(`https://graph.microsoft.com/v1.0/me/events/${encodeURIComponent(externalId)}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok && response.status !== 404) {
+      const errText = await response.text();
+      throw new Error(`Outlook DeleteEvent failed: ${errText}`);
+    }
   }
 }
 
+/* ─────────────────────────────────────────────────────────
+ * Calendly Provider (Direct HTTP API Integration)
+ * ───────────────────────────────────────────────────────── */
 export class CalendlyProvider implements CalendarProvider {
+  // Calendly handles scheduling on their platform, so busy periods are fetched via event endpoints
   async getBusyPeriods(
     accessToken: string,
     refreshToken: string | null,
@@ -148,8 +321,33 @@ export class CalendlyProvider implements CalendarProvider {
     start: Date,
     end: Date
   ): Promise<CalendarBusyPeriod[]> {
-    console.log(`[CalendlyProvider] Fetch availability`);
-    return [];
+    try {
+      const response = await fetch(
+        `https://api.calendly.com/scheduled_events?min_start_time=${start.toISOString()}&max_start_time=${end.toISOString()}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`Calendly API returned ${response.status}`);
+      }
+
+      const data = await response.json();
+      const events = data.collection || [];
+
+      return events.map((item: any) => ({
+        start: new Date(item.start_time),
+        end: new Date(item.end_time),
+      }));
+    } catch (err) {
+      console.error("[CalendlyProvider] Failed to fetch busy periods:", err);
+      return [];
+    }
   }
 
   async createEvent(
@@ -159,7 +357,7 @@ export class CalendlyProvider implements CalendarProvider {
     externalCalendarId: string | null,
     event: ExternalEventInput
   ): Promise<{ externalId: string }> {
-    console.log(`[CalendlyProvider] Create event mapping`);
+    // In Calendly, bookings are typically initiated by users on their booking page rather than via outbound API
     return { externalId: `calendly_event_${Math.random().toString(36).substr(2, 9)}` };
   }
 
@@ -170,9 +368,7 @@ export class CalendlyProvider implements CalendarProvider {
     externalCalendarId: string | null,
     externalId: string,
     event: ExternalEventInput
-  ): Promise<void> {
-    console.log(`[CalendlyProvider] Update event`);
-  }
+  ): Promise<void> {}
 
   async deleteEvent(
     accessToken: string,
@@ -180,9 +376,7 @@ export class CalendlyProvider implements CalendarProvider {
     expiresAt: Date | null,
     externalCalendarId: string | null,
     externalId: string
-  ): Promise<void> {
-    console.log(`[CalendlyProvider] Delete event`);
-  }
+  ): Promise<void> {}
 }
 
 export const providerRegistry = {

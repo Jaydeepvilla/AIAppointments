@@ -31,19 +31,15 @@ export class StorageService implements StorageProvider {
     switch (this.target) {
       case "vercel_blob":
         // Placeholder for vercel blob client upload
-        console.log(`[Storage] Uploading ${file.name} to Vercel Blob at ${filePath}`);
         break;
       case "s3":
         // Placeholder for AWS S3 upload
-        console.log(`[Storage] Uploading ${file.name} to S3 at ${filePath}`);
         break;
       case "r2":
         // Placeholder for Cloudflare R2 upload
-        console.log(`[Storage] Uploading ${file.name} to Cloudflare R2 at ${filePath}`);
         break;
       case "mock":
       default:
-        console.log(`[Storage] Simulated mock upload for ${file.name} to ${filePath}`);
         break;
     }
 
@@ -56,7 +52,6 @@ export class StorageService implements StorageProvider {
   }
 
   async deleteFile(filePath: string): Promise<void> {
-    console.log(`[Storage] Deleted file from path: ${filePath} using provider: ${this.target}`);
   }
 }
 

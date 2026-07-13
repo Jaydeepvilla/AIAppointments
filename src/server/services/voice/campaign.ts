@@ -16,8 +16,6 @@ export const voiceCampaign = {
     const { organizationId, phoneNumberId, to, streamUrl } = options;
 
     try {
-      console.log(`[Voice Campaign] Initiating outbound call to ${to}`);
-
       // 1. Get origin phone number
       const phoneLine = await db.query.phoneNumbers.findFirst({
         where: eq(phoneNumbers.id, phoneNumberId),
@@ -111,8 +109,6 @@ export const voiceCampaign = {
    */
   async runReminderCampaign(organizationId: string) {
     try {
-      console.log(`[Voice Campaign] Running reminder campaign checks for org ${organizationId}`);
-
       // Get phone number to dial from
       const phoneLine = await db.query.phoneNumbers.findFirst({
         where: and(

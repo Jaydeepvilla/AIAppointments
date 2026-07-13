@@ -53,4 +53,9 @@ export class ProviderRegistry {
     }
     return provider;
   }
+
+  static listProviders(): string[] {
+    return Array.from(this.paymentProviders.keys());
+  }
 }
+

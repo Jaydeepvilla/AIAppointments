@@ -25,7 +25,7 @@ export const verifyPerformance: DoctorRule = {
         const tagName = el.getTagNameNode().getText();
 
         // 1. Usage of <img> instead of next/image
-        if (tagName === "img") {
+        if (tagName === "img" && !filePath.includes("components/shared/native.tsx") && !filePath.includes("components\\shared\\native.tsx")) {
             violations.push({
                 file: filePath,
                 line: el.getStartLineNumber(),

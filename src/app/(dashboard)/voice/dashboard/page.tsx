@@ -29,7 +29,7 @@ export default async function VoiceDashboardPage() {
   const initialNumbers = numbersRes.success && numbersRes.numbers ? numbersRes.numbers : [];
 
   return (
-    <div className="space-y-space-4 animate-fade-in w-full h-[calc(100vh-8.5rem)] flex flex-col overflow-hidden">
+    <div className="space-y-space-4 animate-fade-in w-full h-full flex flex-col overflow-hidden">
       <div className="shrink-0">
         <h1 className="text-title-lg font-semibold tracking-tight-md text-foreground">
           Voice

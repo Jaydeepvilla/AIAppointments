@@ -2,10 +2,11 @@
 
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid, Legend } from "recharts"
-import { ChartTooltip } from "./chart-tooltip"
-import { ChartSkeleton } from "./chart-skeleton"
-import { ChartEmptyState } from "./chart-empty-state"
-import { ChartLegend } from "./chart-legend"
+import dynamic from 'next/dynamic'
+const ChartTooltip = dynamic(() => import('./chart-tooltip').then(m => m.ChartTooltip), { ssr: false })
+const ChartSkeleton = dynamic(() => import('./chart-skeleton').then(m => m.ChartSkeleton), { ssr: false })
+const ChartEmptyState = dynamic(() => import('./chart-empty-state').then(m => m.ChartEmptyState), { ssr: false })
+const ChartLegend = dynamic(() => import('./chart-legend').then(m => m.ChartLegend), { ssr: false })
 
 export interface BarChartCardProps {
   data: any[]
@@ -21,6 +22,7 @@ export interface BarChartCardProps {
   showLegend?: boolean
   stacked?: boolean
   layout?: "horizontal" | "vertical"
+  barSize?: number
 }
 
 const defaultColors = [
@@ -42,7 +44,8 @@ export function BarChartCard({
   emptyMessage,
   showLegend = false,
   stacked = false,
-  layout = "horizontal"
+  layout = "horizontal",
+  barSize
 }: BarChartCardProps) {
   const formatter = React.useCallback(
     (v: number) => valueFormatter ? valueFormatter(v) : `${valuePrefix}${v}${valueSuffix}`,
@@ -81,6 +84,7 @@ export function BarChartCard({
               stackId={stacked ? "a" : undefined}
               fill={colors[i % colors.length]}
               radius={stacked ? [0, 0, 0, 0] : (layout === "horizontal" ? [4, 4, 0, 0] : [0, 4, 4, 0])}
+              barSize={barSize}
             />
           ))}
         </BarChart>

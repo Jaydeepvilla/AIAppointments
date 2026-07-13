@@ -25,13 +25,7 @@ export function DashboardHeaderActions({ roleLabel }: DashboardHeaderActionsProp
  return (
  <div className="flex items-center gap-space-3">
  {/* Theme Toggle */}
- <Button
- variant="ghost"
- size="icon"
- className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent radius-md transition-colors"
- onClick={toggleTheme}
- aria-label="Toggle theme"
- >
+ <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground hover:bg-transparent radius-md" onClick={toggleTheme} aria-label="Toggle theme">
  {mounted && resolvedTheme ==="dark"? (
  <Sun className="h-4 w-4"/>
  ) : (
@@ -40,13 +34,7 @@ export function DashboardHeaderActions({ roleLabel }: DashboardHeaderActionsProp
  </Button>
 
  {/* Notifications */}
- <Button
- variant="ghost"
- size="icon"
- className="h-8 w-8 text-muted-foreground hover:text-foreground radius-lg transition-colors"
- aria-label="Notifications"
- id="notifications-btn"
- >
+ <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground" aria-label="Notifications" id="notifications-btn">
  <Bell className="h-4 w-4"/>
  </Button>
 

@@ -3,7 +3,7 @@ import * as React from"react"
 export function ChartTooltip({ active, payload, label, formatter }: any) {
  if (active && payload && payload.length) {
  return (
- <div className="bg-background/90 backdrop-blur-md border border-[hsl(var(--foreground)/0.08)] p-space-3 radius-lg min-w-[140px] z-50">
+ <div className="bg-background/90 backdrop-blur-md border border-[hsl(var(--foreground)/0.08)] p-space-3 radius-lg min-w-32 z-50">
  {label && <p className="text-caption text-muted-foreground font-medium mb-space-2">{label}</p>}
  <div className="flex flex-col gap-space-1.5">
  {payload.map((entry: any, index: number) => (

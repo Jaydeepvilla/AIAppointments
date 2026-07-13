@@ -17,6 +17,12 @@ export const answerTypeEnum = pgEnum("answer_type", [
   "number"
 ]);
 
+export const visibilityEnum = pgEnum("category_visibility", [
+  "public",
+  "internal",
+  "ai_only"
+]);
+
 export const users = pgTable("users", {
   id: text("id").primaryKey(), // Clerk user ID
   email: text("email").notNull().unique(),
@@ -174,6 +180,9 @@ export const businessSettings = pgTable("business_settings", {
   bookingPreferences: jsonb("booking_preferences").default({}).notNull(),
   notificationPreferences: jsonb("notification_preferences").default({}).notNull(),
   leadAssignmentRules: jsonb("lead_assignment_rules").default({}).notNull(),
+  recommendationPreferences: jsonb("recommendation_preferences").default({}).notNull(),
+  qualityScoresHistory: jsonb("quality_scores_history").default([]).notNull(),
+  crmSegments: jsonb("crm_segments").default([]).notNull(),
   websiteImportUrl: text("website_import_url"),
   websiteImportStatus: text("website_import_status").default("pending").notNull(), // pending, imported, failed
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -284,6 +293,22 @@ export const knowledgeCategories = pgTable("knowledge_categories", {
   name: text("name").notNull(),
   slug: text("slug").notNull(),
   description: text("description"),
+  icon: text("icon").default("folder").notNull(),
+  priority: text("priority").default("medium").notNull(), // 'high', 'medium', 'low'
+  color: text("color").default("primary").notNull(), // css/design token class
+  sortOrder: integer("sort_order").default(0).notNull(),
+  status: text("status").default("active").notNull(), // 'active', 'draft'
+  aiWeight: text("ai_weight").default("normal").notNull(), // 'normal', 'high'
+  
+  // Enterprise Architecture Fields
+  parentId: uuid("parent_id"), // Added relation later
+  visibility: visibilityEnum("visibility").default("public").notNull(),
+  aiInstructions: text("ai_instructions"),
+  isArchived: boolean("is_archived").default(false).notNull(),
+  createdById: text("created_by_id"),
+  updatedById: text("updated_by_id"),
+  metadata: jsonb("metadata").default({}).notNull(),
+
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -367,6 +392,7 @@ export const websiteImports = pgTable("website_imports", {
   pagesFound: integer("pages_found").default(0).notNull(),
   pagesScraped: integer("pages_scraped").default(0).notNull(),
   errorMessage: text("error_message"),
+  metadata: jsonb("metadata").default({}).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -412,6 +438,14 @@ export const knowledgeCategoriesRelations = relations(knowledgeCategories, ({ on
     references: [organizations.id],
   }),
   documents: many(knowledgeDocuments),
+  parent: one(knowledgeCategories, {
+    fields: [knowledgeCategories.parentId],
+    references: [knowledgeCategories.id],
+    relationName: "parentCategory"
+  }),
+  children: many(knowledgeCategories, {
+    relationName: "parentCategory"
+  })
 }));
 
 export const knowledgeSourcesRelations = relations(knowledgeSources, ({ one, many }) => ({
@@ -2739,6 +2773,240 @@ export const billingEventsRelations = relations(billingEvents, ({ one }) => ({
     references: [organizations.id],
   }),
 }));
+
+// --- JOBS SCHEMAS ---
+
+export const backgroundJobs = pgTable("background_jobs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  queueName: text("queue_name").default("default").notNull(),
+  payload: jsonb("payload").default({}).notNull(),
+  attempts: integer("attempts").default(0).notNull(),
+  maxAttempts: integer("max_attempts").default(3).notNull(),
+  runAt: timestamp("run_at").defaultNow().notNull(),
+  lockedAt: timestamp("locked_at"),
+  status: text("status").default("pending").notNull(), // 'pending', 'processing', 'completed', 'failed'
+  error: text("error"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// --- AUDIT LOGS SCHEMAS ---
+
+export const auditLogs = pgTable("audit_logs", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" }), // Can be null for system events
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "set null" }),
+  action: text("action").notNull(),
+  resource: text("resource").notNull(),
+  resourceId: text("resource_id"),
+  metadata: jsonb("metadata").default({}).notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const auditLogsRelations = relations(auditLogs, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [auditLogs.organizationId],
+    references: [organizations.id],
+  }),
+  user: one(users, {
+    fields: [auditLogs.userId],
+    references: [users.id],
+  }),
+}));
+
+// --- PROGRESS & NOTIFICATION SCHEMAS ---
+
+export const businessActivityLog = pgTable("business_activity_log", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" })
+    .notNull(),
+  task: text("task").notNull(),
+  category: text("category").notNull(),
+  impact: text("impact").notNull(), // 'low', 'medium', 'high', 'critical'
+  metadata: jsonb("metadata").default({}).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const businessActivityLogRelations = relations(businessActivityLog, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [businessActivityLog.organizationId],
+    references: [organizations.id],
+  }),
+}));
+
+export const businessSnapshots = pgTable("business_snapshots", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" })
+    .notNull(),
+  healthScore: integer("health_score").notNull(),
+  knowledgeScore: integer("knowledge_score").notNull(),
+  crmScore: integer("crm_score").notNull(),
+  websiteScore: integer("website_score").notNull(),
+  aiScore: integer("ai_score").notNull(),
+  automationScore: integer("automation_score").notNull(),
+  bookingScore: integer("booking_score").notNull(),
+  progressPercentage: integer("progress_percentage").notNull(),
+  readinessScore: integer("readiness_score").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const businessSnapshotsRelations = relations(businessSnapshots, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [businessSnapshots.organizationId],
+    references: [organizations.id],
+  }),
+}));
+
+export const smartNotifications = pgTable("smart_notifications", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id")
+    .references(() => organizations.id, { onDelete: "cascade" })
+    .notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  priority: text("priority").notNull(), // 'low', 'medium', 'high', 'urgent'
+  severity: text("severity").notNull(), // 'info', 'warning', 'critical'
+  category: text("category").notNull(), // 'setup', 'alert', 'ai_improvement', 'website_change'
+  isRead: boolean("is_read").default(false).notNull(),
+  isDismissed: boolean("is_dismissed").default(false).notNull(),
+  actionUrl: text("action_url"),
+  snoozeUntil: timestamp("snooze_until"),
+  expiresAt: timestamp("expires_at"),
+  metadata: jsonb("metadata").default({}).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const smartNotificationsRelations = relations(smartNotifications, ({ one }) => ({
+  organization: one(organizations, {
+    fields: [smartNotifications.organizationId],
+    references: [organizations.id],
+  }),
+}));
+
+// ── Global Billing Infrastructure Schemas ──
+
+export const paymentProviders = pgTable("payment_providers", {
+  id: text("id").primaryKey(), // 'stripe', 'razorpay', 'paypal', 'paddle', 'mollie', etc.
+  name: text("name").notNull(),
+  description: text("description"),
+  isEnabled: boolean("is_enabled").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const paymentProviderRegions = pgTable("payment_provider_regions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: text("provider_id").references(() => paymentProviders.id, { onDelete: "cascade" }).notNull(),
+  countryCode: text("country_code").notNull(), // 'US', 'IN', 'DE', 'FR', etc.
+  isRecommended: boolean("is_recommended").default(false).notNull(),
+  recommendationReason: text("recommendation_reason"),
+});
+
+export const paymentProviderLanguages = pgTable("payment_provider_languages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: text("provider_id").references(() => paymentProviders.id, { onDelete: "cascade" }).notNull(),
+  languageCode: text("language_code").notNull(), // 'en', 'hi', 'fr', 'de', etc.
+});
+
+export const paymentProviderCurrencies = pgTable("payment_provider_currencies", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: text("provider_id").references(() => paymentProviders.id, { onDelete: "cascade" }).notNull(),
+  currencyCode: text("currency_code").notNull(), // 'USD', 'INR', 'EUR', etc.
+});
+
+export const paymentProviderCapabilities = pgTable("payment_provider_capabilities", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  providerId: text("provider_id").references(() => paymentProviders.id, { onDelete: "cascade" }).notNull(),
+  oneTime: boolean("one_time").default(true).notNull(),
+  subscriptions: boolean("subscriptions").default(false).notNull(),
+  refunds: boolean("refunds").default(false).notNull(),
+  applePay: boolean("apple_pay").default(false).notNull(),
+  googlePay: boolean("google_pay").default(false).notNull(),
+  upi: boolean("upi").default(false).notNull(),
+  netbanking: boolean("netbanking").default(false).notNull(),
+  bnpl: boolean("bnpl").default(false).notNull(),
+});
+
+export const businessPaymentSettings = pgTable("business_payment_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }).notNull(),
+  providerId: text("provider_id").references(() => paymentProviders.id, { onDelete: "cascade" }).notNull(),
+  connectionStatus: text("connection_status").default("disconnected").notNull(), // 'connected', 'disconnected', 'pending_verification'
+  priority: integer("priority").default(0).notNull(),
+  credentials: jsonb("credentials").default({}).notNull(), // encrypted keys, sandbox config, webhooks
+  isSandbox: boolean("is_sandbox").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// ── Global Localization & Regionalization Schemas ──
+
+export const countries = pgTable("countries", {
+  code: text("code").primaryKey(), // ISO 2-letter (e.g. 'US', 'IN', 'DE')
+  name: text("name").notNull(),
+  primaryCurrency: text("primary_currency").notNull(),
+  primaryLanguage: text("primary_language").notNull(),
+  phoneCode: text("phone_code").notNull(), // e.g. '+91', '+1'
+  taxType: text("tax_type").notNull(), // 'GST', 'VAT', 'SalesTax'
+  dateFormat: text("date_format").default("YYYY-MM-DD").notNull(),
+  timeFormat: text("time_format").default("24h").notNull(),
+  weekStart: integer("week_start").default(1).notNull(), // 0 = Sunday, 1 = Monday
+  measurementUnit: text("measurement_unit").default("metric").notNull(), // 'metric', 'imperial'
+});
+
+export const languages = pgTable("languages", {
+  code: text("code").primaryKey(), // ISO 639-1 (e.g. 'en', 'hi', 'fr')
+  name: text("name").notNull(),
+  nativeName: text("native_name").notNull(),
+  isRtl: boolean("is_rtl").default(false).notNull(),
+  pluralRules: text("plural_rules").default("one_other").notNull(),
+  fallbackCode: text("fallback_code"),
+  isEnabled: boolean("is_enabled").default(true).notNull(),
+});
+
+export const currencies = pgTable("currencies", {
+  code: text("code").primaryKey(), // e.g. 'USD', 'INR', 'EUR'
+  symbol: text("symbol").notNull(), // e.g. '$', '₹', '€'
+  position: text("position").default("prefix").notNull(), // 'prefix' ($100), 'suffix' (100€)
+  decimalSeparator: text("decimal_separator").default(".").notNull(),
+  thousandSeparator: text("thousand_separator").default(",").notNull(),
+  exchangeRateToUsd: text("exchange_rate_to_usd").default("1.0").notNull(),
+});
+
+export const holidays = pgTable("holidays", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  countryCode: text("country_code").references(() => countries.code, { onDelete: "cascade" }).notNull(),
+  name: text("name").notNull(),
+  date: text("date").notNull(), // MM-DD format or YYYY-MM-DD
+  isNational: boolean("is_national").default(true).notNull(),
+});
+
+export const businessLocalization = pgTable("business_localization", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }).notNull().unique(),
+  countryCode: text("country_code").references(() => countries.code).notNull(),
+  primaryLanguage: text("primary_language").references(() => languages.code).notNull(),
+  currencyCode: text("currency_code").references(() => currencies.code).notNull(),
+  timezone: text("timezone").notNull(),
+  dateFormat: text("date_format").default("YYYY-MM-DD").notNull(),
+  timeFormat: text("time_format").default("24h").notNull(),
+  weekStart: integer("week_start").default(1).notNull(),
+  measurementUnit: text("measurement_unit").default("metric").notNull(),
+});
+
+export const translations = pgTable("translations", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  languageCode: text("language_code").references(() => languages.code, { onDelete: "cascade" }).notNull(),
+  namespace: text("namespace").default("common").notNull(), // 'common', 'dashboard', 'voice'
+  key: text("key").notNull(),
+  value: text("value").notNull(),
+});
 
 
 

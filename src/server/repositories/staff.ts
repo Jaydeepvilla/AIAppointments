@@ -195,4 +195,26 @@ export const staffRepository = {
       .innerJoin(staffMembers, eq(serviceAssignments.staffMemberId, staffMembers.id))
       .where(and(eq(serviceAssignments.serviceId, serviceId), eq(staffMembers.isActive, true)));
   },
+
+  // Organization-wide getters for Intelligence Engines
+  async listAllSchedules(organizationId: string) {
+    return db
+      .select()
+      .from(staffSchedules)
+      .where(eq(staffSchedules.organizationId, organizationId));
+  },
+
+  async listAllAvailabilityExceptions(organizationId: string) {
+    return db
+      .select()
+      .from(staffAvailability)
+      .where(eq(staffAvailability.organizationId, organizationId));
+  },
+
+  async listAllAssignments(organizationId: string) {
+    return db
+      .select()
+      .from(serviceAssignments)
+      .where(eq(serviceAssignments.organizationId, organizationId));
+  }
 };

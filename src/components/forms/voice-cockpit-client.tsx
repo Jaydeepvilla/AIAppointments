@@ -32,6 +32,7 @@ import { Label } from"@/components/shared/label";
 import { cn } from"@/components/shared/utils";
 import { updateVoicemailStatusAction } from"@/server/actions/voice";
 import { AreaChartCard, LineChartCard } from"@/components/charts";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface CallSession {
  id: string;
@@ -436,8 +437,8 @@ export function VoiceCockpitClient({
  <span className="text-caption bg-primary/10 text-primary font-semibold px-space-1.5 py-space-0.5 rounded-full">{voicemails.length}</span>
  </div>
 
- {/* Scrollable list of Voicemails */}
- <div className="flex-1 overflow-y-auto p-space-3 space-y-space-3 bg-[hsl(var(--foreground)/0.002)] sidebar-scroll">
+ <ScrollArea className="flex-1 bg-[hsl(var(--foreground)/0.002)]" horizontal={false} vertical={voicemails.length > 2}>
+ <div className="p-space-3 space-y-space-3">
  {voicemails.length === 0 ? (
  <div className="flex flex-col items-center justify-center text-center h-full min-h-48 py-space-6 text-muted-foreground/60 gap-space-1.5">
  <Inbox className="h-7 w-7 text-muted-foreground/35"/>
@@ -505,6 +506,7 @@ export function VoiceCockpitClient({
  ))
  )}
  </div>
+ </ScrollArea>
  </div>
  </div>
  </div>

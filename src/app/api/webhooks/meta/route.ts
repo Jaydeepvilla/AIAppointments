@@ -42,8 +42,6 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    console.log("[Meta Webhook] Received webhook payload:", JSON.stringify(body));
-
     // Resolve channel context from Meta payload identifiers
     const entry = body?.entry?.[0];
     const changes = entry?.changes?.[0];

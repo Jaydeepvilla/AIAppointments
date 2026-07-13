@@ -1,0 +1,5 @@
+{
+  "current": "v2",
+  "lts": "v1",
+  "supported": ["v1", "v2"]
+}

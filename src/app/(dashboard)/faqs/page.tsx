@@ -33,12 +33,14 @@ export default async function FaqsPage() {
   }));
 
   return (
-    <div className="space-y-space-4 animate-fade-in max-w-5xl pb-space-10">
+    <div className="flex flex-col h-full w-full overflow-hidden space-y-space-4 animate-fade-in">
       {/* Page Header */}
-      <PageTitle
-        title="FAQs"
-        description="Common questions and answers. Your AI uses these to help customers instantly."
-      />
+      <div className="shrink-0">
+        <PageTitle
+          title="FAQs"
+          description="Common questions and answers. Your AI uses these to help customers instantly."
+        />
+      </div>
 
       <FaqBuilder initialFaqs={faqsMapped} />
     </div>

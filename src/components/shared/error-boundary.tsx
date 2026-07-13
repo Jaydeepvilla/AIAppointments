@@ -3,6 +3,7 @@
 import React from "react";
 import { AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "./button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -58,6 +59,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   render() {
     const { hasError, error, errorId } = this.state;
     const { fallback, children } = this.props;
+    const isDev = (process as any).env?.NODE_ENV === "development";
 
     if (hasError) {
       if (fallback) return <>{fallback}</>;
@@ -73,22 +75,17 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
           <p className="mt-space-2 max-w-md text-body-sm text-muted-foreground leading-relaxed">
             An unexpected error occurred in this section. Our team has been notified.
           </p>
-          {process.env.NODE_ENV === "development" && error && (
-            <pre className="mt-space-4 max-w-full overflow-auto rounded bg-card p-space-3 text-caption text-destructive text-left">
-              {error.message}
-            </pre>
+          {isDev && error && (
+            <pre className="mt-space-4 max-w-full rounded bg-card p-space-3 text-caption text-destructive text-left"><ScrollArea className="h-full w-full">
+                                {error.message}
+                              </ScrollArea></pre>
           )}
           {errorId && (
             <p className="mt-space-2 font-mono text-caption text-muted-foreground/60">
               Error ID: {errorId}
             </p>
           )}
-          <Button
-            onClick={this.handleReset}
-            variant="outline"
-            size="sm"
-            className="mt-space-6 gap-space-2"
-          >
+          <Button onClick={this.handleReset} variant="outline" size="sm" className="mt-space-6">
             <RefreshCw className="h-3.5 w-3.5" />
             Try Again
           </Button>

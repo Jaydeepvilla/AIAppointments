@@ -7,15 +7,33 @@ export interface NewKnowledgeCategory {
   name: string;
   slug: string;
   description?: string | null;
+  icon?: string;
+  priority?: string;
+  color?: string;
+  sortOrder?: number;
+  status?: string;
+  aiWeight?: string;
+  parentId?: string | null;
+  visibility?: "public" | "internal" | "ai_only";
+  aiInstructions?: string | null;
+  isArchived?: boolean;
+  createdById?: string | null;
+  updatedById?: string | null;
+  metadata?: any;
 }
 
 export const categoriesRepository = {
-  async list(organizationId: string) {
+  async list(organizationId: string, includeArchived = false) {
+    const conditions = [eq(knowledgeCategories.organizationId, organizationId)];
+    if (!includeArchived) {
+      conditions.push(eq(knowledgeCategories.isArchived, false));
+    }
+    
     return db
       .select()
       .from(knowledgeCategories)
-      .where(eq(knowledgeCategories.organizationId, organizationId))
-      .orderBy(knowledgeCategories.name);
+      .where(and(...conditions))
+      .orderBy(knowledgeCategories.sortOrder, knowledgeCategories.name);
   },
 
   async getById(id: string) {

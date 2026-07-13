@@ -1,4 +1,4 @@
-"use client";
+"use client";import { Badge } from "@/components/shared/badge";
 
 import * as React from "react";
 import { useForm } from "react-hook-form";
@@ -12,7 +12,7 @@ import { triggerWebsiteImportAction } from "@/server/actions/settings";
 import { z } from "zod";
 
 const scraperSchema = z.object({
-  url: z.string().url("Please enter a valid website URL"),
+  url: z.string().url("Please enter a valid website URL")
 });
 
 type ScraperInput = z.infer<typeof scraperSchema>;
@@ -29,12 +29,12 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors }
   } = useForm<ScraperInput>({
     resolver: zodResolver(scraperSchema),
     defaultValues: {
-      url: importUrl || "",
-    },
+      url: importUrl || ""
+    }
   });
 
   const onSubmit = async (data: ScraperInput) => {
@@ -54,12 +54,12 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
   };
 
   const mockPages = [
-    { path: "/", status: "imported", words: 840 },
-    { path: "/about", status: "imported", words: 1250 },
-    { path: "/services", status: "imported", words: 2400 },
-    { path: "/contact", status: "imported", words: 350 },
-    { path: "/pricing", status: "imported", words: 980 },
-  ];
+  { path: "/", status: "imported", words: 840 },
+  { path: "/about", status: "imported", words: 1250 },
+  { path: "/services", status: "imported", words: 2400 },
+  { path: "/contact", status: "imported", words: 350 },
+  { path: "/pricing", status: "imported", words: 980 }];
+
 
   return (
     <div className="space-y-space-6">
@@ -73,11 +73,11 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
         </CardHeader>
         <form onSubmit={handleSubmit(onSubmit)}>
           <CardContent className="space-y-space-4">
-            {syncError && (
-              <div className="p-space-3 radius-md bg-destructive/10 border border-destructive/20 text-caption text-destructive ">
+            {syncError &&
+            <Badge variant="destructive">
                 {syncError}
-              </div>
-            )}
+              </Badge>
+            }
 
             <div className="space-y-space-2 max-w-lg">
               <Label htmlFor="scraper_url">Business Website URL</Label>
@@ -88,31 +88,31 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
                   placeholder="https://acmedental.com"
                   className="pl-space-10"
                   disabled={isSyncing}
-                  {...register("url")}
-                />
+                  {...register("url")} />
+                
               </div>
               {errors.url && <p className="text-caption text-destructive">{errors.url.message}</p>}
             </div>
           </CardContent>
           <CardFooter className="flex justify-end border-t border-border/20 pt-space-6">
             <Button type="submit" disabled={isSyncing}>
-              {isSyncing ? (
-                <>
+              {isSyncing ?
+              <>
                   <Loader2 className="mr-space-2 h-4 w-4 animate-spin" /> Indexing Pages...
-                </>
-              ) : (
-                <>
+                </> :
+
+              <>
                   <RefreshCw className="mr-space-2 h-4 w-4" /> Crawl & Import Website
                 </>
-              )}
+              }
             </Button>
           </CardFooter>
         </form>
       </Card>
 
       {/* Scraper Status Panel */}
-      {importUrl && importStatus === "imported" && (
-        <Card className="border-border/60 bg-card/30 backdrop-blur-xs animate-fade-in">
+      {importUrl && importStatus === "imported" &&
+      <Card className="border-border/60 bg-card/30 backdrop-blur-xs animate-fade-in">
           <CardHeader>
             <div className="flex items-center justify-between">
               <div>
@@ -121,9 +121,9 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
                   Logs from the crawler for website: {importUrl}
                 </CardDescription>
               </div>
-              <span className="text-caption  border border-success-500/20 px-space-2 py-space-1 radius-md text-success-500 bg-success-500/10 uppercase tracking-widest">
+              <Badge variant="success">
                 Sync Completed
-              </span>
+              </Badge>
             </div>
           </CardHeader>
           <CardContent className="space-y-space-4">
@@ -144,12 +144,12 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
 
             {/* Scraped URL Lists */}
             <div className="space-y-space-2">
-              <span className="text-caption  text-muted-foreground uppercase tracking-widest px-space-1">
+              <Badge variant="soft">
                 Scraped Page Resources
-              </span>
+              </Badge>
               <div className="border border-border/10 radius-lg divide-y divide-border/10 bg-background/10">
-                {mockPages.map((page, idx) => (
-                  <div key={idx} className="flex justify-between items-center p-space-3 text-caption">
+                {mockPages.map((page, idx) =>
+              <div key={idx} className="flex justify-between items-center p-space-3 text-caption">
                     <span className=" text-foreground flex items-center gap-space-2">
                       <CheckCircle2 className="h-4 w-4 text-success-500 shrink-0" />
                       {importUrl}{page.path}
@@ -158,12 +158,12 @@ export function KbScraper({ importUrl, importStatus }: KbScraperProps) {
                       {page.words} words parsed
                     </span>
                   </div>
-                ))}
+              )}
               </div>
             </div>
           </CardContent>
         </Card>
-      )}
-    </div>
-  );
+      }
+    </div>);
+
 }

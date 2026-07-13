@@ -26,8 +26,6 @@ export const agencyImpersonation = {
     const { agencyId, actorUserId, targetOrganizationId } = options;
 
     try {
-      console.log(`[Agency Impersonation] Generating secure token for Actor ${actorUserId} ➜ Org ${targetOrganizationId}`);
-
       const payload: ImpersonationPayload = {
         agencyId,
         actorUserId,
@@ -103,7 +101,6 @@ export const agencyImpersonation = {
           targetId: targetOrganizationId,
           details: { timestamp: new Date().toISOString() },
         });
-      console.log(`[Agency Impersonation] Logged impersonation end for ${actorUserId}`);
     } catch (e) {
       console.error("[Agency Impersonation] Failed to log impersonation-end audit trail:", e);
     }

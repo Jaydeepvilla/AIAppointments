@@ -16,9 +16,6 @@ export async function POST(req: NextRequest) {
     formData.forEach((value, key) => {
       body[key] = value.toString();
     });
-
-    console.log("[Twilio Webhook] Inbound request parsed:", JSON.stringify(body));
-
     // To verify which connection and organization this Twilio payload belongs to,
     // match the recipient phone number (body.To) or Twilio Sid
     const recipientNumber = body.To || "";

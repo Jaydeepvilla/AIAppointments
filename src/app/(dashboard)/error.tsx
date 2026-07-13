@@ -43,11 +43,11 @@ export default function DashboardError({
       )}
       {!error.digest && <div className="mb-space-8" />}
       <div className="flex items-center gap-space-3">
-        <Button onClick={reset} className="gap-space-2" id="error-retry-btn">
+        <Button onClick={reset} id="error-retry-btn">
           <RefreshCw className="h-4 w-4" />
           Refresh Page
         </Button>
-        <Button asChild variant="outline" className="gap-space-2" id="error-home-btn">
+        <Button asChild variant="outline" id="error-home-btn">
           <Link href="/dashboard">
             <Home className="h-4 w-4" />
             Go to Dashboard

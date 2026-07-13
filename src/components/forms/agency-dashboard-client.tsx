@@ -18,7 +18,10 @@ import {
  TrendingDown
 } from"lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from"@/components/shared/card";
-import { Button } from"@/components/shared/button";
+import { Button } from "@/components/shared/button";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/shared/tabs";
+import { NativeTable } from "@/components/shared/native";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface AuditLog {
  id: string;
@@ -64,26 +67,18 @@ export function AgencyDashboardClient({
  return (
  <div className="space-y-space-6">
  {/* Switcher tabs */}
- <div className="flex gap-space-2 p-space-1 bg-muted/20 border border-border/20 radius-lg max-w-xs backdrop-blur-xs">
- <Button
- variant={activeTab ==="overview"?"secondary":"ghost"}
- size="sm"
- onClick={() => setActiveTab("overview")}
- className="flex-1 text-caption cursor-pointer"
- >
- <Building className="h-3.5 w-3.5 mr-space-2 text-primary"/>
- Dashboard
- </Button>
- <Button
- variant={activeTab ==="finance"?"secondary":"ghost"}
- size="sm"
- onClick={() => setActiveTab("finance")}
- className="flex-1 text-caption cursor-pointer"
- >
- <LineChart className="h-3.5 w-3.5 mr-space-2 text-success"/>
- Finance Stats
- </Button>
- </div>
+ <Tabs value={activeTab} onValueChange={(val: any) => setActiveTab(val)} variant="segmented" className="w-full max-w-xs">
+  <TabsList className="w-full bg-muted/20 border border-border/20 p-space-1 radius-lg">
+  <TabsTrigger value="overview" className="flex-1 text-caption cursor-pointer border-none">
+  <Building className="h-3.5 w-3.5 mr-space-2 text-primary"/>
+  Dashboard
+  </TabsTrigger>
+  <TabsTrigger value="finance" className="flex-1 text-caption cursor-pointer border-none">
+  <LineChart className="h-3.5 w-3.5 mr-space-2 text-success"/>
+  Finance Stats
+  </TabsTrigger>
+  </TabsList>
+  </Tabs>
 
  {activeTab ==="overview"? (
  /* OVERVIEW TAB */
@@ -229,43 +224,43 @@ export function AgencyDashboardClient({
  No recent audit trail records generated.
  </div>
  ) : (
- <div className="overflow-x-auto">
- <table className="w-full text-left border-collapse text-caption">
- <thead>
- <tr className="border-b border-border/30 bg-muted/20 text-caption uppercase tracking-wider text-muted-foreground">
- <th className="px-space-6 py-space-4">Actor</th>
- <th className="px-space-6 py-space-4">Action</th>
- <th className="px-space-6 py-space-4">Target Reference ID</th>
- <th className="px-space-6 py-space-4">Details</th>
- <th className="px-space-6 py-space-4 text-right">Timestamp</th>
- </tr>
- </thead>
- <tbody className="divide-y divide-border/20 text-muted-foreground">
- {auditLogs.map((log) => (
- <tr key={log.id} className="hover:bg-accent/5 transition-colors">
- <td className="px-space-6 py-space-4 text-foreground">
- {log.user?.email ||"Agency Owner"}
- </td>
- <td className="px-space-6 py-space-4">
- <span className={`inline-flex items-center gap-space-1 px-space-2 py-space-1 radius-md text-caption uppercase tracking-wider ${log.action.includes("impersonation")
- ?"bg-destructive/10 text-error-500 border border-error-500/20"
- :"bg-primary/10 text-primary border border-primary/20"
- }`}>
- {log.action.replace("-","")}
- </span>
- </td>
- <td className="px-space-6 py-space-4 font-mono text-caption">{log.targetId ||"—"}</td>
- <td className="px-space-6 py-space-4 font-mono text-caption truncate max-w-xs">
- {JSON.stringify(log.details)}
- </td>
- <td className="px-space-6 py-space-4 text-right font-mono text-caption">
- {new Date(log.createdAt).toLocaleString()}
- </td>
- </tr>
- ))}
- </tbody>
- </table>
- </div>
+ <ScrollArea className="" vertical={false}>
+                                  <NativeTable className="w-full text-left border-collapse text-caption">
+                                  <thead>
+                                  <tr className="border-b border-border/30 bg-muted/20 text-caption uppercase tracking-wider text-muted-foreground">
+                                  <th className="px-space-6 py-space-4">Actor</th>
+                                  <th className="px-space-6 py-space-4">Action</th>
+                                  <th className="px-space-6 py-space-4">Target Reference ID</th>
+                                  <th className="px-space-6 py-space-4">Details</th>
+                                  <th className="px-space-6 py-space-4 text-right">Timestamp</th>
+                                  </tr>
+                                  </thead>
+                                  <tbody className="divide-y divide-border/20 text-muted-foreground">
+                                  {auditLogs.map((log) => (
+                                  <tr key={log.id} className="hover:bg-accent/5 transition-colors">
+                                  <td className="px-space-6 py-space-4 text-foreground">
+                                  {log.user?.email ||"Agency Owner"}
+                                  </td>
+                                  <td className="px-space-6 py-space-4">
+                                  <span className={`inline-flex items-center gap-space-1 px-space-2 py-space-1 radius-md text-caption uppercase tracking-wider ${log.action.includes("impersonation")
+                                  ?"bg-destructive/10 text-error-500 border border-error-500/20"
+                                  :"bg-primary/10 text-primary border border-primary/20"
+                                  }`}>
+                                  {log.action.replace("-","")}
+                                  </span>
+                                  </td>
+                                  <td className="px-space-6 py-space-4 font-mono text-caption">{log.targetId ||"—"}</td>
+                                  <td className="px-space-6 py-space-4 font-mono text-caption truncate max-w-xs">
+                                  {JSON.stringify(log.details)}
+                                  </td>
+                                  <td className="px-space-6 py-space-4 text-right font-mono text-caption">
+                                  {new Date(log.createdAt).toLocaleString()}
+                                  </td>
+                                  </tr>
+                                  ))}
+                                  </tbody>
+                                  </NativeTable>
+                                  </ScrollArea>
  )}
  </CardContent>
  </Card>

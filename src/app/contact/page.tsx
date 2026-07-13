@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/shared/button";
 import { Input } from "@/components/shared/input";
+import { NativeSelect, NativeTextarea, NativeA } from "@/components/shared/native";
 
 const CONTACT_TYPES = [
   { id: "sales", icon: TrendingUp, label: "Sales Inquiry", desc: "Interested in a plan or need a custom quote" },
@@ -47,8 +48,8 @@ export default function ContactPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
-          <div className="absolute inset-0 dot-grid grid-fade-b pointer-events-none" />
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
+          <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none" />
+          <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
 
           <div className="relative mx-auto max-w-3xl px-space-6 pt-space-24 pb-space-16 text-center">
             <p className="text-body-sm text-primary  mb-space-4">Contact us</p>
@@ -82,9 +83,7 @@ export default function ContactPage() {
                   {/* Contact type selector */}
                   <div className="grid grid-cols-2 gap-space-3 mb-space-6">
                     {CONTACT_TYPES.map((t) => (
-                      <Button
-                        key={t.id}
-                        onClick={() => setType(t.id)}
+                      <Button key={t.id} onClick={() => setType(t.id)}
                         className={`flex items-start gap-space-3 radius-lg border p-space-3 text-left transition-colors ${type === t.id
                             ? "border-primary/30 bg-primary/[0.04]"
                             : "border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)] hover:bg-[hsl(var(--foreground)/0.04)]"
@@ -125,29 +124,25 @@ export default function ContactPage() {
                     {type === "sales" && (
                       <div>
                         <label className="block text-caption  text-muted-foreground mb-space-2">How many locations?</label>
-                        <select className="w-full radius-lg border border-[hsl(var(--foreground)/0.08)] bg-background px-space-3 py-space-2 text-body-sm text-foreground focus:border-primary/40 focus:outline-none transition-colors">
+                        <NativeSelect className="w-full radius-lg border border-[hsl(var(--foreground)/0.08)] bg-background px-space-3 py-space-2 text-body-sm text-foreground focus:border-primary/40 focus:outline-none transition-colors">
                           <option value="">Select...</option>
                           <option>1 location</option>
                           <option>2–5 locations</option>
                           <option>6–20 locations</option>
                           <option>20+ locations (Agency/Enterprise)</option>
-                        </select>
+                        </NativeSelect>
                       </div>
                     )}
                     <div>
                       <label className="block text-caption  text-muted-foreground mb-space-2">Message *</label>
-                      <textarea
+                      <NativeTextarea
                         required
                         rows={4}
                         className="w-full radius-lg border border-[hsl(var(--foreground)/0.08)] bg-background px-space-3 py-space-2 text-body-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary/40 focus:outline-none transition-colors resize-none"
                         placeholder={type === "sales" ? "Tell us about your business and what you're looking for..." : type === "support" ? "Describe the issue you're experiencing..." : "Tell us about the partnership opportunity..."}
                       />
                     </div>
-                    <Button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full radius-lg bg-primary py-space-3 text-body-sm  text-primary-foreground hover:bg-primary/90 transition-colors flex items-center justify-center gap-space-2 disabled:opacity-60"
-                    >
+                    <Button type="submit" disabled={loading} width="full" className=" py-space-3 text-body-sm text-primary-foreground disabled:opacity-60">
                       {loading ? (
                         <div className="h-4 w-4 radius-full border-2 border-primary-foreground/30 border-t-primary-foreground animate-spin" />
                       ) : (
@@ -211,7 +206,7 @@ export default function ContactPage() {
                     { icon: Headphones, label: "Support Portal", value: "support.nexx.ai", href: "#" },
                     { icon: Globe, label: "Live Chat", value: "Available on all pages", href: "#" },
                   ].map((c) => (
-                    <a key={c.label} href={c.href} className="flex items-center gap-space-3 group">
+                    <NativeA key={c.label} href={c.href} className="flex items-center gap-space-3 group">
                       <div className="h-8 w-8 radius-lg bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary/15 transition-colors">
                         <c.icon className="h-4 w-4" />
                       </div>
@@ -219,7 +214,7 @@ export default function ContactPage() {
                         <p className="text-caption text-muted-foreground">{c.label}</p>
                         <p className="text-body-sm  text-foreground group-hover:text-primary transition-colors">{c.value}</p>
                       </div>
-                    </a>
+                    </NativeA>
                   ))}
                 </div>
               </div>
