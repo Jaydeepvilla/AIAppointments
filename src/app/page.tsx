@@ -1,5 +1,5 @@
 import Link from"next/link";
-import { auth } from"@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { MarketingNav } from"@/components/marketing/nav";
 import { MarketingFooter } from"@/components/marketing/footer";
 import { InteractiveArchitecture } from"@/components/marketing/interactive-architecture";

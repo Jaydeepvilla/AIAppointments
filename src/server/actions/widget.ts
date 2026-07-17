@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
 import { widgetDomains } from "../db/schema";

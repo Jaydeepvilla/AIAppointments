@@ -41,7 +41,7 @@ const SECURITY_SECTIONS = [
     title: "Authentication & Authorization",
     subtitle: "Identity verified at every layer",
     items: [
-      { label: "Authentication Provider", value: "Clerk — SOC2 Type II certified authentication platform with 99.99% uptime SLA" },
+      { label: "Authentication Provider", value: "In-House Auth — Argon2id password hashing and database-backed session isolation" },
       { label: "Session Management", value: "Short-lived JWT tokens (15 minutes). Refresh tokens rotate on every use" },
       { label: "Multi-Factor Authentication", value: "MFA available for all users. Enforced for Admin and Agency roles" },
       { label: "Role-Based Access Control", value: "Owner, Admin, Member, and Viewer roles with granular permission scopes" },

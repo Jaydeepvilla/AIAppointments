@@ -1,35 +1,85 @@
-import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-const isPublicRoute = createRouteMatcher([
+// Match public routes
+const PUBLIC_PATHS = [
   "/",
-  "/pricing(.*)",
-  "/features(.*)",
-  "/about(.*)",
-  "/contact(.*)",
-  "/demo(.*)",
-  "/integrations(.*)",
-  "/security(.*)",
-  "/docs(.*)",
-  "/changelog(.*)",
-  "/privacy(.*)",
-  "/terms(.*)",
-  "/sign-in(.*)",
-  "/sign-up(.*)",
-  "/api/webhooks(.*)",
-  "/api/widget(.*)",
+  "/pricing",
+  "/features",
+  "/about",
+  "/contact",
+  "/demo",
+  "/integrations",
+  "/security",
+  "/docs",
+  "/changelog",
+  "/privacy",
+  "/terms",
+  "/sign-in",
+  "/sign-up",
+  "/forgot-password",
+  "/reset-password",
+  "/verify-email",
   "/api/health",
-]);
+  // Auth API routes used before login (e.g. email availability check during sign-up,
+  // session lookup for the client AuthProvider, and the logout endpoint)
+  "/api/auth/check-email",
+  "/api/auth/me",
+  "/api/auth/logout",
+];
 
-export default clerkMiddleware(async (auth, request) => {
-  if (!isPublicRoute(request)) {
-    await auth.protect();
+function isPublicRoute(pathname: string): boolean {
+  // Always pass through: static assets, webhooks, widget, Next.js internals
+  if (
+    pathname.startsWith("/api/webhooks") ||
+    pathname.startsWith("/api/widget") ||
+    pathname.startsWith("/_next") ||
+    pathname.includes(".")
+  ) {
+    return true;
   }
-});
+
+  return PUBLIC_PATHS.some((path) => {
+    if (path === "/") {
+      return pathname === "/";
+    }
+    return pathname === path || pathname.startsWith(path + "/");
+  });
+}
+
+export default function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Bypass public routes
+  if (isPublicRoute(pathname)) {
+    // If user is already logged in and tries to access sign-in/up, redirect to dashboard
+    const hasSession = request.cookies.has("session_token");
+    if (hasSession && (pathname.startsWith("/sign-in") || pathname.startsWith("/sign-up"))) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    return NextResponse.next();
+  }
+
+  // Protect private routes
+  const sessionToken = request.cookies.get("session_token")?.value;
+  if (!sessionToken) {
+    const signInUrl = new URL("/sign-in", request.url);
+    // Remember the page they tried to access
+    signInUrl.searchParams.set("redirect", pathname);
+    return NextResponse.redirect(signInUrl);
+  }
+
+  return NextResponse.next();
+}
 
 export const config = {
   matcher: [
-    "/((?!_next|[^?]*\\.[\\w]+$|_next/image).*)",
-    "/(api|trpc)(.*)",
-    "/__clerk/:path*",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    "/((?!_next/static|_next/image|favicon.ico).*)",
   ],
 };

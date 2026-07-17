@@ -360,7 +360,7 @@ export default function AppointmentsPage() {
       </div>
 
       {errorMsg && (
-        <div className="flex items-center gap-space-2 radius-lg bg-state-error-bg border border-state-error-text/15 px-space-4 py-space-2.5 text-caption text-state-error-text shrink-0 animate-fade-in">
+        <div className="flex items-center gap-space-3 radius-xl bg-rose-500/5 dark:bg-rose-500/10 border border-rose-500/20 px-space-4 py-space-3 text-caption text-state-error-text shrink-0 animate-fade-in shadow-sm">
           <AlertCircle className="h-4 w-4 shrink-0"/>
           <span className="flex-1 font-medium">{errorMsg}</span>
           <Button className="hover:opacity-70 transition-opacity font-semibold px-space-1 text-body-sm cursor-pointer" onClick={() => setErrorMsg("")}>×</Button>
@@ -372,20 +372,20 @@ export default function AppointmentsPage() {
       ) : (
         <div className="space-y-space-4">
           {/* Filter Row */}
-          <div className="flex flex-col md:flex-row gap-space-3 bg-card border border-[hsl(var(--foreground)/0.06)] p-space-3 radius-xl shrink-0">
+          <div className="flex flex-col md:flex-row gap-space-4 bg-slate-50/30 dark:bg-slate-950/20 backdrop-blur-md border border-slate-200/40 dark:border-slate-800/40 p-space-4 radius-xl shadow-xs transition-all duration-300 ease-out hover:shadow-sm shrink-0">
             <div className="relative flex-1">
               <Search className="absolute left-space-3 top-space-2.5 h-4 w-4 text-muted-foreground/50"/>
               <Input
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search bookings by customer name, email, or phone..."
-                className="pl-space-9 bg-background text-caption border-[hsl(var(--foreground)/0.08)] focus-visible:ring-primary/20"
+                className="pl-space-9 bg-background/50 hover:bg-background border-slate-200/50 dark:border-slate-800/50 hover:border-primary/30 text-caption radius-lg shadow-inner transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-primary/10"
               />
             </div>
             <div className="flex gap-space-2">
               <div className="w-40">
                 <Select value={selectedStaffId} onValueChange={setSelectedStaffId}>
-                  <SelectTrigger className="bg-background text-caption border-[hsl(var(--foreground)/0.08)] hover:border-[hsl(var(--primary)/0.25)] transition-all h-9 radius-md">
+                  <SelectTrigger className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 hover:border-primary/30 transition-all duration-300 ease-out active:scale-[0.99] h-9 radius-lg shadow-xs focus:ring-2 focus:ring-primary/10">
                     <div className="flex items-center gap-space-1.5 font-medium">
                       <User className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0"/>
                       <SelectValue placeholder="Staff Member"/>
@@ -401,7 +401,7 @@ export default function AppointmentsPage() {
               </div>
               <div className="w-40">
                 <Select value={selectedStatus} onValueChange={setSelectedStatus}>
-                  <SelectTrigger className="bg-background text-caption border-[hsl(var(--foreground)/0.08)] hover:border-[hsl(var(--primary)/0.25)] transition-all h-9 radius-md">
+                  <SelectTrigger className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 hover:border-primary/30 transition-all duration-300 ease-out active:scale-[0.99] h-9 radius-lg shadow-xs focus:ring-2 focus:ring-primary/10">
                     <div className="flex items-center gap-space-1.5 font-medium">
                       <Filter className="h-3.5 w-3.5 text-muted-foreground/50 shrink-0"/>
                       <SelectValue placeholder="Status Filter"/>
@@ -435,11 +435,11 @@ export default function AppointmentsPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-space-4 items-start">
               
               {/* Left Column: Bookings List */}
-              <div className="lg:col-span-8 flex flex-col h-[700px] bg-card border border-[hsl(var(--foreground)/0.06)] radius-xl overflow-hidden">
-                <div className="p-space-4 border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.005)] shrink-0">
+              <div className="lg:col-span-8 flex flex-col h-[700px] bg-slate-50/20 dark:bg-slate-950/10 border border-slate-200/40 dark:border-slate-800/40 radius-xl shadow-md transition-all duration-300 ease-out overflow-hidden">
+                <div className="px-space-5 py-space-4 border-b border-slate-200/30 dark:border-slate-800/30 bg-slate-100/10 dark:bg-slate-900/10 shrink-0">
                   <span className="text-caption font-semibold uppercase tracking-wider text-muted-foreground/60">Bookings List ({filteredApts.length})</span>
                 </div>
-                <ScrollArea className="flex-1 p-space-3 space-y-space-3 bg-[hsl(var(--foreground)/0.005)]" horizontal={false}>
+                <ScrollArea className="flex-1 p-space-4 space-y-space-4 bg-transparent" horizontal={false}>
                   {filteredApts.map((item) => {
                     const isSelected = item.appointment.id === selectedAptId;
                     const customerName = item.appointment.customerName;
@@ -453,18 +453,18 @@ export default function AppointmentsPage() {
                       <div 
                         key={item.appointment.id}
                         className={cn(
-                          "flex flex-col border radius-lg overflow-hidden bg-background transition-all duration-200 shadow-xs",
+                          "flex flex-col border radius-xl overflow-hidden bg-background/80 dark:bg-slate-900/80 transition-all duration-300 ease-out shadow-[0_2px_6px_rgba(0,0,0,0.015)] hover:shadow-md cursor-pointer active:scale-[0.995] select-none",
                           isSelected 
-                            ? "border-[hsl(var(--primary)/0.35)] ring-1 ring-[hsl(var(--primary)/0.1)]" 
-                            : "border-[hsl(var(--foreground)/0.06)] hover:border-[hsl(var(--foreground)/0.15)]"
+                            ? "border-primary/30 dark:border-primary/40 ring-2 ring-primary/5 bg-slate-50/50 dark:bg-slate-900/50" 
+                            : "border-slate-200/40 dark:border-slate-800/40 hover:border-slate-300 dark:hover:border-slate-700"
                         )}
                       >
                         {/* Clickable Header Row */}
                         <div
                           onClick={() => setSelectedAptId(isSelected ? null : item.appointment.id)}
                           className={cn(
-                            "p-space-4 cursor-pointer transition-all duration-150 flex gap-space-3 items-center relative select-none",
-                            isSelected ? "bg-[hsl(var(--primary)/0.015)] border-b border-[hsl(var(--foreground)/0.04)]" : "bg-transparent"
+                            "p-space-5 flex gap-space-4 items-center relative select-none transition-all duration-300 ease-out",
+                            isSelected ? "border-b border-slate-200/30 dark:border-slate-800/30" : "bg-transparent"
                           )}
                         >
                           <div className={`h-8.5 w-8.5 radius-full bg-gradient-to-br ${gradient} text-white text-caption font-semibold flex items-center justify-center shrink-0`}>
@@ -496,7 +496,7 @@ export default function AppointmentsPage() {
 
                         {/* Inline expanded details */}
                         {isSelected && (
-                          <div className="p-space-4 bg-[hsl(var(--foreground)/0.005)] border-t border-[hsl(var(--foreground)/0.04)] space-y-space-4 animate-fade-in text-caption">
+                          <div className="p-space-5 bg-slate-50/10 dark:bg-slate-950/10 border-t border-slate-200/30 dark:border-slate-800/30 space-y-space-5 animate-fade-in text-caption">
                             {loadingDetails ? (
                               <div className="py-space-6 flex items-center justify-center gap-space-2 text-muted-foreground/60">
                                 <Loader2 className="h-4.5 w-4.5 animate-spin text-primary"/>
@@ -505,8 +505,8 @@ export default function AppointmentsPage() {
                             ) : activeDetails && activeDetails.details.appointment.id === item.appointment.id ? (
                               <>
                                 {/* Contact Info */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-3">
-                                  <div className="space-y-space-1.5 bg-background border border-[hsl(var(--foreground)/0.05)] radius-lg p-space-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-space-4">
+                                  <div className="space-y-space-2 bg-background/60 dark:bg-slate-900/60 border border-slate-200/30 dark:border-slate-800/30 radius-lg p-space-4 shadow-[0_2px_4px_rgba(0,0,0,0.01)] hover:shadow-sm transition-all duration-300 ease-out">
                                     <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 block">Customer Information</span>
                                     <div className="space-y-space-2 text-caption">
                                       <div className="flex items-center gap-space-2 text-caption">
@@ -521,7 +521,7 @@ export default function AppointmentsPage() {
                                   </div>
 
                                   {/* Reschedule / Cancel status info */}
-                                  <div className="space-y-space-1.5 bg-background border border-[hsl(var(--foreground)/0.05)] radius-lg p-space-3">
+                                  <div className="space-y-space-2 bg-background/60 dark:bg-slate-900/60 border border-slate-200/30 dark:border-slate-800/30 radius-lg p-space-4 shadow-[0_2px_4px_rgba(0,0,0,0.01)] hover:shadow-sm transition-all duration-300 ease-out">
                                     <span className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground/60 block">Scheduling Context</span>
                                     <div className="space-y-space-1.5 text-caption">
                                       <div>Booking ID: <span className="font-mono text-muted-foreground">{activeDetails.details.appointment.id}</span></div>
@@ -533,13 +533,13 @@ export default function AppointmentsPage() {
                                 </div>
 
                                 {/* Status Action Buttons */}
-                                <div className="space-y-space-2 border-t border-[hsl(var(--foreground)/0.05)] pt-space-3.5">
+                                <div className="space-y-space-3 border-t border-slate-200/30 dark:border-slate-800/30 pt-space-4">
                                   <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/55 block">Triage Actions</span>
                                   <div className="flex flex-wrap gap-space-2">
                                     <Button 
                                       size="sm"
                                       variant="outline"
-                                      className="h-8 text-caption font-semibold border-[hsl(var(--foreground)/0.06)] hover:bg-emerald-500/10 hover:text-emerald-600 hover:border-emerald-500/20"
+                                      className="h-8.5 text-caption font-semibold border border-emerald-500/20 bg-emerald-50/30 dark:bg-emerald-950/10 text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer"
                                       onClick={() => handleUpdateStatus("confirmed")}
                                     >
                                       Confirm
@@ -547,7 +547,7 @@ export default function AppointmentsPage() {
                                     <Button 
                                       size="sm"
                                       variant="outline"
-                                      className="h-8 text-caption font-semibold border-[hsl(var(--foreground)/0.06)] hover:bg-blue-500/10 hover:text-blue-600 hover:border-blue-500/20"
+                                      className="h-8.5 text-caption font-semibold border border-blue-500/20 bg-blue-50/30 dark:bg-blue-950/10 text-blue-600 dark:text-blue-400 hover:bg-blue-500/10 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer"
                                       onClick={() => handleUpdateStatus("completed")}
                                     >
                                       Complete
@@ -555,7 +555,7 @@ export default function AppointmentsPage() {
                                     <Button 
                                       size="sm"
                                       variant="outline"
-                                      className="h-8 text-caption font-semibold border-[hsl(var(--foreground)/0.06)] hover:bg-slate-500/10 hover:text-slate-600 hover:border-slate-500/20"
+                                      className="h-8.5 text-caption font-semibold border border-slate-200/40 dark:border-slate-800/40 bg-slate-50/30 dark:bg-slate-900/10 text-slate-600 dark:text-slate-400 hover:bg-slate-500/10 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer"
                                       onClick={() => handleUpdateStatus("no_show")}
                                     >
                                       No Show
@@ -563,7 +563,7 @@ export default function AppointmentsPage() {
                                     <Button 
                                       size="sm"
                                       variant="outline"
-                                      className="h-8 text-caption font-semibold border-[hsl(var(--foreground)/0.06)]"
+                                      className="h-8.5 text-caption font-semibold border border-slate-200/40 dark:border-slate-800/40 bg-slate-50/30 dark:bg-slate-900/10 text-foreground/80 hover:bg-primary/5 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer hover:border-primary/20"
                                       onClick={() => {
                                         setRescheduleDate("");
                                         setRescheduleReason("");
@@ -576,7 +576,7 @@ export default function AppointmentsPage() {
                                     <Button 
                                       size="sm"
                                       variant="outline"
-                                      className="h-8 text-caption font-semibold border-[hsl(var(--foreground)/0.06)] hover:bg-rose-500/10 hover:text-rose-600 hover:border-rose-500/20 text-rose-500 border-rose-500/15"
+                                      className="h-8.5 text-caption font-semibold border border-rose-500/20 bg-rose-50/30 dark:bg-rose-950/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/10 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer"
                                       onClick={() => {
                                         setCancelReason("");
                                         setCancelOpen(true);
@@ -589,9 +589,9 @@ export default function AppointmentsPage() {
 
                                 {/* Unified Customer Profile context */}
                                 {activeDetails.leadProfile && (
-                                  <div className="space-y-space-2 border-t border-[hsl(var(--foreground)/0.05)] pt-space-3.5">
+                                  <div className="space-y-space-3 border-t border-slate-200/30 dark:border-slate-800/30 pt-space-4">
                                     <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/55 block">Unified Customer Profile</span>
-                                    <div className="bg-background border border-[hsl(var(--foreground)/0.05)] radius-lg p-space-3 space-y-space-2.5">
+                                    <div className="bg-background/60 dark:bg-slate-900/60 border border-slate-200/30 dark:border-slate-800/30 radius-lg p-space-4 space-y-space-3 shadow-xs transition-all duration-300 ease-out hover:shadow-sm">
                                       <div className="flex justify-between items-center text-caption">
                                         <span className="text-muted-foreground/80 font-medium">Qualification Status:</span>
                                         <span className="font-semibold text-primary">{activeDetails.leadProfile.status}</span>
@@ -599,13 +599,13 @@ export default function AppointmentsPage() {
 
                                       {/* Answers checklist summary */}
                                       {activeDetails.leadAnswers && activeDetails.leadAnswers.length > 0 && (
-                                        <div className="space-y-space-1.5 pt-space-2 border-t border-[hsl(var(--foreground)/0.03)]">
+                                        <div className="space-y-space-2 pt-space-3 border-t border-slate-200/20 dark:border-slate-800/20">
                                           <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider block font-semibold flex items-center gap-space-1">
                                             <ClipboardList className="h-3 w-3 text-muted-foreground/45 shrink-0"/> Captured Qualification
                                           </span>
-                                          <div className="space-y-space-1.5 max-h-36 overflow-y-auto pr-space-1">
+                                          <div className="space-y-space-2 max-h-36 overflow-y-auto pr-space-1">
                                             {activeDetails.leadAnswers.map((ans: any) => (
-                                              <div key={ans.id} className="text-caption bg-[hsl(var(--foreground)/0.015)] radius-lg p-space-2 border border-[hsl(var(--foreground)/0.035)] leading-normal">
+                                              <div key={ans.id} className="text-caption bg-slate-50/50 dark:bg-slate-900/30 radius-lg p-space-3 border border-slate-200/20 dark:border-slate-800/20 leading-normal hover:shadow-xs transition-all duration-300 ease-out">
                                                 <span className="text-foreground font-semibold block mb-space-0.5">{ans.questionText}</span>
                                                 <span className="text-muted-foreground block pl-space-2 border-l border-primary/20 italic">"{ans.answerValue}"</span>
                                               </div>
@@ -616,7 +616,7 @@ export default function AppointmentsPage() {
 
                                       {/* Summary items */}
                                       {activeDetails.summary && (
-                                        <div className="space-y-space-1 pt-space-2 border-t border-[hsl(var(--foreground)/0.03)] text-caption">
+                                        <div className="space-y-space-1.5 pt-space-3 border-t border-slate-200/20 dark:border-slate-800/20 text-caption">
                                           <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider block font-semibold flex items-center gap-space-1">
                                             <MessageSquare className="h-3 w-3 text-muted-foreground/45 shrink-0"/> AI Summary
                                           </span>
@@ -628,12 +628,12 @@ export default function AppointmentsPage() {
                                 )}
 
                                 {/* Notes log */}
-                                <div className="space-y-space-2 border-t border-[hsl(var(--foreground)/0.05)] pt-space-3.5">
+                                <div className="space-y-space-3 border-t border-slate-200/30 dark:border-slate-800/30 pt-space-4">
                                   <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/55 block">Staff Booking Notes</span>
-                                  <div className="space-y-space-2">
+                                  <div className="space-y-space-3">
                                     {activeDetails.notes && activeDetails.notes.map((note: any) => (
-                                      <div key={note.id} className="bg-background border border-[hsl(var(--foreground)/0.04)] radius-lg p-space-2.5 text-caption space-y-space-1">
-                                        <div className="flex justify-between text-caption text-muted-foreground/50 font-semibold border-b border-[hsl(var(--foreground)/0.03)] pb-space-1 mb-space-1">
+                                      <div key={note.id} className="bg-background/80 dark:bg-slate-900/80 border border-slate-200/30 dark:border-slate-800/30 radius-lg p-space-3 shadow-xs text-caption space-y-space-2 hover:shadow-sm transition-all duration-300 ease-out">
+                                        <div className="flex justify-between text-caption text-muted-foreground/50 font-semibold border-b border-slate-200/20 dark:border-slate-800/20 pb-space-2 mb-space-2">
                                           <span className="uppercase tracking-wider">{note.author}</span>
                                           <span>{new Date(note.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}</span>
                                         </div>
@@ -646,10 +646,10 @@ export default function AppointmentsPage() {
                                         value={newNote}
                                         onChange={(e) => setNewNote(e.target.value)}
                                         placeholder="Add a scheduling note..."
-                                        className="bg-background text-caption border-[hsl(var(--foreground)/0.08)] focus-visible:ring-primary/20"
+                                        className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 focus:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary/10 transition-all duration-300 ease-out"
                                         disabled={addingNote}
                                       />
-                                      <Button type="submit" size="sm" className="h-8.5 text-caption font-semibold px-space-3.5 shrink-0" disabled={addingNote || !newNote.trim()}>
+                                      <Button type="submit" size="sm" className="h-8.5 text-caption font-semibold px-space-4 shrink-0 transition-all duration-300 ease-out active:scale-[0.98] radius-md cursor-pointer" disabled={addingNote || !newNote.trim()}>
                                         {addingNote ? <Loader2 className="h-3 w-3 animate-spin"/> : "Add"}
                                       </Button>
                                     </form>
@@ -671,11 +671,11 @@ export default function AppointmentsPage() {
               </div>
 
               {/* Right Column: Booking Completion Funnel */}
-              <div className="lg:col-span-4 flex flex-col h-[700px] bg-card border border-[hsl(var(--foreground)/0.06)] radius-xl overflow-hidden">
-                <div className="p-space-4 border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.005)] shrink-0">
+              <div className="lg:col-span-4 flex flex-col h-[700px] bg-slate-50/20 dark:bg-slate-950/10 border border-slate-200/40 dark:border-slate-800/40 radius-xl shadow-md transition-all duration-300 ease-out overflow-hidden">
+                <div className="px-space-5 py-space-4 border-b border-slate-200/30 dark:border-slate-800/30 bg-slate-100/10 dark:bg-slate-900/10 shrink-0">
                   <span className="text-caption font-semibold uppercase tracking-wider text-muted-foreground/60">Booking Completion Funnel</span>
                 </div>
-                <ScrollArea className="flex-1 p-space-5 flex flex-col gap-space-4">
+                <ScrollArea className="flex-1 p-space-6 flex flex-col gap-space-5 bg-transparent">
                   {/* Donut Chart */}
                   <div className="flex justify-center items-center shrink-0">
                     <DonutChartCard
@@ -702,7 +702,7 @@ export default function AppointmentsPage() {
                       { stage: "Availability Requested", count: 320, color: "bg-amber-500", pct: 25.6 },
                       { stage: "Booking Confirmed", count: 215, color: "bg-rose-500", pct: 17.2 },
                     ].map((item, i) => (
-                      <div key={i} className="flex justify-between items-center text-caption font-medium py-space-2 border-b border-[hsl(var(--foreground)/0.04)] last:border-b-0">
+                      <div key={i} className="flex justify-between items-center text-caption font-medium py-space-2 border-b border-slate-200/20 dark:border-slate-800/20 last:border-b-0">
                         <div className="flex items-center gap-space-2">
                           <span className={cn("h-2.5 w-2.5 rounded-full shrink-0", item.color)} />
                           <span className="text-foreground">{item.stage}</span>
@@ -725,7 +725,7 @@ export default function AppointmentsPage() {
 
       {/* Reschedule Booking dialog */}
       <Dialog open={rescheduleOpen} onOpenChange={setRescheduleOpen}>
-        <DialogContent className="sm:max-w-md bg-card border-[hsl(var(--foreground)/0.08)] radius-xl">
+        <DialogContent className="sm:max-w-md bg-card/95 border border-slate-200/40 dark:border-slate-800/40 radius-2xl shadow-xl backdrop-blur-lg p-space-6">
           <DialogHeader>
             <DialogTitle className="text-body-sm font-semibold text-foreground">Reschedule Appointment</DialogTitle>
             <DialogDescription className="text-caption text-muted-foreground">
@@ -740,7 +740,7 @@ export default function AppointmentsPage() {
                 type="date"
                 value={rescheduleDate}
                 onChange={(e) => setRescheduleDate(e.target.value)}
-                className="bg-background text-caption"
+                className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 focus:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary/10 transition-all duration-300 ease-out h-9 radius-lg shadow-sm"
               />
             </div>
 
@@ -756,8 +756,12 @@ export default function AppointmentsPage() {
                     {availableSlots.map((slot, idx) => (
                       <Button
                         key={idx}
-                        variant={selectedSlot === slot ? "default" : "outline"}
-                        className="h-8 text-caption border-[hsl(var(--foreground)/0.06)]"
+                        className={cn(
+                          "h-8 text-caption border transition-all duration-300 ease-out active:scale-[0.98] radius-md cursor-pointer",
+                          selectedSlot === slot
+                            ? "bg-primary border-primary text-primary-foreground shadow-sm"
+                            : "border-slate-200/50 dark:border-slate-800/50 hover:border-primary/30 bg-background/5 text-foreground hover:bg-primary/5"
+                        )}
                         onClick={() => setSelectedSlot(slot)}
                       >
                         {slot.startTime}
@@ -775,15 +779,15 @@ export default function AppointmentsPage() {
                 value={rescheduleReason}
                 onChange={(e) => setRescheduleReason(e.target.value)}
                 placeholder="e.g. Patient conflict, clinic override"
-                className="bg-background text-caption"
+                className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 focus:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary/10 transition-all duration-300 ease-out h-9 radius-lg shadow-sm"
               />
             </div>
           </div>
-          <DialogFooter className="flex gap-space-2 border-t border-[hsl(var(--foreground)/0.05)] pt-space-3">
-            <Button variant="outline" size="sm" onClick={() => setRescheduleOpen(false)} className="h-8.5 text-caption font-semibold">
+          <DialogFooter className="flex gap-space-2 border-t border-slate-200/20 dark:border-slate-800/20 pt-space-4">
+            <Button size="sm" onClick={() => setRescheduleOpen(false)} className="h-9 text-caption font-semibold border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-500/10 hover:border-slate-500/20 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer">
               Cancel
             </Button>
-            <Button size="sm" onClick={handleReschedule} disabled={!selectedSlot || loadingSlots} className="h-8.5 text-caption font-semibold">
+            <Button size="sm" onClick={handleReschedule} disabled={!selectedSlot || loadingSlots} className="h-9 text-caption font-semibold bg-primary hover:bg-primary-light active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer shadow-sm">
               Confirm Reschedule
             </Button>
           </DialogFooter>
@@ -792,7 +796,7 @@ export default function AppointmentsPage() {
 
       {/* Cancel Booking dialog */}
       <Dialog open={cancelOpen} onOpenChange={setCancelOpen}>
-        <DialogContent className="sm:max-w-md bg-card border-[hsl(var(--foreground)/0.08)] radius-xl">
+        <DialogContent className="sm:max-w-md bg-card/95 border border-slate-200/40 dark:border-slate-800/40 radius-2xl shadow-xl backdrop-blur-lg p-space-6">
           <DialogHeader>
             <DialogTitle className="text-body-sm font-semibold text-foreground">Cancel Appointment</DialogTitle>
             <DialogDescription className="text-caption text-rose-500 font-medium">
@@ -807,15 +811,15 @@ export default function AppointmentsPage() {
                 value={cancelReason}
                 onChange={(e) => setCancelReason(e.target.value)}
                 placeholder="e.g. Patient sick, clinic override"
-                className="bg-background text-caption"
+                className="bg-background/50 hover:bg-background text-caption border-slate-200/50 dark:border-slate-800/50 focus:border-primary/50 focus-visible:ring-2 focus-visible:ring-primary/10 transition-all duration-300 ease-out h-9 radius-lg shadow-sm"
               />
             </div>
           </div>
-          <DialogFooter className="flex gap-space-2 border-t border-[hsl(var(--foreground)/0.05)] pt-space-3">
-            <Button variant="outline" size="sm" onClick={() => setCancelOpen(false)} className="h-8.5 text-caption font-semibold">
+          <DialogFooter className="flex gap-space-2 border-t border-slate-200/20 dark:border-slate-800/20 pt-space-4">
+            <Button size="sm" onClick={() => setCancelOpen(false)} className="h-9 text-caption font-semibold border-slate-200/50 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50 hover:bg-slate-500/10 hover:border-slate-500/20 active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer">
               Back
             </Button>
-            <Button variant="destructive" size="sm" onClick={handleCancel} className="h-8.5 text-caption font-semibold">
+            <Button size="sm" onClick={handleCancel} className="h-9 text-caption font-semibold bg-rose-600 hover:bg-rose-500 text-white active:scale-[0.98] transition-all duration-300 ease-out radius-md cursor-pointer shadow-sm">
               Yes, Cancel Booking
             </Button>
           </DialogFooter>

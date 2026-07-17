@@ -5,50 +5,7 @@ import { sql } from "drizzle-orm";
 async function main() {
   console.log("🧹 Starting system cleanup...");
 
-  // 1. Clear Clerk Users (Only if DELETE_REMOTE_CLERK is set to true)
-  try {
-    const deleteClerk = process.env.DELETE_REMOTE_CLERK === "true";
-    if (!deleteClerk) {
-      console.log("👤 Skipping remote Clerk user deletion (safe default). Set DELETE_REMOTE_CLERK=true to enable.");
-    } else {
-      const secretKey = process.env.CLERK_SECRET_KEY;
-      if (!secretKey) {
-        console.log("⚠️ Missing CLERK_SECRET_KEY. Skipping Clerk user deletion.");
-      } else {
-        console.log("👤 Fetching and deleting Clerk users...");
-        const { createClerkClient } = await import("@clerk/backend");
-        const clerkClient = createClerkClient({ secretKey });
-
-        let hasMore = true;
-        let limit = 100;
-        
-        while (hasMore) {
-          const usersList = await clerkClient.users.getUserList({ limit });
-          if (usersList.data.length === 0) {
-            hasMore = false;
-            break;
-          }
-
-          console.log(`Deleting batch of ${usersList.data.length} users...`);
-          for (const user of usersList.data) {
-            try {
-              await clerkClient.users.deleteUser(user.id);
-              console.log(`Deleted Clerk user: ${user.id} (${user.emailAddresses[0]?.emailAddress})`);
-            } catch (e) {
-              console.error(`Failed to delete Clerk user ${user.id}:`, e);
-            }
-          }
-
-          if (usersList.data.length < limit) {
-            hasMore = false;
-          }
-        }
-        console.log("✅ Clerk users deleted successfully.");
-      }
-    }
-  } catch (err) {
-    console.error("❌ Error deleting Clerk users:", err);
-  }
+  // Clerk user deletion block removed. Now utilizing local self-hosted auth.
 
   // 2. Clear Database Tables
   try {

@@ -27,3 +27,30 @@ export type OnboardingInput = z.infer<typeof onboardingSchema>;
 export type OnboardingStep1Input = z.infer<typeof onboardingStep1Schema>;
 export type OnboardingStep2Input = z.infer<typeof onboardingStep2Schema>;
 export type OnboardingStep3Input = z.infer<typeof onboardingStep3Schema>;
+
+export const loginSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+  rememberMe: z.boolean().optional().default(true),
+});
+
+export const registrationSchema = z.object({
+  name: z.string().optional(),
+  firstName: z.string().min(1, "First name is required"),
+  lastName: z.string().min(1, "Last name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(12, "Password must be at least 12 characters"),
+  acceptTerms: z.boolean().refine((val) => val === true, "Terms must be accepted"),
+  acceptPrivacy: z.boolean().refine((val) => val === true, "Privacy Policy must be accepted"),
+  marketingConsent: z.boolean().optional().default(false),
+});
+
+export const forgotPasswordSchema = z.object({
+  email: z.string().email("Please enter a valid email address"),
+});
+
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, "Token is required"),
+  password: z.string().min(12, "Password must be at least 12 characters"),
+});
+

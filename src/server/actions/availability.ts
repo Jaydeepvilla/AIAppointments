@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { membershipRepository } from "../repositories/membership";
 import { availabilityService } from "../services/availability";
 

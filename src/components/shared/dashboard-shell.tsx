@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { UserButton } from "@clerk/nextjs";
+import { UserAvatarMenu } from "./user-avatar-menu";
 import {
   Bot,
   Menu,
@@ -45,6 +45,8 @@ const AI_LINKS = [
 
 const SETTINGS_LINKS = [
   { href: "/profile", icon: "Building" as const, label: "Business Profile" },
+  { href: "/settings/account", icon: "Users" as const, label: "Account Settings" },
+  { href: "/admin/users", icon: "Users" as const, label: "User Directory" },
   { href: "/services", icon: "Briefcase" as const, label: "Services" },
   { href: "/staff", icon: "Users" as const, label: "Staff" },
   { href: "/settings", icon: "Settings" as const, label: "Hours & Booking" },
@@ -76,6 +78,8 @@ const BREADCRUMB_MAP: Record<string, { group: string; label: string }> = {
   "/flows": { group: "AI Receptionist", label: "Intake Questions" },
   "/templates": { group: "AI Receptionist", label: "Templates" },
   "/profile": { group: "Settings", label: "Business Profile" },
+  "/settings/account": { group: "Settings", label: "Account Settings" },
+  "/admin/users": { group: "Settings", label: "User Directory" },
   "/services": { group: "Settings", label: "Services" },
   "/staff": { group: "Settings", label: "Staff" },
   "/settings": { group: "Settings", label: "Hours & Booking" },
@@ -229,10 +233,8 @@ export function DashboardShell({
                 : "gap-space-3 px-space-2 py-space-2 -mx-space-1 hover:bg-[hsl(var(--foreground)/0.04)]"
             )}
           >
-            <UserButton
-              appearance={{
-                elements: { userButtonAvatarBox: collapsed ? "h-8 w-8" : "h-7 w-7" },
-              }}
+            <UserAvatarMenu
+              avatarClass={collapsed ? "h-8 w-8" : "h-7 w-7"}
             />
             {!collapsed && (
               <>

@@ -68,7 +68,7 @@ const MetaLogo = (props: React.SVGProps<SVGSVGElement>) =>
  </svg>;
 
 
-const ClerkLogo = (props: React.SVGProps<SVGSVGElement>) =>
+const IdentityLogo = (props: React.SVGProps<SVGSVGElement>) =>
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" xmlns="http://www.w3.org/2000/svg" {...props}>
  <path d="M12 2L3 7v6c0 5.52 4.48 10 9 10s9-4.48 9-10V7l-9-5z" strokeLinecap="round" strokeLinejoin="round" className="stroke-indigo-500" />
  <path d="M12 11a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5z" fill="currentColor" className="fill-indigo-500 text-primary" />
@@ -288,19 +288,19 @@ const INTEGRATIONS: Record<string, IntegrationData> = {
     impact: "Improves transaction success rates in India by 45% using native UPI/QR checkout blocks.",
     useCase: "A dental clinic in Mumbai charges a diagnostic token fee via automated UPI checkout before scheduling."
   },
-  Clerk: {
-    key: "Clerk",
-    name: "Clerk User Authentication",
+  Identity: {
+    key: "Identity",
+    name: "Identity & Access Manager",
     role: "Identity Manager",
     desc: "Secures client portals, creates user auth profiles during registration, and manages role-based access variables.",
-    logo: ClerkLogo,
+    logo: IdentityLogo,
     color: "text-primary",
     colorBorder: "border-primary/20 hover:border-primary/50",
     colorBg: "bg-primary/5",
     x: 97,
     y: 135,
     outlets: ["CRM"],
-    pathTrace: ["User Registration", "Clerk JWT Auth node", "Profile created", "Secure CRM profile sync"],
+    pathTrace: ["User Registration", "JWT Auth node", "Profile created", "Secure CRM profile sync"],
     capabilities: [
     "JSON Web Token (JWT) Session Management",
     "Patient / Client Portal Auth safeguards",
@@ -439,12 +439,12 @@ const INDUSTRIES: IndustryData[] = [
   key: "medical",
   name: "Medical Practices",
   desc: "Engineered for HIPAA-compliant intake operations, patient portal onboarding, clinic schedule sync, and symptom triage checks.",
-  activeIntegrations: ["Microsoft", "Twilio", "Clerk", "OpenAI"],
+  activeIntegrations: ["Microsoft", "Twilio", "Identity", "OpenAI"],
   activeOutcomes: ["Calendar", "CRM"],
   outcomeLabels: ["Outlook Shift Board", "EMR Patient Profile Database"],
   outcomesDesc: "Updates physician shift systems, secures patient records via jwt tokens, and structures intakes.",
   businessImpact: "Triages Patient intakes immediately, cutting down wait times by 80% and maintaining strict HIPAA compliance.",
-  dialogExample: "\"Hi, I need to register as a new patient...\"➔ AI qualifies symptoms, registers auth profile with Clerk, and matches physician schedule."
+  dialogExample: "\"Hi, I need to register as a new patient...\"➔ AI qualifies symptoms, registers auth profile with Identity, and matches physician schedule."
 },
 {
   key: "salon",
@@ -461,7 +461,7 @@ const INDUSTRIES: IndustryData[] = [
   key: "law",
   name: "Law Firms",
   desc: "Vetted for lead qualification, screening case details, booking consultations, and updating firm CRM databases.",
-  activeIntegrations: ["Google", "OpenAI", "Clerk", "Microsoft"],
+  activeIntegrations: ["Google", "OpenAI", "Identity", "Microsoft"],
   activeOutcomes: ["CRM"],
   outcomeLabels: ["Legal CRM (Clio/Hubspot) intake database"],
   outcomesDesc: "Vets prospective client cases against eligibility guidelines and syncs profiles instantly.",
@@ -472,7 +472,7 @@ const INDUSTRIES: IndustryData[] = [
   key: "gym",
   name: "Gyms & Fitness Studios",
   desc: "Built for scheduling trial sessions, enrolling new memberships, managing billing profiles, and sending class reminders.",
-  activeIntegrations: ["WhatsApp", "Twilio", "Razorpay", "Clerk"],
+  activeIntegrations: ["WhatsApp", "Twilio", "Razorpay", "Identity"],
   activeOutcomes: ["Calendar", "CRM", "Alerts"],
   outcomeLabels: ["Class Booking Grid", "Mindbody CRM Sync", "WhatsApp QR code pass"],
   outcomesDesc: "Registers membership accounts, logs monthly direct-debit schedules, and dispatches alerts.",

@@ -4,7 +4,8 @@ import Link from"next/link";
 import { usePathname } from"next/navigation";
 import { useState, useEffect } from"react";
 import { useTheme } from"next-themes";
-import { Show, UserButton } from"@clerk/nextjs";
+import { Show } from "@/lib/auth/client";
+import { UserAvatarMenu } from "@/components/shared/user-avatar-menu";
 import { Menu, X, Sun, Moon } from"lucide-react";
 import { Button } from"@/components/shared/button";
 
@@ -110,13 +111,7 @@ export function MarketingNav() {
  >
  Dashboard
  </Link>
- <UserButton
- appearance={{
- elements: {
- avatarBox:"h-8 w-8",
- },
- }}
- />
+ <UserAvatarMenu avatarClass="h-8 w-8" />
  </Show>
  </div>
 
@@ -182,7 +177,7 @@ export function MarketingNav() {
  Dashboard
  </Link>
  <div className="flex justify-center pt-space-1">
- <UserButton />
+ <UserAvatarMenu />
  </div>
  </Show>
  </div>

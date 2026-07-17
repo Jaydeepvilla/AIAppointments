@@ -15,40 +15,24 @@ import { sql } from "drizzle-orm";
 async function main() {
   console.log("🌱 Starting database seed...");
   try {
-    // 1. Setup Clerk User (Syncing Auth with DB)
-    const secretKey = process.env.CLERK_SECRET_KEY;
-    if (!secretKey) throw new Error("Missing CLERK_SECRET_KEY in environment variables.");
-    
-    const { createClerkClient } = await import("@clerk/backend");
-    const clerkClient = createClerkClient({ secretKey });
-    
-    // Using official Clerk test format completely bypasses device verification blocks
+    // 1. Setup Local User (Syncing Auth with DB)
     const email = "demo+clerk_test@example.com";
     const password = "Dem0P@ssw0rd!2026_";
-
-    const { data: existingUsers } = await clerkClient.users.getUserList({ emailAddress: [email] });
-    if (existingUsers.length > 0) {
-      await clerkClient.users.deleteUser(existingUsers[0].id);
-    }
-
-    const clerkUser = await clerkClient.users.createUser({
-      emailAddress: [email],
-      password: password,
-      firstName: "Demo",
-      lastName: "Admin",
-    });
-
-    const userId = clerkUser.id;
+    const { hashPassword } = await import("../src/lib/auth/password");
+    const passwordHash = await hashPassword(password);
+    const userId = "user_2demo_admin_clerk_test";
 
     // 1b. Create Demo User in Database
     await db.insert(users).values({
       id: userId,
       email: email,
       name: "Demo Admin",
+      passwordHash,
+      isVerified: true,
       avatar: faker.image.avatar(),
     }).onConflictDoNothing();
 
-    console.log("✅ Created Demo User in Clerk & Database");
+    console.log("✅ Created Demo User in Database");
 
     // 2. Create Organization
     // We are generating a static UUID so it doesn't duplicate if we run the seed multiple times.

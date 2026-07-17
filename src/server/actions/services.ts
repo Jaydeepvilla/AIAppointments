@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { revalidatePath } from "next/cache";
 import { servicesRepository, NewService } from "../repositories/services";
 import { membershipRepository } from "../repositories/membership";

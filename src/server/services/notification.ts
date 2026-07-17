@@ -174,6 +174,9 @@ async function dispatchSMS(to: string, message: string): Promise<boolean> {
 
 
 export const notificationService = {
+  async sendEmail(to: string, subject: string, html: string): Promise<boolean> {
+    return sendSmtpEmail(to, subject, html);
+  },
   async sendReminder(reminderId: string): Promise<boolean> {
     try {
       const now = new Date();

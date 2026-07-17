@@ -16,10 +16,15 @@ export async function seedUsers(): Promise<string[]> {
 
   // If no user exists, create a default demo administrator
   const demoUserId = "user_2demo_admin_clerk_test";
+  const { hashPassword } = await import("../../src/lib/auth/password");
+  const passwordHash = await hashPassword("Dem0P@ssw0rd!2026_");
+
   await db.insert(users).values({
     id: demoUserId,
     email: "demo+clerk_test@example.com",
     name: "Demo Admin",
+    passwordHash,
+    isVerified: true,
     avatar: faker.image.avatar(),
   }).onConflictDoNothing();
 

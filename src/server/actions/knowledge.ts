@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { revalidatePath } from "next/cache";
 import { categoriesRepository } from "../repositories/categories";
 import { KnowledgeAnalysisService } from "../services/ingestion/ingestion-services";

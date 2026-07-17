@@ -110,7 +110,7 @@ const RELEASES = [
   { type: "feature", text: "Business Knowledge Base" },
   { type: "feature", text: "Industry templates for 8 verticals" },
   { type: "feature", text: "Multi-tenant dashboard" },
-  { type: "feature", text: "Clerk authentication and organization management" }]
+  { type: "feature", text: "Secure local authentication and organization management" }]
 
 }];
 

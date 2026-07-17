@@ -1,6 +1,6 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { organizationRepository } from "../repositories/organization";
 import { membershipRepository } from "../repositories/membership";
 import { subscriptionRepository } from "../repositories/subscription";
@@ -9,7 +9,7 @@ import { servicesRepository } from "../repositories/services";
 import { faqRepository } from "../repositories/faq";
 import { flowsRepository } from "../repositories/flows";
 import { settingsRepository } from "../repositories/settings";
-import { syncClerkUser } from "./auth";
+import { syncLocalUser } from "./auth";
 import { onboardingSchema, OnboardingInput } from "../../lib/validators";
 import { Organization } from "../../lib/types";
 import { INDUSTRY_TEMPLATES, DEFAULT_BUSINESS_HOURS } from "../../lib/constants/templates";
@@ -22,7 +22,7 @@ export async function checkUserOrganization() {
   }
 
   // Ensure user is synced
-  await syncClerkUser();
+  await syncLocalUser();
 
   const userMemberships = await membershipRepository.getByUser(userId);
   if (userMemberships.length > 0) {
@@ -44,7 +44,7 @@ export async function createOrganizationAction(input: OnboardingInput): Promise<
     const { name, industry, website, email, phone, address, timezone } = parsed.data;
 
     // 2. Authenticate & Sync User
-    const user = await syncClerkUser();
+    const user = await syncLocalUser();
     if (!user) {
       return { success: false, error: "Unauthorized user" };
     }

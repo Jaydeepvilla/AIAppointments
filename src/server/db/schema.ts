@@ -24,12 +24,50 @@ export const visibilityEnum = pgEnum("category_visibility", [
 ]);
 
 export const users = pgTable("users", {
-  id: text("id").primaryKey(), // Clerk user ID
+  id: text("id").primaryKey(), // Local user ID
   email: text("email").notNull().unique(),
+  passwordHash: text("password_hash"),
   name: text("name"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
   avatar: text("avatar"),
+  isVerified: boolean("is_verified").default(false).notNull(),
+  acceptTerms: boolean("accept_terms").default(false).notNull(),
+  acceptPrivacy: boolean("accept_privacy").default(false).notNull(),
+  marketingConsent: boolean("marketing_consent").default(false).notNull(),
+  status: text("status").default("active").notNull(), // 'active', 'suspended', 'deactivated'
+  suspendedAt: timestamp("suspended_at"),
+  deletedAt: timestamp("deleted_at"),
+  twoFactorSecret: text("two_factor_secret"),
+  twoFactorEnabled: boolean("two_factor_enabled").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const sessions = pgTable("sessions", {
+  id: text("id").primaryKey(), // Session token
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  fingerprint: text("fingerprint"),
+  isIdle: boolean("is_idle").default(false).notNull(),
+  rememberMe: boolean("remember_me").default(false).notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const verificationTokens = pgTable("verification_tokens", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  type: text("type").notNull(), // 'email_verification' | 'password_reset' | 'invitation'
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 export const organizations = pgTable("organizations", {
@@ -3007,6 +3045,187 @@ export const translations = pgTable("translations", {
   key: text("key").notNull(),
   value: text("value").notNull(),
 });
+
+// --- USER PROFILE & CONFIG SCHEMAS ---
+
+export const profiles = pgTable("profiles", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  phone: text("phone"),
+  bio: text("bio"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const refreshTokens = pgTable("refresh_tokens", {
+  id: text("id").primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  sessionId: text("session_id")
+    .references(() => sessions.id, { onDelete: "cascade" })
+    .notNull(),
+  userAgent: text("user_agent"),
+  ipAddress: text("ip_address"),
+  expiresAt: timestamp("expires_at").notNull(),
+  isRevoked: boolean("is_revoked").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const emailVerifications = pgTable("email_verifications", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  email: text("email").notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  isUsed: boolean("is_used").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const passwordResetTokens = pgTable("password_reset_tokens", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  token: text("token").notNull().unique(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  isUsed: boolean("is_used").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const loginAttempts = pgTable("login_attempts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  success: boolean("success").notNull(),
+  attemptedAt: timestamp("attempted_at").defaultNow().notNull(),
+});
+
+export const loginHistory = pgTable("login_history", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  ipAddress: text("ip_address"),
+  userAgent: text("user_agent"),
+  browser: text("browser"),
+  os: text("os"),
+  device: text("device"),
+  loginAt: timestamp("login_at").defaultNow().notNull(),
+});
+
+export const devices = pgTable("devices", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull(),
+  fingerprint: text("fingerprint").notNull(),
+  name: text("name"),
+  type: text("type"),
+  lastActive: timestamp("last_active").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const userPreferences = pgTable("user_preferences", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull().unique(),
+  theme: text("theme").default("system").notNull(),
+  language: text("language").default("en").notNull(),
+  timezone: text("timezone").default("UTC").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const userSettings = pgTable("user_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull().unique(),
+  mfaEnabled: boolean("mfa_enabled").default(false).notNull(),
+  mfaSecret: text("mfa_secret"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const notificationSettings = pgTable("notification_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull().unique(),
+  emailNotifications: boolean("email_notifications").default(true).notNull(),
+  smsNotifications: boolean("sms_notifications").default(true).notNull(),
+  pushNotifications: boolean("push_notifications").default(true).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+export const securitySettings = pgTable("security_settings", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  userId: text("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .notNull().unique(),
+  loginLockoutDuration: integer("login_lockout_duration").default(15).notNull(), // in minutes
+  passwordExpiryDays: integer("password_expiry_days").default(90).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// --- RELATION SHAPES FOR DRIZZLE ---
+
+export const profilesRelations = relations(profiles, ({ one }) => ({
+  user: one(users, {
+    fields: [profiles.userId],
+    references: [users.id],
+  }),
+}));
+
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [refreshTokens.userId],
+    references: [users.id],
+  }),
+  session: one(sessions, {
+    fields: [refreshTokens.sessionId],
+    references: [sessions.id],
+  }),
+}));
+
+export const userPreferencesRelations = relations(userPreferences, ({ one }) => ({
+  user: one(users, {
+    fields: [userPreferences.userId],
+    references: [users.id],
+  }),
+}));
+
+export const userSettingsRelations = relations(userSettings, ({ one }) => ({
+  user: one(users, {
+    fields: [userSettings.userId],
+    references: [users.id],
+  }),
+}));
+
+export const notificationSettingsRelations = relations(notificationSettings, ({ one }) => ({
+  user: one(users, {
+    fields: [notificationSettings.userId],
+    references: [users.id],
+  }),
+}));
+
+export const securitySettingsRelations = relations(securitySettings, ({ one }) => ({
+  user: one(users, {
+    fields: [securitySettings.userId],
+    references: [users.id],
+  }),
+}));
+
 
 
 

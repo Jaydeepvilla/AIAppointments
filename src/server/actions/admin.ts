@@ -1,8 +1,8 @@
 "use server";
 
-import { auth } from "@clerk/nextjs/server";
+import { auth } from "@/lib/auth/server";
 import { revalidatePath } from "next/cache";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc, or, ilike, sql, count } from "drizzle-orm";
 import { db } from "../db";
 import {
   conversations,
@@ -11,7 +11,14 @@ import {
   conversationMessages,
   conversationEvents,
   conversationFeedback,
-  leadAnswers,
+  users,
+  profiles,
+  memberships,
+  organizations,
+  sessions,
+  refreshTokens,
+  loginHistory,
+  auditLogs,
 } from "../db/schema";
 import { membershipRepository } from "../repositories/membership";
 import { conversationsRepository } from "../repositories/conversations";
@@ -20,16 +27,51 @@ import { leadsRepository } from "../repositories/leads";
 import { escalationsRepository } from "../repositories/escalations";
 import { summariesRepository } from "../repositories/summaries";
 import { escalationService } from "../services/escalation";
+import { logoutAllDevices } from "@/lib/auth/session";
+import { hashPassword } from "@/lib/auth/password";
+import { analyzePasswordStrength } from "@/lib/auth/security-checks";
+import { auditService } from "../services/audit";
 
+/**
+ * Helper to fetch verified organization ID for the authenticated user
+ */
 async function getVerifiedOrgId() {
   const { userId } = await auth();
   if (!userId) throw new Error("Unauthorized");
-  const memberships = await membershipRepository.getByUser(userId);
-  if (memberships.length === 0) throw new Error("No organization found");
-  return memberships[0].organizationId;
+  const userMemberships = await membershipRepository.getByUser(userId);
+  if (userMemberships.length === 0) throw new Error("No organization found");
+  return userMemberships[0].organizationId;
 }
 
-// 1. Conversations actions
+/**
+ * Helper to assert that the logged-in user is an Administrator or Owner.
+ */
+async function assertAdmin() {
+  const { userId } = await auth();
+  if (!userId) throw new Error("Unauthorized");
+
+  const [member] = await db
+    .select()
+    .from(memberships)
+    .where(
+      and(
+        eq(memberships.userId, userId),
+        or(eq(memberships.role, "admin"), eq(memberships.role, "owner"))
+      )
+    )
+    .limit(1);
+
+  if (!member) {
+    throw new Error("Forbidden: Administrator access required");
+  }
+
+  return { userId, organizationId: member.organizationId };
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION 1: Conversations Actions (Pre-existing)
+   ───────────────────────────────────────────────────────────────────────────── */
+
 export async function getConversationsAction() {
   try {
     const orgId = await getVerifiedOrgId();
@@ -113,7 +155,10 @@ export async function getConversationDetailsAction(conversationId: string) {
   }
 }
 
-// 2. Leads Actions
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION 2: Leads Actions (Pre-existing)
+   ───────────────────────────────────────────────────────────────────────────── */
+
 export async function getLeadsAction() {
   try {
     const orgId = await getVerifiedOrgId();
@@ -160,7 +205,10 @@ export async function updateLeadStatusAction(leadId: string, status: string) {
   }
 }
 
-// 3. Escalations Actions
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION 3: Escalations Actions (Pre-existing)
+   ───────────────────────────────────────────────────────────────────────────── */
+
 export async function getEscalationsAction(status?: string) {
   try {
     const orgId = await getVerifiedOrgId();
@@ -211,7 +259,10 @@ export async function resolveEscalationAction(escalationId: string, notes?: stri
   }
 }
 
-// 4. Analytics Actions
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION 4: Analytics Actions (Pre-existing)
+   ───────────────────────────────────────────────────────────────────────────── */
+
 export async function getAnalyticsAction() {
   try {
     const orgId = await getVerifiedOrgId();
@@ -303,5 +354,410 @@ export async function getAnalyticsAction() {
     };
   } catch (error: any) {
     return { success: false, error: error?.message || "Failed to load analytics" };
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   SECTION 5: Custom User Administration Actions
+   ───────────────────────────────────────────────────────────────────────────── */
+
+/**
+ * Retrieves a list of users inside the organization, supporting search, status filters, and pagination.
+ */
+export async function getAdminUsersAction(params: {
+  search?: string;
+  status?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const { organizationId } = await assertAdmin();
+
+    const page = params.page || 1;
+    const limit = params.limit || 10;
+    const offset = (page - 1) * limit;
+
+    // Build conditions based on search and status filters
+    const searchFilter = params.search
+      ? or(ilike(users.name, `%${params.search}%`), ilike(users.email, `%${params.search}%`))
+      : undefined;
+
+    const statusFilter = params.status && params.status !== "all"
+      ? eq(users.status, params.status)
+      : undefined;
+
+    // Construct query filters
+    const conditions = [];
+    conditions.push(sql`users.id IN (SELECT user_id FROM memberships WHERE organization_id = ${organizationId})`);
+    if (searchFilter) conditions.push(searchFilter);
+    if (statusFilter) conditions.push(statusFilter);
+
+    const filterCondition = and(...conditions);
+
+    // Get users list
+    const userRecords = await db
+      .select({
+        id: users.id,
+        name: users.name,
+        email: users.email,
+        avatar: users.avatar,
+        status: users.status,
+        createdAt: users.createdAt,
+        role: memberships.role,
+      })
+      .from(users)
+      .innerJoin(memberships, and(eq(memberships.userId, users.id), eq(memberships.organizationId, organizationId)))
+      .where(filterCondition)
+      .orderBy(desc(users.createdAt))
+      .limit(limit)
+      .offset(offset);
+
+    // Get total count
+    const [totalRes] = await db
+      .select({ value: count(users.id) })
+      .from(users)
+      .innerJoin(memberships, and(eq(memberships.userId, users.id), eq(memberships.organizationId, organizationId)))
+      .where(filterCondition);
+
+    const totalCount = totalRes?.value || 0;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    return {
+      success: true,
+      users: userRecords,
+      pagination: {
+        totalCount,
+        totalPages,
+        currentPage: page,
+      },
+    };
+  } catch (error: any) {
+    console.error("getAdminUsersAction error:", error);
+    return { success: false, error: error.message || "Failed to load users" };
+  }
+}
+
+/**
+ * Returns detail side-panel info for selected user: profile details, sessions, login history, and audit trail.
+ */
+export async function getAdminUserProfileDetailAction(targetUserId: string) {
+  try {
+    const { organizationId } = await assertAdmin();
+
+    // Verify target user is in same organization
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "Access Denied: User not in your organization" };
+    }
+
+    const [userRecord] = await db.select().from(users).where(eq(users.id, targetUserId)).limit(1);
+    if (!userRecord) return { success: false, error: "User not found" };
+
+    const [profileRecord] = await db.select().from(profiles).where(eq(profiles.userId, targetUserId)).limit(1);
+    
+    const userSessions = await db
+      .select()
+      .from(sessions)
+      .where(eq(sessions.userId, targetUserId))
+      .orderBy(desc(sessions.createdAt));
+
+    const history = await db
+      .select()
+      .from(loginHistory)
+      .where(eq(loginHistory.userId, targetUserId))
+      .orderBy(desc(loginHistory.loginAt))
+      .limit(10);
+
+    const logs = await db
+      .select()
+      .from(auditLogs)
+      .where(eq(auditLogs.userId, targetUserId))
+      .orderBy(desc(auditLogs.createdAt))
+      .limit(20);
+
+    return {
+      success: true,
+      data: {
+        user: {
+          id: userRecord.id,
+          name: userRecord.name,
+          email: userRecord.email,
+          firstName: userRecord.firstName,
+          lastName: userRecord.lastName,
+          avatar: userRecord.avatar,
+          status: userRecord.status,
+          createdAt: userRecord.createdAt,
+          suspendedAt: userRecord.suspendedAt,
+          deletedAt: userRecord.deletedAt,
+          role: membershipRecord.role,
+        },
+        profile: profileRecord || null,
+        sessions: userSessions,
+        history,
+        auditLogs: logs,
+      },
+    };
+  } catch (error: any) {
+    console.error("getAdminUserProfileDetailAction error:", error);
+    return { success: false, error: error.message || "Failed to load user details" };
+  }
+}
+
+/**
+ * Suspends user account and invalidates all session tokens.
+ */
+export async function suspendUserAction(targetUserId: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    // Verify target membership and prevent self-suspension
+    if (targetUserId === adminUserId) {
+      return { success: false, error: "You cannot suspend your own administrative account" };
+    }
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    await db
+      .update(users)
+      .set({ status: "suspended", suspendedAt: new Date(), updatedAt: new Date() })
+      .where(eq(users.id, targetUserId));
+
+    // Force log out the suspended user from all active connections
+    await logoutAllDevices(targetUserId);
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "user_suspension",
+      resource: "users",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    revalidatePath("/settings");
+    return { success: true };
+  } catch (error: any) {
+    console.error("suspendUserAction error:", error);
+    return { success: false, error: error.message || "Failed to suspend user" };
+  }
+}
+
+/**
+ * Activates suspended user account.
+ */
+export async function activateUserAction(targetUserId: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    await db
+      .update(users)
+      .set({ status: "active", suspendedAt: null, updatedAt: new Date() })
+      .where(eq(users.id, targetUserId));
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "user_activation",
+      resource: "users",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    revalidatePath("/settings");
+    return { success: true };
+  } catch (error: any) {
+    console.error("activateUserAction error:", error);
+    return { success: false, error: error.message || "Failed to activate user" };
+  }
+}
+
+/**
+ * Soft deletes user (sets status to 'deactivated' and deleted_at = now).
+ */
+export async function deleteUserAction(targetUserId: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    if (targetUserId === adminUserId) {
+      return { success: false, error: "You cannot delete your own administrative account" };
+    }
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    await db
+      .update(users)
+      .set({ status: "deactivated", deletedAt: new Date(), updatedAt: new Date() })
+      .where(eq(users.id, targetUserId));
+
+    await logoutAllDevices(targetUserId);
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "user_deletion",
+      resource: "users",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    revalidatePath("/settings");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteUserAction error:", error);
+    return { success: false, error: error.message || "Failed to delete user" };
+  }
+}
+
+/**
+ * Restores a soft-deleted user.
+ */
+export async function restoreUserAction(targetUserId: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    await db
+      .update(users)
+      .set({ status: "active", deletedAt: null, updatedAt: new Date() })
+      .where(eq(users.id, targetUserId));
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "user_restoration",
+      resource: "users",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    revalidatePath("/settings");
+    return { success: true };
+  } catch (error: any) {
+    console.error("restoreUserAction error:", error);
+    return { success: false, error: error.message || "Failed to restore user" };
+  }
+}
+
+/**
+ * Resets user password (administrator override).
+ */
+export async function resetUserPasswordAction(targetUserId: string, newPasswordVal: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    const [user] = await db.select().from(users).where(eq(users.id, targetUserId)).limit(1);
+    if (!user) return { success: false, error: "User not found" };
+
+    // Validate password complexity
+    const strengthResult = analyzePasswordStrength(newPasswordVal, user.email, user.firstName || "", user.lastName || "");
+    if (strengthResult.score < 4) {
+      return {
+        success: false,
+        error: "Password does not meet complexity requirements: " + strengthResult.unmetRequirements.join(", "),
+      };
+    }
+
+    const passwordHashVal = await hashPassword(newPasswordVal);
+
+    await db
+      .update(users)
+      .set({ passwordHash: passwordHashVal, updatedAt: new Date() })
+      .where(eq(users.id, targetUserId));
+
+    // Force logout target user so they must log in using the newly assigned password
+    await logoutAllDevices(targetUserId);
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "admin_password_reset",
+      resource: "users",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("resetUserPasswordAction error:", error);
+    return { success: false, error: error.message || "Failed to reset user password" };
+  }
+}
+
+/**
+ * Forcefully logs out user from all active connections.
+ */
+export async function forceLogoutUserAction(targetUserId: string) {
+  try {
+    const { userId: adminUserId, organizationId } = await assertAdmin();
+
+    const [membershipRecord] = await db
+      .select()
+      .from(memberships)
+      .where(and(eq(memberships.userId, targetUserId), eq(memberships.organizationId, organizationId)))
+      .limit(1);
+
+    if (!membershipRecord) {
+      return { success: false, error: "User not found in your organization" };
+    }
+
+    await logoutAllDevices(targetUserId);
+
+    await auditService.log({
+      userId: adminUserId,
+      action: "force_logout",
+      resource: "sessions",
+      resourceId: targetUserId,
+      metadata: { targetUserId },
+    });
+
+    return { success: true };
+  } catch (error: any) {
+    console.error("forceLogoutUserAction error:", error);
+    return { success: false, error: error.message || "Failed to force logout user" };
   }
 }
