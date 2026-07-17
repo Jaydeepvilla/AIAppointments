@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { NativeA } from "@/components/shared/native";
+import { Logo } from "@/components/shared/logo";
 
 const FOOTER_COLS = [
   {
@@ -37,14 +38,8 @@ export function MarketingFooter() {
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-space-10">
           {/* Brand */}
           <div className="col-span-2 sm:col-span-1">
-            <Link href="/" className="flex items-center gap-space-2 mb-space-4">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <rect x="2" y="2" width="20" height="20" rx="6" fill="currentColor" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M8 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm5 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM8.5 14.5s1 2 3.5 2 3.5-2 3.5-2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-              </svg>
-              <span className="text-body-sm  tracking-tight text-foreground">
-                Operator
-              </span>
+            <Link href="/" className="inline-block mb-space-4">
+              <Logo iconClassName="h-5 w-5" />
             </Link>
             <p className="text-body-sm text-muted-foreground leading-relaxed max-w-xs">
               AI-powered receptionist for service businesses.

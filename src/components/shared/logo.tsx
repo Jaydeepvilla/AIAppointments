@@ -15,27 +15,18 @@ export function Logo({ className, iconClassName }: LogoProps) {
         fill="none"
         className={cn("text-primary shrink-0", iconClassName)}
       >
-        <rect
-          x="2"
-          y="2"
-          width="20"
-          height="20"
-          rx="6"
-          fill="currentColor"
-          fillOpacity="0.15"
-          stroke="currentColor"
-          strokeWidth="1.5"
-        />
+        {/* Main gateway loop */}
         <path
-          d="M8 9.5a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0Zm5 0a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0ZM8.5 14.5s1 2 3.5 2 3.5-2 3.5-2"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
+          d="M 3 13 L 3 8 A 5 5 0 0 1 8 3 L 16 3 A 5 5 0 0 1 21 8 L 21 16 A 5 5 0 0 1 16 21 L 9 21 A 2 2 0 0 1 9 17 L 15 17 A 2 2 0 0 0 17 15 L 17 9 A 2 2 0 0 0 15 7 L 9 7 A 2 2 0 0 0 7 9 L 7 13 A 2 2 0 0 1 3 13 Z"
+          fill="currentColor"
         />
+        {/* Bottom-left accent square */}
+        <rect x="3" y="17" width="4" height="4" rx="1.2" fill="currentColor" />
       </svg>
-      <span className="text-base tracking-tight text-foreground font-semibold">
+      <span className="text-base tracking-tight text-foreground font-bold">
         Operator
       </span>
     </div>
   );
 }
+
