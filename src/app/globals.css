@@ -107,6 +107,28 @@
     box-sizing: border-box;
 }
 
+/* Force hand cursor on all clickable/interactive elements */
+a,
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+input[type="checkbox"],
+input[type="radio"],
+input[type="file"],
+input[type="image"],
+select,
+summary,
+[role="button"],
+[role="tab"],
+[role="link"],
+[role="menuitem"],
+[onclick],
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+
 .action-center-scroll {
     max-height: calc(var(--space-36) * 2.8);
 }
