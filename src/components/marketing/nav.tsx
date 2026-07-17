@@ -93,12 +93,6 @@ export function MarketingNav() {
 
  {/* Auth controls: show sign-in/up when signed out, dashboard+avatar when signed in */}
  <Show when="signed-out">
- <Link
- href="/sign-in"
- className="text-body-sm text-muted-foreground hover:text-foreground transition-colors px-space-3 py-space-2"
- >
- Sign in
- </Link>
  <Button asChild size="sm">
  <Link href="/sign-up">Get started</Link>
  </Button>
@@ -152,22 +146,15 @@ export function MarketingNav() {
  ))}
  <div className="h-px bg-[hsl(var(--foreground)/0.06)] my-space-3"/>
  <div className="flex flex-col gap-space-2">
- <Show when="signed-out">
- <Link
- href="/sign-in"
- onClick={() => setMobileOpen(false)}
- className="block px-space-3 py-space-2 text-body-sm text-center text-muted-foreground border border-[hsl(var(--foreground)/0.08)] radius-md"
- >
- Sign in
- </Link>
- <Link
- href="/sign-up"
- onClick={() => setMobileOpen(false)}
- className="block px-space-3 py-space-2 text-body-sm text-center bg-primary text-primary-foreground radius-md"
- >
- Get started
- </Link>
- </Show>
+  <Show when="signed-out">
+  <Link
+  href="/sign-up"
+  onClick={() => setMobileOpen(false)}
+  className="block px-space-3 py-space-2 text-body-sm text-center bg-primary text-primary-foreground radius-md"
+  >
+  Get started
+  </Link>
+  </Show>
  <Show when="signed-in">
  <Link
  href="/dashboard"

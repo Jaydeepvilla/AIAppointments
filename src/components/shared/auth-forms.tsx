@@ -20,6 +20,7 @@ import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
 import { Logo } from "@/components/shared/logo";
 import { AuthSocialButtons } from "@/components/auth/auth-social-buttons";
+import { useToast } from "@/components/shared/toast";
 import { AuthDivider } from "@/components/auth/auth-divider";
 import { AuthErrorBanner } from "@/components/auth/auth-error-banner";
 import { AuthFieldError } from "@/components/auth/auth-error-banner";
@@ -221,6 +222,15 @@ export function SignInForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialEmail = searchParams.get("email") || "";
+  const toast = useToast();
+
+  const handleGoogleClick = () => {
+    toast.info("Google Authentication", "Google sign-in is currently not active in this environment.");
+  };
+
+  const handleAppleClick = () => {
+    toast.info("Apple Authentication", "Apple sign-in is currently not active in this environment.");
+  };
 
   const [email, setEmail] = React.useState(initialEmail);
   const [password, setPassword] = React.useState("");
@@ -288,7 +298,11 @@ export function SignInForm() {
     >
       {/* ── Social login ─────────────────────────────────────────────── */}
       <div className="space-y-space-3">
-        <AuthSocialButtons disabled={isLoading || isSuccess} />
+        <AuthSocialButtons
+          disabled={isLoading || isSuccess}
+          onGoogleClick={handleGoogleClick}
+          onAppleClick={handleAppleClick}
+        />
       </div>
 
       <AuthDivider />
@@ -431,6 +445,15 @@ export function SignUpForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialEmail = searchParams.get("email") || "";
+  const toast = useToast();
+
+  const handleGoogleClick = () => {
+    toast.info("Google Authentication", "Google sign-up is currently not active in this environment.");
+  };
+
+  const handleAppleClick = () => {
+    toast.info("Apple Authentication", "Apple sign-up is currently not active in this environment.");
+  };
 
   const [firstName, setFirstName] = React.useState("");
   const [lastName, setLastName] = React.useState("");
@@ -560,7 +583,11 @@ export function SignUpForm() {
       noValidate
     >
       {/* Social login */}
-      <AuthSocialButtons disabled={isLoading} />
+      <AuthSocialButtons
+        disabled={isLoading}
+        onGoogleClick={handleGoogleClick}
+        onAppleClick={handleAppleClick}
+      />
       <AuthDivider />
 
       {/* Error banner */}
