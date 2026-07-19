@@ -376,9 +376,9 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
   ] as const;
 
   return (
-    <div className="flex flex-col md:flex-row gap-8 items-start w-full">
+    <div className="grid grid-cols-1 md:grid-cols-[224px_1fr] gap-8 items-start w-full">
       {/* Sidebar Nav */}
-      <div className="flex md:flex-col flex-wrap gap-1 w-full md:w-56 shrink-0 select-none">
+      <div className="flex md:flex-col flex-wrap gap-1 select-none w-full">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -403,7 +403,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
         })}
       </div>
       {/* Main Settings Display */}
-      <div className="flex-1 w-full bg-card border border-[hsl(var(--foreground)/0.06)] rounded-2xl p-6 sm:p-8 shadow-sm relative min-h-[400px]">
+      <div className="bg-card border border-[hsl(var(--foreground)/0.06)] rounded-2xl p-6 sm:p-8 shadow-sm relative min-h-[400px] w-full">
         {errorMsg && (
           <div role="alert" className="flex items-center gap-3 bg-rose-500/10 border border-rose-500/20 text-rose-200 p-4 rounded-xl text-caption animate-fade-in mb-6">
             <AlertTriangle className="h-4.5 w-4.5 text-rose-400 shrink-0" />
