@@ -44,7 +44,7 @@ async function sendSmtpEmail(to: string, subject: string, html: string): Promise
 
 
 /* ─────────────────────────────────────────────────────────
- * Send SMS via MSG91 REST API (Twilio Alternative)
+ * Send SMS via MSG91 REST API
  * ───────────────────────────────────────────────────────── */
 async function sendMsg91SMS(to: string, message: string): Promise<boolean> {
   const authKey = process.env.MSG91_AUTH_KEY;
@@ -52,7 +52,8 @@ async function sendMsg91SMS(to: string, message: string): Promise<boolean> {
   const flowId = process.env.MSG91_FLOW_ID;
 
   if (!authKey) {
-    return false; // dynamic fallback to twilio/simulator
+    console.warn("[NotificationService] MSG91 SMS credentials missing. Simulating SMS dispatch.");
+    return true; // simulate success
   }
 
   // Clean the phone number (MSG91 expects country code without + prefix, e.g. '919999999999')
@@ -119,57 +120,14 @@ async function sendMsg91SMS(to: string, message: string): Promise<boolean> {
   }
 }
 
-/* ─────────────────────────────────────────────────────────
- * Send SMS via Twilio REST API
- * ───────────────────────────────────────────────────────── */
-async function sendTwilioSMS(to: string, message: string): Promise<boolean> {
-  const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const fromNumber = process.env.TWILIO_PHONE_NUMBER;
-
-  if (!accountSid || !authToken || !fromNumber) {
-    console.warn("[NotificationService] Twilio SMS variables missing. Simulating SMS dispatch.");
-    return true; // simulate success
-  }
-
-  try {
-    const basicAuth = Buffer.from(`${accountSid}:${authToken}`).toString("base64");
-    const response = await fetch(`https://api.twilio.com/2010-04-01/Accounts/${accountSid}/Messages.json`, {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${basicAuth}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        From: fromNumber,
-        To: to,
-        Body: message,
-      }),
-    });
-
-    if (!response.ok) {
-      const errText = await response.text();
-      console.error(`[NotificationService] Twilio SMS returned HTTP ${response.status}:`, errText);
-      return false;
-    }
-
-    return true;
-  } catch (err) {
-    console.error("[NotificationService] Twilio SMS dispatch failed:", err);
-    return false;
-  }
-}
-
-// Master router routing dynamically
+// Master router routing
 async function dispatchSMS(to: string, message: string): Promise<boolean> {
   const isMsg91Sent = await sendMsg91SMS(to, message);
   if (isMsg91Sent) {
     console.log(`[NotificationService] SMS successfully dispatched to ${to} via MSG91.`);
     return true;
   }
-  
-  // fallback to Twilio
-  return sendTwilioSMS(to, message);
+  return false;
 }
 
 

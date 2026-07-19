@@ -48,19 +48,16 @@ export const voiceCampaign = {
       });
 
       // 3. Dial telephony provider
-      const telephony = VoiceProviderRegistry.getTelephony("telephony-twilio");
+      const telephony = VoiceProviderRegistry.getTelephony("telephony-generic");
       if (!telephony) {
         await db
           .update(callSessions)
           .set({ status: "failed", endedReason: "telephony-provider-not-configured" })
           .where(eq(callSessions.id, session.id));
-        return { success: false, error: "Twilio Telephony Provider is not configured" };
+        return { success: false, error: "Telephony Provider is not configured" };
       }
 
-      const connectionConfig = {
-        accountSid: process.env.TWILIO_ACCOUNT_SID || "ACmock",
-        authToken: process.env.TWILIO_AUTH_TOKEN || "tokenmock",
-      };
+      const connectionConfig = {};
 
       const dialResult = await telephony.initiateOutboundCall(
         organizationId,

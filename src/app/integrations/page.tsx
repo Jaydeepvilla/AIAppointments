@@ -12,7 +12,6 @@ import googleIcon from "@/assets/google.svg";
 import microsoftIcon from "@/assets/microsoft.svg";
 import calendlyIcon from "@/assets/calendly.svg";
 import stripeIcon from "@/assets/stripe.svg";
-import twilioIcon from "@/assets/twilio.svg";
 import openaiIcon from "@/assets/openai.svg";
 import razorpayIcon from "@/assets/razorpay.svg";
 import slackIcon from "@/assets/slack-logo.svg";
@@ -98,8 +97,10 @@ const LOGOS = {
  calendly: (
  <img src={calendlyIcon.src || calendlyIcon} alt="Calendly" className="h-8 w-auto object-contain max-w-full" />
  ),
- twilio: (
- <img src={twilioIcon.src || twilioIcon} alt="Twilio" className="h-8 w-auto object-contain max-w-full" />
+ msg91: (
+ <div className="h-8 w-8 flex items-center justify-center rounded-lg bg-orange-600/10 border border-orange-500/20 text-orange-500">
+ <MessageSquare className="h-4.5 w-4.5" />
+ </div>
  ),
  openai: (
  <img src={openaiIcon.src || openaiIcon} alt="OpenAI" className="h-8 w-auto object-contain max-w-full" />
@@ -159,17 +160,17 @@ const INTEGRATIONS: Integration[] = [
  capabilities: "Initiates post-call check-ins and qualification forms directly over WhatsApp messages."
  },
  {
- id: "twilio",
- name: "Twilio SMS",
- category: "Communication",
- status: "live",
- logo: LOGOS.twilio,
- desc: "Send and receive SMS messages. Automated response fallback when phone calls are missed.",
- features: ["Two-way texting", "Automated textback on missed call", "Custom shortcodes", "SMS delivery audits"],
- difficulty: "1-Click",
- popularity: "Core",
- capabilities: "Instantly texts caller a scheduling link the second a voice call is finished or abandoned."
- },
+  id: "msg91",
+  name: "MSG91 SMS",
+  category: "Communication",
+  status: "live",
+  logo: LOGOS.msg91,
+  desc: "Send and receive SMS messages. Enterprise-grade SMS delivery flow APIs.",
+  features: ["OTP authentication", "Template-based flow SMS", "High throughput routing", "Real-time delivery status reports"],
+  difficulty: "1-Click",
+  popularity: "Core",
+  capabilities: "Triggers notifications and check-ins via the premium MSG91 routing framework."
+  },
  {
  id: "stripe",
  name: "Stripe",
@@ -391,13 +392,13 @@ const WORKFLOW_STEPS = [
  }
  },
  {
- id: "twilio",
- title: "Twilio SMS",
+ id: "msg91",
+ title: "MSG91 SMS",
  desc: "Sends SMS reminder",
- logo: LOGOS.twilio,
+ logo: LOGOS.msg91,
  isBrand: true,
- color: "bg-red-500/10 text-red-500",
- glowColor: "shadow-red-500/20",
+ color: "bg-orange-500/10 text-orange-500",
+ glowColor: "shadow-orange-500/20",
  payload: {
  event: "sms.dispatched",
  to: "+15550199",
@@ -483,7 +484,7 @@ export default function IntegrationsPage() {
  { id: "hubspot", label: "HubSpot", logo: LOGOS.hubspot, angle: 197 },
  { id: "meta", label: "Meta", logo: LOGOS.meta, angle: 230 },
  { id: "calendly", label: "Calendly", logo: LOGOS.calendly, angle: 263 },
- { id: "twilio", label: "Twilio", logo: LOGOS.twilio, angle: 296 },
+ { id: "msg91", label: "MSG91", logo: LOGOS.msg91, angle: 296 },
  { id: "openai", label: "OpenAI", logo: LOGOS.openai, angle: 329 }
  ];
 

@@ -12,7 +12,7 @@ import { orchestratorService } from "../orchestrator";
 import { VoiceProviderRegistry } from "./types";
 
 // Auto imports for self-registration of registry hooks
-import "./twilio";
+import "./telephony";
 import "./deepgram";
 import "./elevenlabs";
 import "./vapi";

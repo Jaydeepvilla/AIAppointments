@@ -45,10 +45,10 @@ export default function ChannelsPage() {
 
  // Setup state fields
  const [channelName, setChannelName] = useState("");
- // SMS/Twilio inputs
- const [twilioSid, setTwilioSid] = useState("");
- const [twilioToken, setTwilioToken] = useState("");
- const [twilioNumber, setTwilioNumber] = useState("");
+ // SMS/MSG91 inputs
+ const [msg91AuthKey, setMsg91AuthKey] = useState("");
+ const [msg91FlowId, setMsg91FlowId] = useState("");
+ const [msg91SenderId, setMsg91SenderId] = useState("");
  // WhatsApp/Meta inputs
  const [metaPhoneId, setMetaPhoneId] = useState("");
  const [metaWabaId, setMetaWabaId] = useState("");
@@ -87,9 +87,9 @@ export default function ChannelsPage() {
  setActiveSetupChannel(type);
  setActiveSettingsChannel(null); // Close settings panel if open
  setChannelName(`${type.toUpperCase()} Integration`);
- setTwilioSid("");
- setTwilioToken("");
- setTwilioNumber("");
+ setMsg91AuthKey("");
+ setMsg91FlowId("");
+ setMsg91SenderId("");
  setMetaPhoneId("");
  setMetaWabaId("");
  setMetaAccessToken("");
@@ -111,9 +111,9 @@ export default function ChannelsPage() {
 
  if (activeSetupChannel ==="sms") {
  credentials = {
- accountSid: twilioSid,
- authToken: twilioToken,
- fromNumber: twilioNumber
+ authKey: msg91AuthKey,
+ flowId: msg91FlowId,
+ senderId: msg91SenderId
  };
  } else if (activeSetupChannel ==="whatsapp") {
  credentials = {
@@ -278,12 +278,12 @@ export default function ChannelsPage() {
  </CardFooter>
  </Card>
 
- {/* 2. Twilio SMS */}
- <Card className="border border-border-muted hover:border-red-500/40 hover:-translate-y-1 transition-all duration-300 bg-card/25 backdrop-blur-md flex flex-col justify-between group overflow-hidden relative">
- <div className="absolute top-0 right-0 h-24 w-24 bg-red-500/5 radial-gradient(circle, var(--color-error-500) 0%, transparent 70%) pointer-events-none filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
+ {/* 2. MSG91 SMS */}
+ <Card className="border border-border-muted hover:border-orange-500/40 hover:-translate-y-1 transition-all duration-300 bg-card/25 backdrop-blur-md flex flex-col justify-between group overflow-hidden relative">
+ <div className="absolute top-0 right-0 h-24 w-24 bg-orange-500/5 radial-gradient(circle, var(--color-warning-500) 0%, transparent 70%) pointer-events-none filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"/>
  <CardHeader className="pb-space-3">
  <div className="flex items-center justify-between">
- <div className="h-10 w-10 radius-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-500 transition-transform duration-300 group-hover:scale-105">
+ <div className="h-10 w-10 radius-lg bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-500 transition-transform duration-300 group-hover:scale-105">
  <MessageSquare className="h-5 w-5"/>
  </div>
  {isConnected("sms") ? (
@@ -297,19 +297,19 @@ export default function ChannelsPage() {
  </span>
  )}
  </div>
- <CardTitle className="text-body-sm font-semibold text-foreground mt-space-4">Twilio SMS Core</CardTitle>
+ <CardTitle className="text-body-sm font-semibold text-foreground mt-space-4">MSG91 SMS Core</CardTitle>
  <CardDescription className="text-caption text-muted-foreground/80 mt-space-1.5 leading-relaxed">
- Enable client communication over native SMS networks. Supports delivery callbacks and fallback routes.
+ Enable client communication over native SMS networks using MSG91 flow API. Supports template-based messaging.
  </CardDescription>
  </CardHeader>
  <CardFooter className="pt-space-3 border-t border-border-muted flex gap-space-2 justify-end bg-card/5">
  {isConnected("sms") ? (
- <Button size="sm"variant="outline"className="h-8 text-caption border-border-muted hover:border-red-500/30 hover:bg-red-500/5 hover:text-red-500 transition-colors"onClick={() => openSettings(getChannelInstance("sms"))}>
+ <Button size="sm"variant="outline"className="h-8 text-caption border-border-muted hover:border-orange-500/30 hover:bg-orange-500/5 hover:text-orange-500 transition-colors"onClick={() => openSettings(getChannelInstance("sms"))}>
  <Settings className="h-3.5 w-3.5 mr-space-1"/> Settings
  </Button>
  ) : (
- <Button size="sm"className="h-8 text-caption bg-red-600 hover:bg-red-500 text-white border-none transition-all"onClick={() => openSetup("sms")}>
- Connect Twilio
+ <Button size="sm"className="h-8 text-caption bg-orange-600 hover:bg-orange-500 text-white border-none transition-all"onClick={() => openSetup("sms")}>
+ Connect MSG91
  </Button>
  )}
  </CardFooter>
@@ -417,39 +417,39 @@ export default function ChannelsPage() {
  />
  </div>
 
- {/* Twilio Input fields */}
+ {/* MSG91 Input fields */}
  {activeSetupChannel ==="sms"&& (
  <div className="space-y-space-3 pt-space-2 border-t border-border-muted/50">
  <div className="space-y-space-1">
- <Label htmlFor="twilioSid"className="font-semibold text-foreground/80">Twilio Account SID</Label>
+ <Label htmlFor="msg91AuthKey"className="font-semibold text-foreground/80">MSG91 Auth Key</Label>
  <Input
- id="twilioSid"
- value={twilioSid}
- onChange={(e) => setTwilioSid(e.target.value)}
- placeholder="AC..."
- className="h-9 bg-background/50 text-caption border-border-muted hover:border-border focus:border-primary transition-colors focus-visible:ring-0 focus-visible:outline-hidden"
- required
- />
- </div>
- <div className="space-y-space-1">
- <Label htmlFor="twilioToken"className="font-semibold text-foreground/80">Twilio Auth Token</Label>
- <Input
- id="twilioToken"
+ id="msg91AuthKey"
  type="password"
- value={twilioToken}
- onChange={(e) => setTwilioToken(e.target.value)}
- placeholder="••••••••"
+ value={msg91AuthKey}
+ onChange={(e) => setMsg91AuthKey(e.target.value)}
+ placeholder="Enter auth key"
  className="h-9 bg-background/50 text-caption border-border-muted hover:border-border focus:border-primary transition-colors focus-visible:ring-0 focus-visible:outline-hidden"
  required
  />
  </div>
  <div className="space-y-space-1">
- <Label htmlFor="twilioNumber"className="font-semibold text-foreground/80"> Twilio Phone Number</Label>
+ <Label htmlFor="msg91FlowId"className="font-semibold text-foreground/80">MSG91 Flow ID (Template ID)</Label>
  <Input
- id="twilioNumber"
- value={twilioNumber}
- onChange={(e) => setTwilioNumber(e.target.value)}
- placeholder="+15550199"
+ id="msg91FlowId"
+ value={msg91FlowId}
+ onChange={(e) => setMsg91FlowId(e.target.value)}
+ placeholder="Enter flow template ID"
+ className="h-9 bg-background/50 text-caption border-border-muted hover:border-border focus:border-primary transition-colors focus-visible:ring-0 focus-visible:outline-hidden"
+ required
+ />
+ </div>
+ <div className="space-y-space-1">
+ <Label htmlFor="msg91SenderId"className="font-semibold text-foreground/80">MSG91 Sender ID</Label>
+ <Input
+ id="msg91SenderId"
+ value={msg91SenderId}
+ onChange={(e) => setMsg91SenderId(e.target.value)}
+ placeholder="e.g. NXRECP"
  className="h-9 bg-background/50 text-caption border-border-muted hover:border-border focus:border-primary transition-colors focus-visible:ring-0 focus-visible:outline-hidden"
  required
  />
@@ -708,13 +708,13 @@ export default function ChannelsPage() {
  </div>
  </div>
 
- {/* Webhook URLs (Meta/Twilio) */}
+ {/* Webhook URLs (Meta/MSG91) */}
  <div className="space-y-space-2 border-t border-border-muted pt-space-4">
  <Label className="text-caption text-muted-foreground uppercase font-semibold tracking-wider">Incoming Webhook URL</Label>
  <div className="relative flex items-center justify-between p-space-3 bg-bg-layer-2 border border-border-muted radius-lg font-mono text-caption text-foreground/80 break-all select-all group overflow-hidden">
  <span className="pr-space-12 text-caption sm:text-caption truncate">
  {activeSettingsChannel.type ==="sms"
- ?`${typeof window !=="undefined"? window.location.origin :""}/api/webhooks/twilio`
+ ?`${typeof window !=="undefined"? window.location.origin :""}/api/webhooks/msg91`
  :`${typeof window !=="undefined"? window.location.origin :""}/api/webhooks/meta`
  }
  </span>
@@ -728,7 +728,7 @@ export default function ChannelsPage() {
  )}
  onClick={() => {
  const url = activeSettingsChannel.type ==="sms"
- ?`${window.location.origin}/api/webhooks/twilio`
+ ?`${window.location.origin}/api/webhooks/msg91`
  :`${window.location.origin}/api/webhooks/meta`;
  handleCopyWebhook(url);
  }}
@@ -748,7 +748,7 @@ export default function ChannelsPage() {
  </div>
  <p className="text-caption text-muted-foreground/85 flex items-start gap-space-1.5 leading-normal mt-space-1">
  <Info className="h-3.5 w-3.5 shrink-0 text-primary mt-[1px]"/>
- <span>Configure this endpoint in your Twilio/Meta App Webhook Settings.</span>
+ <span>Configure this endpoint in your MSG91/Meta App Webhook Settings.</span>
  </p>
  </div>
 

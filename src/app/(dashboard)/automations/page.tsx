@@ -147,7 +147,7 @@ export default function AutomationsPage() {
  <SelectValue placeholder="Select Channel"/>
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="sms">SMS / Twilio</SelectItem>
+ <SelectItem value="sms">SMS / MSG91</SelectItem>
  <SelectItem value="whatsapp">WhatsApp Business</SelectItem>
  <SelectItem value="email">Email</SelectItem>
  </SelectContent>
@@ -213,7 +213,7 @@ export default function AutomationsPage() {
  <SelectValue placeholder="Select Channel"/>
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="sms">SMS / Twilio</SelectItem>
+ <SelectItem value="sms">SMS / MSG91</SelectItem>
  <SelectItem value="whatsapp">WhatsApp Business</SelectItem>
  <SelectItem value="email">Email</SelectItem>
  </SelectContent>
@@ -279,7 +279,7 @@ export default function AutomationsPage() {
  <SelectValue placeholder="Select Channel"/>
  </SelectTrigger>
  <SelectContent>
- <SelectItem value="sms">SMS / Twilio</SelectItem>
+ <SelectItem value="sms">SMS / MSG91</SelectItem>
  <SelectItem value="whatsapp">WhatsApp Business</SelectItem>
  <SelectItem value="email">Email</SelectItem>
  </SelectContent>
@@ -347,7 +347,7 @@ export default function AutomationsPage() {
  <SelectContent>
  <SelectItem value="email">Email Client</SelectItem>
  <SelectItem value="whatsapp">WhatsApp Business</SelectItem>
- <SelectItem value="sms">SMS / Twilio</SelectItem>
+ <SelectItem value="sms">SMS / MSG91</SelectItem>
  </SelectContent>
  </Select>
  </div>
