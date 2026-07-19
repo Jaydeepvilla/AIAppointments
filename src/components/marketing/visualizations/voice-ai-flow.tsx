@@ -1,158 +1,196 @@
 "use client";
 
-import React, { useState } from"react";
-import { Mic, FileText, Brain, Database, CalendarDays, MessageSquareText } from"lucide-react";
+import React, { useState } from "react";
+import { Mic, FileText, Brain, Database, CalendarDays, MessageSquareText } from "lucide-react";
 
 interface PipelineStep {
- title: string;
- subtitle: string;
- metric: string;
- metricLabel: string;
- desc: string;
- icon: React.ReactNode;
- color: string;
+  title: string;
+  subtitle: string;
+  metric: string;
+  metricLabel: string;
+  desc: string;
+  icon: React.ReactNode;
+  glowColor: string;
 }
 
 const PIPELINE: PipelineStep[] = [
- {
- title:"1. Audio Ingestion",
- subtitle:"Low-latency SIP stream",
- metric:"< 80ms",
- metricLabel:"audio stream latency",
- desc:"A client dials your number. Twilio connects the call directly to Nexx's low-latency audio stream, maintaining a crystal clear bidirectional voice bridge.",
- icon: <Mic className="h-4 w-4"/>,
- color:"text-primary-500 border-primary-500/20 bg-primary-500/5"
- },
- {
- title:"2. Transcription",
- subtitle:"Real-time speech-to-text",
- metric:"< 120ms",
- metricLabel:"transcription speed",
- desc:"Our real-time speech engine converts spoken client sentences into structured text, auto-detecting languages and filtering out background noise.",
- icon: <FileText className="h-4 w-4"/>,
- color:"text-primary-500 border-primary-500/20 bg-primary-500/5"
- },
- {
- title:"3. Semantic Brain",
- subtitle:"Intent & Context analysis",
- metric:"< 250ms",
- metricLabel:"LLM semantic reasoning",
- desc:"A custom LLM parses the text to identify user intent (booking, reschedule, price check) and evaluate sentiment guidelines.",
- icon: <Brain className="h-4 w-4"/>,
- color:"text-success-500 border-success-500/20 bg-success-500/5"
- },
- {
- title:"4. Knowledge lookup",
- subtitle:"Vector database search",
- metric:"< 45ms",
- metricLabel:"knowledge retrieval",
- desc:"The AI references your practice FAQ sheet, PDF uploads, and price lists. It extracts the exact facts needed to address the client's query.",
- icon: <Database className="h-4 w-4"/>,
- color:"text-warning-500 border-warning-500/20 bg-warning-500/5"
- },
- {
- title:"5. Calendar Booking",
- subtitle:"Google/Outlook slot lock",
- metric:"< 350ms",
- metricLabel:"calendar sync completion",
- desc:"The booking engine queries your live calendar, checks buffer configurations, locks the selected appointment slot, and updates availability.",
- icon: <CalendarDays className="h-4 w-4"/>,
- color:"text-primary border-primary/20 bg-primary/5"
- },
- {
- title:"6. Text Confirmation",
- subtitle:"Automated SMS notification",
- metric:"Instant",
- metricLabel:"SMS dispatcher delay",
- desc:"Stripe pre-payments are processed if applicable, and an automated SMS confirmation with coordinate links is dispatched immediately to the caller.",
- icon: <MessageSquareText className="h-4 w-4"/>,
- color:"text-primary border-primary/20 bg-primary/5"
- }
+  {
+    title: "1. Audio Ingestion",
+    subtitle: "Low-latency SIP stream",
+    metric: "< 80ms",
+    metricLabel: "audio stream latency",
+    desc: "A client dials your number. Twilio connects the call directly to Nexx's low-latency audio stream, maintaining a crystal clear bidirectional voice bridge.",
+    icon: <Mic className="h-4 w-4" />,
+    glowColor: "rgba(6, 182, 212, 0.4)" // Cyan
+  },
+  {
+    title: "2. Transcription",
+    subtitle: "Real-time speech-to-text",
+    metric: "< 120ms",
+    metricLabel: "transcription speed",
+    desc: "Our real-time speech engine converts spoken client sentences into structured text, auto-detecting languages and filtering out background noise.",
+    icon: <FileText className="h-4 w-4" />,
+    glowColor: "rgba(59, 130, 246, 0.4)" // Blue
+  },
+  {
+    title: "3. Semantic Brain",
+    subtitle: "Intent & Context analysis",
+    metric: "< 250ms",
+    metricLabel: "LLM semantic reasoning",
+    desc: "A custom LLM parses the text to identify user intent (booking, reschedule, price check) and evaluate sentiment guidelines.",
+    icon: <Brain className="h-4 w-4" />,
+    glowColor: "rgba(217, 70, 239, 0.4)" // Fuchsia
+  },
+  {
+    title: "4. Knowledge lookup",
+    subtitle: "Vector database search",
+    metric: "< 45ms",
+    metricLabel: "knowledge retrieval",
+    desc: "The AI references your practice FAQ sheet, PDF uploads, and price lists. It extracts the exact facts needed to address the client's query.",
+    icon: <Database className="h-4 w-4" />,
+    glowColor: "rgba(245, 158, 11, 0.4)" // Amber
+  },
+  {
+    title: "5. Calendar Booking",
+    subtitle: "Google/Outlook slot lock",
+    metric: "< 350ms",
+    metricLabel: "calendar sync completion",
+    desc: "The booking engine queries your live calendar, checks buffer configurations, locks the selected appointment slot, and updates availability.",
+    icon: <CalendarDays className="h-4 w-4" />,
+    glowColor: "rgba(16, 185, 129, 0.4)" // Emerald
+  },
+  {
+    title: "6. Text Confirmation",
+    subtitle: "Automated SMS notification",
+    metric: "Instant",
+    metricLabel: "SMS dispatcher delay",
+    desc: "Stripe pre-payments are processed if applicable, and an automated SMS confirmation with coordinate links is dispatched immediately to the caller.",
+    icon: <MessageSquareText className="h-4 w-4" />,
+    glowColor: "rgba(99, 102, 241, 0.4)" // Indigo
+  }
 ];
 
 export function VoiceAiFlow() {
- const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
+  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
 
- const getStepClass = (idx: number) => {
- if (hoveredIdx === null) {
- return"border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)] opacity-85 hover:opacity-100 hover:scale-[1.01]";
- }
- return hoveredIdx === idx
- ? PIPELINE[idx].color +"border-primary scale-[1.01] opacity-100"
- :"border-[hsl(var(--foreground)/0.03)] bg-[hsl(var(--foreground)/0.01)] opacity-30 scale-[0.99]";
- };
+  const activeStep = hoveredIdx !== null ? PIPELINE[hoveredIdx] : null;
 
- return (
- <div className="w-full flex flex-col gap-space-5">
- {/* Pipeline timeline */}
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-3">
- {PIPELINE.map((step, idx) => (
- <div
- key={idx}
- className={`radius-lg border p-space-4 cursor-pointer transition-all duration-200 ${getStepClass(idx)}`}
- onMouseEnter={() => setHoveredIdx(idx)}
- onMouseLeave={() => setHoveredIdx(null)}
- >
- <div className="flex items-center gap-space-3">
- <div className="radius-md bg-primary/10 p-space-2 text-primary shrink-0">
- {step.icon}
- </div>
- <div className="min-w-0 flex-1">
- <h4 className="text-body-sm text-foreground leading-tight">{step.title}</h4>
- <p className="text-caption text-muted-foreground mt-space-1">{step.subtitle}</p>
- </div>
- </div>
- </div>
- ))}
- </div>
+  return (
+    <div className="w-full flex flex-col gap-space-4">
+      <style>{`
+        @keyframes pulse-ring {
+          0% { transform: scale(0.95); opacity: 0.15; }
+          50% { transform: scale(1.08); opacity: 0.4; }
+          100% { transform: scale(0.95); opacity: 0.15; }
+        }
+        .glow-pulse-ring {
+          animation: pulse-ring 2.5s ease-in-out infinite;
+        }
+      `}</style>
 
- {/* Pipeline description box */}
- <div className="radius-xl border border-[hsl(var(--foreground)/0.06)] bg-card/50 backdrop-blur-sm p-space-5 min-h-36 flex flex-col justify-between transition-all duration-300">
- {hoveredIdx !== null ? (
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-4 animate-fade-in h-full">
- <div className="space-y-space-2 flex-1">
- <span className="text-caption uppercase tracking-wider text-primary">Pipeline Stage 0{hoveredIdx + 1}</span>
- <h4 className="text-body-sm text-foreground">{PIPELINE[hoveredIdx].title}</h4>
- <p className="text-caption text-muted-foreground leading-relaxed">
- {PIPELINE[hoveredIdx].desc}
- </p>
- </div>
+      {/* Grid of Steps */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-3">
+        {PIPELINE.map((step, idx) => {
+          const isActive = hoveredIdx === idx;
+          return (
+            <div
+              key={idx}
+              className={`rounded-xl border p-space-4 cursor-pointer select-none transition-all duration-300 flex items-center gap-space-3.5 hover:-translate-y-0.5 relative overflow-hidden ${
+                isActive
+                  ? "bg-[hsl(var(--background)/0.7)] border-emerald-500/30 shadow-[0_4px_20px_-4px_rgba(16,185,129,0.15)]"
+                  : "bg-[hsl(var(--foreground)/0.02)] border-[hsl(var(--foreground)/0.1)]"
+              }`}
+              onMouseEnter={() => setHoveredIdx(idx)}
+              onMouseLeave={() => setHoveredIdx(null)}
+            >
+              {/* Subtle top indicator bar representing step highlight */}
+              {isActive && (
+                <div className="absolute top-0 left-0 right-0 h-[1.5px] bg-emerald-500/70" />
+              )}
 
- <div className="flex flex-col items-start md:items-end justify-center pt-space-3 md:pt-space-0 md:pl-space-5 border-t md:border-t-space-0 md:border-l border-[hsl(var(--foreground)/0.06)] shrink-0 min-w-40">
- <span className="text-caption uppercase tracking-wider text-muted-foreground mb-space-1">Processing time</span>
- <span className="text-heading-lg font-mono text-primary leading-none tabular-num">
- {PIPELINE[hoveredIdx].metric}
- </span>
- <span className="text-caption text-muted-foreground mt-space-1 text-left md:text-right">
- {PIPELINE[hoveredIdx].metricLabel}
- </span>
- </div>
- </div>
- ) : (
- <div className="flex flex-col md:flex-row md:items-center justify-between gap-space-4 h-full">
- <div className="flex items-center gap-space-4 flex-1">
- <div className="radius-md bg-primary/10 p-space-3 text-primary shrink-0">
- <Mic className="h-5 w-5 animate-pulse"/>
- </div>
- <div>
- <p className="text-body-sm text-foreground">Voice AI Processing Pipeline</p>
- <p className="text-caption text-muted-foreground leading-relaxed max-w-xl">
- Hover over any stage above to trace how real-time calls are ingested, transcribed, and structured by the AI receptionist in milliseconds.
- </p>
- </div>
- </div>
- <div className="flex flex-col items-start md:items-end justify-center pt-space-3 md:pt-space-0 md:pl-space-5 border-t md:border-t-space-0 md:border-l border-[hsl(var(--foreground)/0.06)] shrink-0 min-w-40">
- <span className="text-caption uppercase tracking-wider text-muted-foreground mb-space-1">Total Pipeline Delay</span>
- <span className="text-heading-lg font-mono text-primary leading-none tabular-num">
- &lt; 900ms
- </span>
- <span className="text-caption text-muted-foreground mt-space-1 text-left md:text-right">
- end-to-end response time
- </span>
- </div>
- </div>
- )}
- </div>
- </div>
- );
+              {/* Icon badge */}
+              <div
+                className={`h-9 w-9 rounded-lg border flex items-center justify-center shrink-0 transition-all duration-300 relative`}
+                style={{
+                  borderColor: isActive ? "rgba(16, 185, 129, 0.3)" : "var(--color-border-subtle)",
+                  background: isActive ? "rgba(16, 185, 129, 0.08)" : "var(--color-bg-layer-1)",
+                  color: isActive ? "#10b981" : "hsl(var(--foreground) / 0.4)"
+                }}
+              >
+                {isActive && (
+                  <span className="absolute -inset-0.5 rounded-lg border border-emerald-500/30 animate-ping opacity-35" />
+                )}
+                {step.icon}
+              </div>
+
+              {/* Step Title Content */}
+              <div className="flex-1 min-w-0 text-left">
+                <h4 className={`text-body-sm font-semibold transition-colors duration-300 ${isActive ? "text-[hsl(var(--foreground))] font-bold" : "text-[hsl(var(--foreground)/0.65)]"}`}>
+                  {step.title}
+                </h4>
+                <p className="text-[10px] text-muted-foreground mt-0.5 truncate leading-relaxed">
+                  {step.subtitle}
+                </p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Details Box Strip (Borderless Layout) */}
+      <div
+        className={`w-full p-space-4 flex flex-col md:flex-row items-center justify-between gap-space-4 relative overflow-hidden transition-all duration-500 min-h-[76px] border-t ${
+          activeStep !== null 
+            ? "border-emerald-500/30 bg-[hsl(var(--foreground)/0.03)]" 
+            : "border-[hsl(var(--foreground)/0.1)] bg-[hsl(var(--foreground)/0.02)]"
+        }`}
+      >
+        {/* Dynamic backdrop glow blob representing active stage */}
+        <div
+          className="absolute -right-12 -bottom-12 w-28 h-28 rounded-full blur-[36px] pointer-events-none transition-all duration-500 opacity-20"
+          style={{
+            backgroundColor: activeStep ? "#10b981" : "rgba(122, 90, 248, 0.4)"
+          }}
+        />
+
+        {/* Content Details Area */}
+        <div className="flex-1 flex flex-col justify-center text-left space-y-space-0.5 z-10 relative">
+          <span
+            className="text-[8px] uppercase tracking-widest font-mono font-bold transition-colors duration-300"
+            style={{
+              color: activeStep ? "#10b981" : "hsl(var(--primary))"
+            }}
+          >
+            {activeStep ? `Stage 0${hoveredIdx! + 1} • Diagnostics` : "Voice AI processing pipeline"}
+          </span>
+          <p className="text-[11px] text-[hsl(var(--foreground)/0.6)] leading-normal max-w-2xl transition-all duration-300 font-medium">
+            {activeStep
+              ? activeStep.desc
+              : "Hover over any stage above to trace how real-time calls are ingested, transcribed, and structured by the AI receptionist in milliseconds."}
+          </p>
+        </div>
+
+        {/* Metric Area */}
+        <div className="flex md:flex-col items-center md:items-end justify-center shrink-0 md:pl-space-4 md:border-l border-[hsl(var(--foreground)/0.1)] min-w-[144px] z-10 relative text-center md:text-right">
+          <span className="text-[8px] uppercase tracking-wider font-mono text-slate-500 font-semibold">
+            {activeStep ? "processing latency" : "total pipeline delay"}
+          </span>
+          <span
+            className="text-heading-md font-mono leading-none font-extrabold tracking-tight transition-all duration-300 my-0.5"
+            style={{
+              color: activeStep ? "#10b981" : "hsl(var(--primary))",
+              textShadow: activeStep 
+                ? "0 0 10px rgba(16, 185, 129, 0.15)" 
+                : "0 0 10px rgba(122, 90, 248, 0.1)"
+            }}
+          >
+            {activeStep ? activeStep.metric : "< 900ms"}
+          </span>
+          <span className="text-[9px] text-slate-500 font-medium transition-colors duration-300">
+            {activeStep ? activeStep.metricLabel : "end-to-end response time"}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
 }

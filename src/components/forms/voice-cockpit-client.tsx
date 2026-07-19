@@ -160,7 +160,7 @@ export function VoiceCockpitClient({
  <div className="space-y-space-0.5">
  <span className="text-caption font-semibold uppercase tracking-wider text-muted-foreground/60">Conversion Rate</span>
  <span className="text-title-md font-semibold text-foreground mt-space-0.5 block tracking-tight tabular-nums">78.4%</span>
- <span className="text-caption text-emerald-600 dark:text-emerald-500 font-semibold flex items-center gap-space-1">
+ <span className="text-caption text-emerald-500 font-semibold flex items-center gap-space-1">
  <TrendingUp className="h-3 w-3 shrink-0 text-emerald-500"/> Booking confirmations
  </span>
  </div>
@@ -200,7 +200,7 @@ export function VoiceCockpitClient({
 
  {/* Voice Analytics Charts */}
  <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-4 shrink-0">
- <div className="bg-white dark:bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
+ <div className="bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
  <div className="p-space-5 pb-space-2 shrink-0">
  <h3 className="text-body-sm font-semibold">Call Volume & Duration</h3>
  <p className="text-caption text-muted-foreground">Daily call activity and average duration (mins)</p>
@@ -224,7 +224,7 @@ export function VoiceCockpitClient({
  </div>
  </div>
 
- <div className="bg-white dark:bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
+ <div className="bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
  <div className="p-space-5 pb-space-2 shrink-0">
  <h3 className="text-body-sm font-semibold">Sentiment Trend</h3>
  <p className="text-caption text-muted-foreground">Average customer sentiment over time</p>
@@ -392,7 +392,7 @@ export function VoiceCockpitClient({
  </div>
 
  {/* Scrollable Dialogue viewport */}
- <div className="flex-1 overflow-y-auto p-space-4 space-y-space-4 bg-slate-50/10 dark:bg-transparent sidebar-scroll">
+ <div className="flex-1 overflow-y-auto p-space-4 space-y-space-4 bg-[hsl(var(--foreground)/0.02)] sidebar-scroll">
  {activeTranscript.map((line, idx) => (
  <div
  key={idx}

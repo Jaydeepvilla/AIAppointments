@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { useState } from "react";
 import { OverallHealthResult } from "@/lib/health-engine/overall";
 import { HealthScoreResult } from "@/lib/health-engine/types";
@@ -42,7 +44,7 @@ function ModuleRow({ name, result }: { name: string; result: HealthScoreResult }
         <div className="flex items-center gap-space-2">
           <span className="text-body-sm font-medium text-foreground">{meta.label}</span>
           {missing > 0 && (
-            <span className="text-[10px] font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-bold text-[hsl(var(--state-warning-text))] bg-[hsl(var(--state-warning-bg))] border border-[hsl(var(--state-warning-border))] px-1.5 py-0.5 rounded-full">
               {missing} missing
             </span>
           )}
@@ -79,7 +81,8 @@ export function BusinessHealthWidget({ health }: BusinessHealthWidgetProps) {
     "from-rose-500/50";
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden border border-[hsl(var(--foreground)/0.07)]">
+    <m.div whileHover={hoverScale}>
+<Card className="h-full flex flex-col overflow-hidden border border-[hsl(var(--foreground)/0.07)]">
       <div className="relative p-space-5 flex flex-col gap-space-4 flex-1 z-10">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -114,7 +117,7 @@ export function BusinessHealthWidget({ health }: BusinessHealthWidgetProps) {
             </span>
             <p className="text-[10px] text-muted-foreground/50 leading-relaxed">{formulaText}</p>
             {totalMissing > 0 && (
-              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-amber-500/20 bg-amber-500/8 text-[10px] font-bold text-amber-600 dark:text-amber-400">
+              <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border border-[hsl(var(--state-warning-border))] bg-[hsl(var(--state-warning-bg))] text-[10px] font-bold text-[hsl(var(--state-warning-text))]">
                 <AlertTriangle className="w-3 h-3 shrink-0" />
                 {totalMissing} missing requirement{totalMissing !== 1 ? "s" : ""}
               </div>
@@ -163,5 +166,6 @@ export function BusinessHealthWidget({ health }: BusinessHealthWidgetProps) {
         </div>
       )}
     </Card>
+</m.div>
   );
 }

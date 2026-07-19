@@ -197,7 +197,7 @@ export function AuthHeader({
       <Link
         href="/"
         aria-label="Go to Operator home"
-        className="inline-block transition-opacity duration-fast hover:opacity-70"
+        className="inline-block transition-opacity duration-fast hover:opacity-70 lg:hidden"
       >
         <Logo />
       </Link>
@@ -301,11 +301,8 @@ export function SignInForm() {
         <AuthSocialButtons
           disabled={isLoading || isSuccess}
           onGoogleClick={handleGoogleClick}
-          onAppleClick={handleAppleClick}
         />
       </div>
-
-      <AuthDivider />
 
       {/* ── Error banner ─────────────────────────────────────────────── */}
       <AuthErrorBanner
@@ -405,6 +402,8 @@ export function SignInForm() {
         type="submit"
         loading={isLoading}
         disabled={isLoading || isSuccess}
+        shape="pill"
+        size="lg"
         className={cn(
           "w-full transition-all duration-base",
           isSuccess &&
@@ -418,20 +417,20 @@ export function SignInForm() {
           </span>
         ) : !isLoading ? (
           <>
-            Sign in
+            Continue
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </>
         ) : null}
       </Button>
 
       {/* ── Footer link ──────────────────────────────────────────────── */}
-      <p className="text-center text-caption text-foreground/40">
-        Don&apos;t have an account?{" "}
+      <p className="text-center text-caption text-foreground/40 mt-space-4">
+        New to Operator?{" "}
         <Link
           href="/sign-up"
-          className="font-semibold text-primary hover:opacity-70 transition-opacity"
+          className="font-semibold text-primary hover:underline hover:opacity-80 transition-opacity"
         >
-          Create one →
+          Create an account
         </Link>
       </p>
     </form>
@@ -460,10 +459,11 @@ export function SignUpForm() {
   const [email, setEmail] = React.useState(initialEmail);
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
-  const [acceptTerms, setAcceptTerms] = React.useState(false);
-  const [acceptPrivacy, setAcceptPrivacy] = React.useState(false);
+  const [acceptTerms, setAcceptTerms] = React.useState(true);
+  const [acceptPrivacy, setAcceptPrivacy] = React.useState(true);
   const [marketingConsent, setMarketingConsent] = React.useState(false);
   const [showPassword, setShowPassword] = React.useState(false);
+  const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
@@ -560,7 +560,8 @@ export function SignUpForm() {
       });
       if (result.success) {
         if (result.requiresVerification) {
-          router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+          const devParams = result.devToken ? `&devToken=${result.devToken}` : "";
+          router.push(`/verify-email?email=${encodeURIComponent(email)}${devParams}`);
         } else {
           router.push("/onboarding");
         }
@@ -586,9 +587,7 @@ export function SignUpForm() {
       <AuthSocialButtons
         disabled={isLoading}
         onGoogleClick={handleGoogleClick}
-        onAppleClick={handleAppleClick}
       />
-      <AuthDivider />
 
       {/* Error banner */}
       <AuthErrorBanner
@@ -687,7 +686,12 @@ export function SignUpForm() {
             autoComplete="new-password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errorMsg) setErrorMsg(null);
+            }}
+            onFocus={() => setPasswordFocused(true)}
+            onBlur={() => setPasswordFocused(false)}
             placeholder="••••••••"
             disabled={isLoading}
             className="pl-space-10 pr-space-10"
@@ -696,13 +700,15 @@ export function SignUpForm() {
             visible={showPassword}
             onToggle={() => setShowPassword((v) => !v)}
           />
+          {passwordFocused && (
+            <PasswordStrength
+              password={password}
+              email={email}
+              firstName={firstName}
+              lastName={lastName}
+            />
+          )}
         </div>
-        <PasswordStrength
-          password={password}
-          email={email}
-          firstName={firstName}
-          lastName={lastName}
-        />
       </Field>
 
       {/* Confirm password */}
@@ -739,57 +745,6 @@ export function SignUpForm() {
         )}
       </Field>
 
-      {/* Agreements */}
-      <div className="space-y-space-2.5 pt-space-1">
-        <Checkbox
-          id="signup-terms"
-          checked={acceptTerms}
-          onChange={setAcceptTerms}
-          disabled={isLoading}
-          label={
-            <>
-              I accept the{" "}
-              <Link
-                href="/terms"
-                target="_blank"
-                className="font-semibold text-primary underline hover:opacity-80 transition-opacity"
-              >
-                Terms of Service
-              </Link>
-            </>
-          }
-        />
-        <Checkbox
-          id="signup-privacy"
-          checked={acceptPrivacy}
-          onChange={setAcceptPrivacy}
-          disabled={isLoading}
-          label={
-            <>
-              I accept the{" "}
-              <Link
-                href="/privacy"
-                target="_blank"
-                className="font-semibold text-primary underline hover:opacity-80 transition-opacity"
-              >
-                Privacy Policy
-              </Link>
-            </>
-          }
-        />
-        <Checkbox
-          id="signup-marketing"
-          checked={marketingConsent}
-          onChange={setMarketingConsent}
-          disabled={isLoading}
-          label={
-            <span className="text-foreground/35">
-              (Optional) Send me product updates and tips
-            </span>
-          }
-        />
-      </div>
-
       {/* Submit */}
       <Button
         type="submit"
@@ -797,25 +752,40 @@ export function SignUpForm() {
         disabled={
           emailChecking || !!emailError || strength.score < 4 || passwordMismatch
         }
+        shape="pill"
+        size="lg"
         className="w-full"
       >
         {!isLoading && (
           <>
-            Get started
+            Continue
             <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </>
         )}
       </Button>
 
-      <p className="text-center text-caption text-foreground/40">
-        Already have an account?{" "}
-        <Link
-          href="/sign-in"
-          className="font-semibold text-primary hover:opacity-70 transition-opacity"
-        >
-          Sign in →
-        </Link>
-      </p>
+      {/* ── Footer disclaimer and links ── */}
+      <div className="space-y-space-4 text-center mt-space-4">
+        <p className="text-[11px] text-foreground/45 leading-normal max-w-[340px] mx-auto">
+          By registering, you agree to the{" "}
+          <Link href="/terms" target="_blank" className="font-semibold text-primary hover:underline hover:opacity-80 transition-opacity">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/privacy" target="_blank" className="font-semibold text-primary hover:underline hover:opacity-80 transition-opacity">
+            Privacy Policy
+          </Link>
+        </p>
+        <p className="text-caption text-foreground/40">
+          Already using Operator?{" "}
+          <Link
+            href="/sign-in"
+            className="font-semibold text-primary hover:underline hover:opacity-80 transition-opacity"
+          >
+            Login
+          </Link>
+        </p>
+      </div>
     </form>
   );
 }
@@ -937,6 +907,7 @@ export function ResetPasswordForm({ token }: { token: string }) {
   const [password, setPassword] = React.useState("");
   const [confirmPassword, setConfirmPassword] = React.useState("");
   const [showPassword, setShowPassword] = React.useState(false);
+  const [passwordFocused, setPasswordFocused] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const [success, setSuccess] = React.useState(false);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -1023,7 +994,12 @@ export function ResetPasswordForm({ token }: { token: string }) {
             autoComplete="new-password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              setPassword(e.target.value);
+              if (errorMsg) setErrorMsg(null);
+            }}
+            onFocus={() => setPasswordFocused(true)}
+            onBlur={() => setPasswordFocused(false)}
             placeholder="••••••••"
             disabled={isLoading}
             className="pl-space-10 pr-space-10"
@@ -1032,8 +1008,8 @@ export function ResetPasswordForm({ token }: { token: string }) {
             visible={showPassword}
             onToggle={() => setShowPassword((v) => !v)}
           />
+          {passwordFocused && <PasswordStrength password={password} />}
         </div>
-        <PasswordStrength password={password} />
       </Field>
 
       <Field>

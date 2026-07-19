@@ -250,7 +250,7 @@ export default function ChannelsPage() {
  <Phone className="h-5 w-5"/>
  </div>
  {isConnected("whatsapp") ? (
- <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
+ <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
  <span className="h-1.5 w-1.5 radius-full bg-emerald-500 animate-pulse"/>
  Connected
  </span>
@@ -287,7 +287,7 @@ export default function ChannelsPage() {
  <MessageSquare className="h-5 w-5"/>
  </div>
  {isConnected("sms") ? (
- <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
+ <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
  <span className="h-1.5 w-1.5 radius-full bg-emerald-500 animate-pulse"/>
  Connected
  </span>
@@ -324,7 +324,7 @@ export default function ChannelsPage() {
  <Mail className="h-5 w-5"/>
  </div>
  {isConnected("email") ? (
- <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
+ <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
  <span className="h-1.5 w-1.5 radius-full bg-emerald-500 animate-pulse"/>
  Connected
  </span>
@@ -361,7 +361,7 @@ export default function ChannelsPage() {
  <ExternalLink className="h-5 w-5"/>
  </div>
  {isConnected("instagram") ? (
- <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
+ <span className="text-caption font-semibold flex items-center gap-space-1.5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 px-space-3 py-space-1 radius-full">
  <span className="h-1.5 w-1.5 radius-full bg-emerald-500 animate-pulse"/>
  Connected
  </span>
@@ -629,7 +629,7 @@ export default function ChannelsPage() {
  >
  <div className={cn(
  "w-8 h-5 radius-full p-[2px] transition-colors duration-200 shrink-0",
- settingsAiEnabled ?"bg-primary":"bg-neutral-300 dark:bg-neutral-700"
+ settingsAiEnabled ?"bg-primary":"bg-neutral-300 "
  )}>
  <div className={cn(
  "w-4 h-4 radius-full bg-white transition-transform duration-200",

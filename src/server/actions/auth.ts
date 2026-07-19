@@ -263,7 +263,11 @@ export async function registerAction(input: any) {
       userAgent,
     });
 
-    return { success: true, requiresVerification: true };
+    return { 
+      success: true, 
+      requiresVerification: true,
+      devToken: !process.env.SMTP_USER ? token : undefined
+    };
   } catch (error: any) {
     console.error("Register action error:", error);
     return { success: false, error: error.message || "Failed to create account" };

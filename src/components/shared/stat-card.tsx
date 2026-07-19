@@ -37,7 +37,7 @@ export function StatCard({
   return (
     <div
       className={cn(
-        "stat-card relative overflow-hidden radius-xl p-space-5 flex flex-col justify-between border border-border-default bg-card hover:border-primary/20 dark:hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.01] group min-h-[145px]",
+        "stat-card relative overflow-hidden radius-xl p-space-5 flex flex-col justify-between border border-border-default bg-card hover:border-primary/20 transition-all duration-300 shadow-sm hover:shadow-md hover:scale-[1.01] group min-h-[145px]",
         className
       )}
       {...props}
@@ -63,8 +63,8 @@ export function StatCard({
               className={cn(
                 "text-[9px] font-bold leading-none px-2 py-0.5 rounded-full border uppercase tracking-wider shrink-0",
                 trend.positive 
-                  ? "bg-emerald-500/8 border-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-                  : "bg-rose-500/8 border-rose-500/15 text-rose-600 dark:text-rose-400"
+                  ? "bg-[hsl(var(--state-success-bg))] border-[hsl(var(--state-success-border))] text-[hsl(var(--state-success-text))]"
+                  : "bg-[hsl(var(--state-error-bg))] border-[hsl(var(--state-error-border))] text-[hsl(var(--state-error-text))]"
               )}
             >
               {trend.positive ? "↑" : "↓"} {trend.value}

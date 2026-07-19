@@ -20,73 +20,73 @@ const CHANNELS = {
  outcome: "Bookings",
  desc: "A customer calls your business line. Operator picks up in 1 second, checks calendar availability, and books the appointment autonomously.",
  accent: {
- text: "text-purple-600 dark:text-purple-400",
- border: "border-purple-500 dark:border-purple-500/40",
- bg: "bg-purple-50/40 dark:bg-purple-950/10",
- glow: "shadow-sm",
- line: "stroke-purple-500 dark:stroke-purple-400",
- grad: "url(#grad-left-Phone)",
- iconBorder: "border-purple-500/20 dark:border-purple-500/25",
- iconBg: "bg-purple-100/50 dark:bg-purple-950/30",
- descBorder: "border-purple-500/30 dark:border-purple-500/35",
- glowColor: "rgba(168, 85, 247, 0.25)",
- bgGlow: "from-purple-500/6 to-transparent",
- },
- },
+  text: "text-purple-500",
+  border: "border-purple-500/60",
+  bg: "bg-purple-500/8",
+  glow: "shadow-sm",
+  line: "stroke-purple-500",
+  grad: "url(#grad-left-Phone)",
+  iconBorder: "border-purple-500/25",
+  iconBg: "bg-purple-500/12",
+  descBorder: "border-purple-500/35",
+  glowColor: "rgba(168, 85, 247, 0.25)",
+  bgGlow: "from-purple-500/6 to-transparent",
+  },
+  },
  Website: {
  icon: Globe,
  outcome: "CRM",
  desc: "A visitor starts a web chat. Operator answers FAQs from your knowledge base, qualifies interest, and creates a CRM contact card.",
  accent: {
- text: "text-emerald-600 dark:text-emerald-400",
- border: "border-emerald-500 dark:border-emerald-500/40",
- bg: "bg-emerald-50/40 dark:bg-emerald-950/10",
- glow: "shadow-sm",
- line: "stroke-emerald-500 dark:stroke-emerald-450",
- grad: "url(#grad-left-Website)",
- iconBorder: "border-emerald-500/20 dark:border-emerald-500/25",
- iconBg: "bg-emerald-100/50 dark:bg-emerald-950/30",
- descBorder: "border-emerald-500/30 dark:border-emerald-500/35",
- glowColor: "rgba(16, 185, 129, 0.25)",
- bgGlow: "from-emerald-500/6 to-transparent",
- },
- },
+  text: "text-emerald-500",
+  border: "border-emerald-500/60",
+  bg: "bg-emerald-500/8",
+  glow: "shadow-sm",
+  line: "stroke-emerald-500",
+  grad: "url(#grad-left-Website)",
+  iconBorder: "border-emerald-500/25",
+  iconBg: "bg-emerald-500/12",
+  descBorder: "border-emerald-500/35",
+  glowColor: "rgba(16, 185, 129, 0.25)",
+  bgGlow: "from-emerald-500/6 to-transparent",
+  },
+  },
  WhatsApp: {
  icon: MessageSquare,
  outcome: "CRM",
  desc: "Inbound messages on WhatsApp Business are handled instantly. Operator qualifies leads and captures booking intent.",
  accent: {
- text: "text-teal-600 dark:text-teal-455",
- border: "border-teal-500 dark:border-teal-500/40",
- bg: "bg-teal-50/40 dark:bg-teal-950/10",
- glow: "shadow-sm",
- line: "stroke-teal-500 dark:stroke-teal-450",
- grad: "url(#grad-left-WhatsApp)",
- iconBorder: "border-teal-500/20 dark:border-teal-500/25",
- iconBg: "bg-teal-100/50 dark:bg-teal-950/30",
- descBorder: "border-teal-500/30 dark:border-teal-500/35",
- glowColor: "rgba(20, 184, 166, 0.25)",
- bgGlow: "from-teal-500/6 to-transparent",
- },
- },
+  text: "text-teal-500",
+  border: "border-teal-500/60",
+  bg: "bg-teal-500/8",
+  glow: "shadow-sm",
+  line: "stroke-teal-500",
+  grad: "url(#grad-left-WhatsApp)",
+  iconBorder: "border-teal-500/25",
+  iconBg: "bg-teal-500/12",
+  descBorder: "border-teal-500/35",
+  glowColor: "rgba(20, 184, 166, 0.25)",
+  bgGlow: "from-teal-500/6 to-transparent",
+  },
+  },
  Instagram: {
  icon: Camera,
  outcome: "Analytics",
  desc: "Prospects send Instagram DMs inquiring about services. Operator answers pricing questions and flags hot prospects in analytics.",
  accent: {
- text: "text-pink-650 dark:text-pink-405",
- border: "border-pink-500 dark:border-pink-500/40",
- bg: "bg-pink-50/40 dark:bg-pink-950/10",
- glow: "shadow-sm",
- line: "stroke-pink-500 dark:stroke-pink-455",
- grad: "url(#grad-left-Instagram)",
- iconBorder: "border-pink-500/20 dark:border-pink-500/25",
- iconBg: "bg-pink-100/50 dark:bg-pink-950/30",
- descBorder: "border-pink-500/30 dark:border-pink-550/35",
- glowColor: "rgba(236, 72, 153, 0.25)",
- bgGlow: "from-pink-500/6 to-transparent",
- },
- },
+  text: "text-pink-500",
+  border: "border-pink-500/60",
+  bg: "bg-pink-500/8",
+  glow: "shadow-sm",
+  line: "stroke-pink-500",
+  grad: "url(#grad-left-Instagram)",
+  iconBorder: "border-pink-500/25",
+  iconBg: "bg-pink-500/12",
+  descBorder: "border-pink-500/35",
+  glowColor: "rgba(236, 72, 153, 0.25)",
+  bgGlow: "from-pink-500/6 to-transparent",
+  },
+  },
 } as const;
 
 type ChannelKey = keyof typeof CHANNELS;
@@ -135,35 +135,35 @@ export function InteractiveArchitecture() {
  const state = getPillClass(pillName);
  
  if (state === "normal") {
- return "text-zinc-500 bg-zinc-50 border-zinc-200 dark:text-zinc-400 dark:bg-zinc-900/50 dark:border-zinc-800/80";
- }
- if (state === "dimmed") {
- return "text-zinc-300/40 bg-zinc-50/10 border-zinc-100/10 dark:text-zinc-700 dark:bg-zinc-950/20 dark:border-zinc-900/20 opacity-25 scale-95 blur-[0.5px]";
- }
- 
- // Active state matches current hovered channel's theme
- if (activeChannel === "Phone") {
- return "text-purple-605 bg-purple-500/10 border-purple-500/20 dark:text-purple-400 dark:bg-purple-950/30 dark:border-purple-500/40 shadow-lg";
- }
- if (activeChannel === "Website") {
- return "text-emerald-600 bg-emerald-500/10 border-emerald-500/20 dark:text-emerald-400 dark:bg-emerald-950/30 dark:border-emerald-500/40 shadow-lg";
- }
- if (activeChannel === "WhatsApp") {
- return "text-teal-600 bg-teal-500/10 border-teal-500/20 dark:text-teal-400 dark:bg-teal-950/30 dark:border-teal-500/40 shadow-lg";
- }
- if (activeChannel === "Instagram") {
- return "text-pink-600 bg-pink-500/10 border-pink-500/20 dark:text-pink-400 dark:bg-pink-950/30 dark:border-pink-500/40 shadow-lg";
- }
- return "";
+  return "text-[hsl(var(--foreground)/0.5)] bg-[hsl(var(--foreground)/0.04)] border-[hsl(var(--foreground)/0.12)]";
+  }
+  if (state === "dimmed") {
+  return "text-[hsl(var(--foreground)/0.15)] bg-[hsl(var(--foreground)/0.02)] border-[hsl(var(--foreground)/0.06)] opacity-25 scale-95 blur-[0.5px]";
+  }
+  
+  // Active state matches current hovered channel's theme
+  if (activeChannel === "Phone") {
+  return "text-purple-500 bg-purple-500/10 border-purple-500/30 shadow-lg";
+  }
+  if (activeChannel === "Website") {
+  return "text-emerald-500 bg-emerald-500/10 border-emerald-500/30 shadow-lg";
+  }
+  if (activeChannel === "WhatsApp") {
+  return "text-teal-500 bg-teal-500/10 border-teal-500/30 shadow-lg";
+  }
+  if (activeChannel === "Instagram") {
+  return "text-pink-500 bg-pink-500/10 border-pink-500/30 shadow-lg";
+  }
+  return "";
  };
 
  return (
  <div className="mx-auto max-w-4xl w-full animate-fade-up">
  {/* --- Outer Node Container --- */}
- <div className="grid grid-cols-1 md:grid-cols-12 gap-space-6 md:gap-space-0 items-center justify-between relative rounded-3xl p-space-6 md:p-space-10 bg-zinc-50/40 border border-zinc-200/80 overflow-hidden mb-space-6 dark:bg-zinc-950/30 dark:border-zinc-800/80 backdrop-blur-sm shadow-sm">
+ <div className="grid grid-cols-1 md:grid-cols-12 gap-space-6 md:gap-space-0 items-center justify-between relative rounded-3xl p-space-6 md:p-space-10 bg-[hsl(var(--foreground)/0.025)] border border-[hsl(var(--foreground)/0.1)] overflow-hidden mb-space-6 backdrop-blur-sm shadow-sm">
  
  {/* Figma-Style Schematic Grid Sheet Background */}
- <div className="absolute inset-space-0 pointer-events-none opacity-20 dark:opacity-10"
+ <div className="absolute inset-space-0 pointer-events-none opacity-15"
  style={{
  backgroundImage: `
  linear-gradient(to right, var(--color-border) 1px, transparent 1px),
@@ -174,10 +174,10 @@ export function InteractiveArchitecture() {
  />
 
  {/* Corner Crosshair Accents */}
- <div className="absolute top-space-3 left-space-3 text-zinc-350 dark:text-zinc-700 font-mono text-caption select-none pointer-events-none">+</div >
- <div className="absolute top-space-3 right-space-3 text-zinc-350 dark:text-zinc-700 font-mono text-caption select-none pointer-events-none">+</div >
- <div className="absolute bottom-space-3 left-space-3 text-zinc-350 dark:text-zinc-700 font-mono text-caption select-none pointer-events-none">+</div >
- <div className="absolute bottom-space-3 right-space-3 text-zinc-350 dark:text-zinc-700 font-mono text-caption select-none pointer-events-none">+</div >
+ <div className="absolute top-space-3 left-space-3 text-[hsl(var(--foreground)/0.2)] font-mono text-caption select-none pointer-events-none">+</div >
+ <div className="absolute top-space-3 right-space-3 text-[hsl(var(--foreground)/0.2)] font-mono text-caption select-none pointer-events-none">+</div >
+ <div className="absolute bottom-space-3 left-space-3 text-[hsl(var(--foreground)/0.2)] font-mono text-caption select-none pointer-events-none">+</div >
+ <div className="absolute bottom-space-3 right-space-3 text-[hsl(var(--foreground)/0.2)] font-mono text-caption select-none pointer-events-none">+</div >
 
  {/* Glow Behind Middle Operator Engine */}
  <div 
@@ -192,8 +192,8 @@ export function InteractiveArchitecture() {
  {/* --- Left Column: Input Channels --- */}
  <div className="md:col-span-3 space-y-space-3.5 relative z-10">
  <div className="flex items-center gap-space-2 mb-space-4 px-space-1 justify-center md:justify-start">
- <div className="h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600 animate-pulse"/>
- <span className="text-caption uppercase tracking-wider text-zinc-450 font-mono font-bold dark:text-zinc-500">
+ <div className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--foreground)/0.35)] animate-pulse"/>
+  <span className="text-caption uppercase tracking-wider text-[hsl(var(--foreground)/0.45)] font-mono font-bold">
  Input Channels
  </span>
  </div>
@@ -212,9 +212,9 @@ export function InteractiveArchitecture() {
  className={`group relative rounded-2xl border p-space-4 flex items-center gap-space-4 transition-all duration-300 cursor-pointer ${
  isActive
  ? `${chan.accent.border} ${chan.accent.bg} ${chan.accent.text} border-[1px]`
- : isDimmed
- ? "border-zinc-200/50 bg-zinc-50/20 text-zinc-400 dark:border-zinc-800/40 dark:bg-zinc-900/10 dark:text-zinc-500 opacity-60"
- : "border-zinc-200/80 bg-white/70 text-zinc-700 dark:border-zinc-850 dark:bg-zinc-900/40 dark:text-zinc-300 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-zinc-50/20 dark:hover:bg-zinc-850/10"
+  : isDimmed
+  ? "border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.02)] text-[hsl(var(--foreground)/0.3)] opacity-60"
+  : "border-[hsl(var(--foreground)/0.12)] bg-[hsl(var(--background)/0.7)] text-[hsl(var(--foreground)/0.75)] hover:border-[hsl(var(--foreground)/0.2)] hover:bg-[hsl(var(--foreground)/0.04)]"
  }`}
  >
  {/* Inner subtle gradient background reveal on hover */}
@@ -223,8 +223,8 @@ export function InteractiveArchitecture() {
  {/* Visual socket terminal on right edge of card */}
  <div className={`absolute right-[-4px] top-1/2 -translate-y-1/2 h-2 w-2 rounded-full border transition-all duration-300 z-20 ${
  isActive 
- ? "bg-white dark:bg-white border-current"
- : "bg-zinc-200 border-zinc-350 dark:bg-zinc-950 dark:border-zinc-800"
+  ? "bg-white border-current"
+  : "bg-[hsl(var(--foreground)/0.08)] border-[hsl(var(--foreground)/0.2)]"
  }`}
  style={{
  color: isActive ? chan.accent.glowColor : undefined,
@@ -235,15 +235,15 @@ export function InteractiveArchitecture() {
 
  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border transition-all duration-300 z-10 ${
  isActive 
- ? `${chan.accent.iconBorder} ${chan.accent.iconBg}`
- : "border-zinc-200 bg-zinc-50 text-zinc-450 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-400"
+  ? `${chan.accent.iconBorder} ${chan.accent.iconBg}`
+  : "border-[hsl(var(--foreground)/0.1)] bg-[hsl(var(--foreground)/0.04)] text-[hsl(var(--foreground)/0.5)]"
  }`}>
  <Icon className="h-5 w-5 shrink-0 transition-transform duration-300 group-hover:scale-110"/>
  </div>
  <div className="flex flex-col z-10">
  <span className="text-sm font-semibold tracking-tight leading-tight">{key}</span>
  <span className={`text-caption font-mono tracking-tight transition-colors ${
- isActive ? chan.accent.text : "text-zinc-400 dark:text-zinc-500"
+ isActive ? chan.accent.text : "text-[hsl(var(--foreground)/0.4)]"
  }`}>
  {key === "Phone" ? "Voice Call" : key === "Website" ? "Live Chat" : key === "WhatsApp" ? "Messenger" : "Social DM"}
  </span>
@@ -289,7 +289,7 @@ export function InteractiveArchitecture() {
  className={`fill-none transition-all duration-500 ${
  isActive 
  ? `${selectedAccent?.line} stroke-[1.2px] opacity-100`
- : "stroke-zinc-300/40 dark:stroke-zinc-800/80 stroke-[1] animate-dash-scroll"
+ : "stroke-[hsl(var(--foreground)/0.15)] stroke-[1] animate-dash-scroll"
  }`}
  />
  
@@ -345,8 +345,8 @@ export function InteractiveArchitecture() {
  <div className="md:col-span-4 px-space-4 relative z-10 flex justify-center">
  <div className={`relative w-full max-w-[240px] rounded-3xl p-space-6 flex flex-col items-center justify-center text-center transition-all duration-500 border z-10 ${
  activeChannel
- ? `${selectedAccent?.border} ${selectedAccent?.bg} border-[1px]`
- : "border-zinc-200 bg-white/70 dark:border-zinc-800/85 dark:bg-zinc-900/40 shadow-sm"
+  ? `${selectedAccent?.border} ${selectedAccent?.bg} border-[1px]`
+  : "border-[hsl(var(--foreground)/0.1)] bg-[hsl(var(--background)/0.7)] shadow-sm"
  }`}>
  
 
@@ -354,8 +354,8 @@ export function InteractiveArchitecture() {
  {/* Visual socket terminal on left edge of core card */}
  <div className={`absolute left-[-4px] top-1/2 -translate-y-1/2 h-2 w-2 rounded-full border transition-all duration-300 z-20 ${
  activeChannel 
- ? "bg-white dark:bg-white border-current"
- : "bg-zinc-200 border-zinc-350 dark:bg-zinc-950 dark:border-zinc-800"
+ ? "bg-white border-current"
+ : "bg-[hsl(var(--foreground)/0.1)] border-[hsl(var(--foreground)/0.2)]"
  }`}
  style={{
  color: activeChannel ? selectedAccent?.glowColor : undefined,
@@ -367,8 +367,8 @@ export function InteractiveArchitecture() {
  {/* Visual socket terminal on right edge of core card */}
  <div className={`absolute right-[-4px] top-1/2 -translate-y-1/2 h-2 w-2 rounded-full border transition-all duration-300 z-20 ${
  activeChannel 
- ? "bg-white dark:bg-white border-current"
- : "bg-zinc-200 border-zinc-350 dark:bg-zinc-950 dark:border-zinc-800"
+ ? "bg-white border-current"
+ : "bg-[hsl(var(--foreground)/0.1)] border-[hsl(var(--foreground)/0.2)]"
  }`}
  style={{
  color: activeChannel ? selectedAccent?.glowColor : undefined,
@@ -404,8 +404,8 @@ export function InteractiveArchitecture() {
  {/* Central Brain Core */}
  <div className={`h-11 w-11 rounded-full flex items-center justify-center transition-all duration-500 border z-10 ${
  activeChannel 
- ? `${selectedAccent?.iconBorder} ${selectedAccent?.iconBg} shadow-[0_0_15px_rgba(122,90,248,0.2)] scale-105`
- : "border-zinc-200/80 bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950/60"
+  ? `${selectedAccent?.iconBorder} ${selectedAccent?.iconBg} shadow-[0_0_15px_rgba(122,90,248,0.2)] scale-105`
+  : "border-[hsl(var(--foreground)/0.1)] bg-[hsl(var(--foreground)/0.04)]"
  }`}>
  <Brain className={`h-5.5 w-5.5 transition-all duration-500 ${
  activeChannel ? selectedAccent?.text : "text-primary animate-pulse"
@@ -413,7 +413,7 @@ export function InteractiveArchitecture() {
  </div>
  </div>
 
- <span className="text-caption font-mono uppercase tracking-widest text-zinc-550 font-bold dark:text-zinc-400 transition-colors">
+ <span className="text-caption font-mono uppercase tracking-widest text-[hsl(var(--foreground)/0.5)] font-bold transition-colors">
  Operator Engine
  </span>
 
@@ -475,7 +475,7 @@ export function InteractiveArchitecture() {
  className={`fill-none transition-all duration-500 ${
  isTarget 
  ? `${selectedAccent?.line} stroke-[1.2px] opacity-100`
- : "stroke-zinc-300/40 dark:stroke-zinc-800/80 stroke-[1] animate-dash-scroll"
+ : "stroke-[hsl(var(--foreground)/0.15)] stroke-[1] animate-dash-scroll"
  }`}
  />
  
@@ -530,8 +530,8 @@ export function InteractiveArchitecture() {
  {/* --- Right Column: Outcomes --- */}
  <div className="md:col-span-3 space-y-space-3.5 relative z-10">
  <div className="flex items-center gap-space-2 mb-space-4 px-space-1 justify-center md:justify-start">
- <div className="h-1.5 w-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600 animate-pulse"/>
- <span className="text-caption uppercase tracking-wider text-zinc-455 font-mono font-bold dark:text-zinc-500">
+ <div className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--foreground)/0.35)] animate-pulse"/>
+  <span className="text-caption uppercase tracking-wider text-[hsl(var(--foreground)/0.45)] font-mono font-bold">
  Outcomes
  </span>
  </div>
@@ -545,17 +545,17 @@ export function InteractiveArchitecture() {
  key={out.key}
  className={`group relative rounded-2xl border p-space-4 flex items-center gap-space-4 transition-all duration-300 ${
  isTarget
- ? `${selectedAccent?.border} ${selectedAccent?.bg} ${selectedAccent?.text} border-[1px]`
- : isDimmed
- ? "border-zinc-200/50 bg-zinc-50/20 text-zinc-400 dark:border-zinc-800/40 dark:bg-zinc-900/10 dark:text-zinc-500 opacity-60"
- : "border-zinc-200/80 bg-white/70 text-zinc-700 shadow-sm dark:border-zinc-800/85 dark:bg-zinc-900/40 dark:text-zinc-300"
+  ? `${selectedAccent?.border} ${selectedAccent?.bg} ${selectedAccent?.text} border-[1px]`
+  : isDimmed
+  ? "border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.02)] text-[hsl(var(--foreground)/0.3)] opacity-60"
+  : "border-[hsl(var(--foreground)/0.12)] bg-[hsl(var(--background)/0.7)] text-[hsl(var(--foreground)/0.75)] shadow-sm"
  }`}
  >
  {/* Visual socket terminal on left edge of outcome card */}
  <div className={`absolute left-[-4px] top-1/2 -translate-y-1/2 h-2 w-2 rounded-full border transition-all duration-300 z-20 ${
  isTarget 
- ? "bg-white dark:bg-white border-current"
- : "bg-zinc-200 border-zinc-350 dark:bg-zinc-950 dark:border-zinc-800"
+  ? "bg-white border-current"
+  : "bg-[hsl(var(--foreground)/0.08)] border-[hsl(var(--foreground)/0.2)]"
  }`}
  style={{
  color: isTarget ? selectedAccent?.glowColor : undefined,
@@ -566,15 +566,15 @@ export function InteractiveArchitecture() {
 
  <div className={`h-10 w-10 rounded-xl flex items-center justify-center border transition-all duration-300 z-10 ${
  isTarget 
- ? `${selectedAccent?.iconBorder} ${selectedAccent?.iconBg}`
- : "border-zinc-200 bg-zinc-50 text-zinc-450 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-400"
+  ? `${selectedAccent?.iconBorder} ${selectedAccent?.iconBg}`
+  : "border-[hsl(var(--foreground)/0.1)] bg-[hsl(var(--foreground)/0.04)] text-[hsl(var(--foreground)/0.5)]"
  }`}>
  {React.createElement(out.icon, { className: "h-5 w-5 shrink-0 animate-pulse-soft" })}
  </div>
  <div className="flex flex-col z-10">
  <span className="text-sm font-semibold tracking-tight leading-tight">{out.key}</span>
  <span className={`text-caption font-mono tracking-tight transition-colors ${
- isTarget ? selectedAccent?.text : "text-zinc-450 dark:text-zinc-500"
+ isTarget ? selectedAccent?.text : "text-[hsl(var(--foreground)/0.4)]"
  }`}>
  {out.key === "Bookings" ? "Direct Injection" : out.key === "CRM" ? "Intake Logs" : "Pipeline Audit"}
  </span>
@@ -588,10 +588,10 @@ export function InteractiveArchitecture() {
 
  {/* --- Context / Storytelling Status Block --- */}
  <div
- className={`rounded-2xl p-space-6 min-h-28 flex items-center transition-all duration-500 relative overflow-hidden bg-white border border-zinc-200/80 dark:bg-zinc-950/30 ${
- activeChannel
- ? `${selectedAccent?.descBorder} shadow-sm`
- : "border-zinc-200 dark:border-zinc-800/80"
+ className={`rounded-2xl p-space-6 min-h-28 flex items-center transition-all duration-500 relative overflow-hidden bg-[hsl(var(--background))] border ${
+  activeChannel
+  ? `${selectedAccent?.descBorder} shadow-sm`
+  : "border-[hsl(var(--foreground)/0.1)]"
  }`}
  >
  {/* Inner accent glow under context when hovered */}
@@ -619,7 +619,7 @@ export function InteractiveArchitecture() {
  routes to &rarr; {CHANNELS[activeChannel].outcome}
  </span>
  </div>
- <p className="text-sm text-zinc-650 leading-relaxed dark:text-zinc-300">
+ <p className="text-sm text-[hsl(var(--foreground)/0.65)] leading-relaxed">
  {CHANNELS[activeChannel].desc}
  </p>
  </div>
@@ -628,15 +628,15 @@ export function InteractiveArchitecture() {
  <div className="flex items-center gap-space-4 w-full justify-center text-center relative z-10 animate-fade-in">
  <div className="flex gap-space-1.5">
  {CHANNEL_KEYS.map((key) => (
- <div key={key} className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-800 animate-pulse"/>
+ <div key={key} className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--foreground)/0.2)] animate-pulse"/>
  ))}
  </div>
- <p className="text-sm text-zinc-500 leading-relaxed font-semibold dark:text-zinc-400">
+ <p className="text-sm text-[hsl(var(--foreground)/0.5)] leading-relaxed font-semibold">
  Hover over any input channel above to trace the real-time data flow through the Operator engine.
  </p>
  <div className="flex gap-space-1.5">
  {CHANNEL_KEYS.map((key) => (
- <div key={key} className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-800 animate-pulse"/>
+ <div key={key} className="h-1.5 w-1.5 rounded-full bg-[hsl(var(--foreground)/0.2)] animate-pulse"/>
  ))}
  </div>
  </div>

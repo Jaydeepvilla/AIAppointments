@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { useState, useEffect } from "react";
 import { SmartNotification } from "@/lib/notification-engine/types";
 import { useSmartNotifications } from "@/hooks/use-smart-notifications";
@@ -54,8 +56,8 @@ function NotificationRow({
     : isWarning
     ? "bg-state-warning-bg border border-warning-500/10"
     : isAi
-    ? "bg-primary-50/50 dark:bg-primary-950/20 border border-primary-500/10"
-    : "bg-neutral-50 dark:bg-neutral-900 border border-neutral-200";
+    ? "bg-[hsl(var(--primary)/0.06)] border border-[hsl(var(--primary)/0.12)]"
+    : "bg-card border border-border";
 
   const iconColor = isCritical
     ? "text-state-error-text"

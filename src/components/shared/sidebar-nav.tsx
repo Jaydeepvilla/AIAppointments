@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/components/shared/utils";
 import { useSidebar } from "@/components/shared/sidebar-context";
+import { m, AnimatePresence } from "framer-motion";
+import { fade } from "@/components/motion";
 import {
   LayoutDashboard,
   Inbox,
@@ -79,11 +81,17 @@ export function SidebarNavGroup({ title, links }: SidebarGroupProps) {
     <nav className="space-y-space-0" aria-label={title}>
       {/* Section title — hidden when collapsed, show divider instead */}
       {isCollapsed ? (
-        <div className="h-px bg-[hsl(var(--foreground)/0.06)] my-space-2 mx-space-2" />
+        <div className="h-px bg-[hsl(var(--sidebar-border))] my-space-2 mx-space-2" />
       ) : (
-        <p className="px-space-3 pb-space-1 pt-space-3 text-caption uppercase tracking-widest text-primary font-normal select-none transition-opacity duration-200" aria-hidden="true">
-          {title}
-        </p>
+        <AnimatePresence>
+          <m.p 
+            {...fade}
+            className="px-space-3 pb-space-1 pt-space-3 text-caption uppercase tracking-widest text-[hsl(var(--sidebar-section-label))] font-normal select-none" 
+            aria-hidden="true"
+          >
+            {title}
+          </m.p>
+        </AnimatePresence>
       )}
 
       {links.map((link) => {
@@ -108,26 +116,33 @@ export function SidebarNavGroup({ title, links }: SidebarGroupProps) {
                 ? "justify-center mx-space-1 px-space-0 py-space-2"
                 : "gap-space-2 px-space-3 py-space-2",
               isActive
-                ? "bg-black/5 text-foreground font-medium dark:bg-white/10 dark:text-white"
-                : "text-muted-foreground hover:bg-black/5 hover:text-foreground active:bg-black/10 dark:hover:bg-white/5 dark:active:bg-white/10",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-inset"
+                ? "bg-[hsl(var(--sidebar-item-active-bg))] text-[hsl(var(--sidebar-item-active-fg))] font-medium"
+                : "text-[hsl(var(--sidebar-item-fg))] hover:bg-[hsl(var(--sidebar-item-hover-bg))] hover:text-foreground active:bg-[hsl(var(--sidebar-item-active-bg))]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring)/0.3)] focus-visible:ring-inset"
             )}
           >
             <Icon
               className={cn(
                 "shrink-0 transition-colors duration-150 size-4",
                 isActive
-                  ? "text-foreground dark:text-white"
-                  : "text-muted-foreground/60 group-hover:text-foreground"
+                  ? "text-[hsl(var(--sidebar-item-active-fg))]"
+                  : "text-[hsl(var(--sidebar-item-fg))] group-hover:text-foreground"
               )}
             />
-            {!isCollapsed && (
-              <span className={cn("truncate text-body-sm", isActive ? "font-medium" : "font-normal")}>{link.label}</span>
-            )}
+            <AnimatePresence mode="wait">
+              {!isCollapsed && (
+                <m.span 
+                  {...fade}
+                  className={cn("truncate text-body-sm", isActive ? "font-medium" : "font-normal")}
+                >
+                  {link.label}
+                </m.span>
+              )}
+            </AnimatePresence>
 
             {/* Active indicator dot for collapsed mode */}
             {isActive && isCollapsed && (
-              <span className="absolute -right-space-0.5 top-space-1/2 -translate-y-space-1/2 h-1.5 w-1.5 radius-md bg-foreground dark:bg-white" />
+              <span className="absolute -right-space-0.5 top-space-1/2 -translate-y-space-1/2 h-1.5 w-1.5 radius-md bg-foreground" />
             )}
           </Link>
         );

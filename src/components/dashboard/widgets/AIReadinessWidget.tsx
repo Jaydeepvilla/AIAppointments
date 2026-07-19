@@ -1,3 +1,5 @@
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { GlobalAIReadiness } from "@/lib/ai-readiness-engine";
 import { ScoreRing } from "@/components/dashboard/shared/score-ring";
 import { MetricBar } from "@/components/dashboard/shared/metric-bar";
@@ -19,7 +21,7 @@ const DOMAINS = [
 export function AIReadinessWidget({ readiness }: AIReadinessWidgetProps) {
   const score = readiness.overallScore;
   const statusLabel = ScoreRing.label(score);
-  const statusTextClass = "text-primary-600 dark:text-primary-400";
+  const statusTextClass = "text-primary";
 
   const missing = readiness.criticalMissingInformation;
 

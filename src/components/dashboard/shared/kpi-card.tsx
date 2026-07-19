@@ -41,10 +41,10 @@ export function KPICard({
   const resolvedStatusTextClass = statusTextClass ?? ScoreRing.textClass(score);
 
   const alertBg =
-    alertType === "error"   ? "bg-rose-500/8 border-rose-500/20 text-rose-500 dark:text-rose-400" :
-    alertType === "warning" ? "bg-amber-500/8 border-amber-500/20 text-amber-600 dark:text-amber-400" :
-    alertType === "success" ? "bg-emerald-500/8 border-emerald-500/20 text-emerald-600 dark:text-emerald-400" :
-    "bg-neutral-100 dark:bg-neutral-800 border-border-subtle text-neutral-500";
+    alertType === "error"   ? "bg-[hsl(var(--state-error-bg))] border-[hsl(var(--state-error-border))] text-[hsl(var(--state-error-text))]" :
+    alertType === "warning" ? "bg-[hsl(var(--state-warning-bg))] border-[hsl(var(--state-warning-border))] text-[hsl(var(--state-warning-text))]" :
+    alertType === "success" ? "bg-[hsl(var(--state-success-bg))] border-[hsl(var(--state-success-border))] text-[hsl(var(--state-success-text))]" :
+    "bg-muted border-border-subtle text-muted-foreground";
 
   return (
     <Link

@@ -28,7 +28,7 @@ export function ReadinessDashboard({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-space-6">
-      <Card className="border border-border-default bg-white dark:bg-card radius-xl overflow-hidden relative">
+      <Card className="border border-border-default bg-card radius-xl overflow-hidden relative">
         <CardContent className="p-space-6 flex items-center justify-between gap-space-6">
           <div className="space-y-space-2 flex-1">
             <h3 className="text-body-sm font-semibold tracking-wide uppercase text-muted-foreground">
@@ -42,12 +42,12 @@ export function ReadinessDashboard({
             
             <div className="pt-space-2 space-y-space-1.5">
               {readiness.missingAreas.length === 0 ? (
-                <div className="flex items-center gap-space-2 text-caption text-green-600 dark:text-green-400">
+                <div className="flex items-center gap-space-2 text-caption text-[hsl(var(--state-success-text))]">
                   <CheckCircle2 className="h-3.5 w-3.5" />
                   <span>All core areas completed</span>
                 </div>
               ) : (
-                <div className="flex items-start gap-space-2 text-caption text-amber-600 dark:text-amber-500">
+                <div className="flex items-start gap-space-2 text-caption text-[hsl(var(--state-warning-text))]">
                   <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-space-0.5" />
                   <span>Missing: {readiness.missingAreas.join(", ")}</span>
                 </div>
@@ -81,7 +81,7 @@ export function ReadinessDashboard({
         </CardContent>
       </Card>
 
-      <Card className="border border-border-default bg-white dark:bg-card radius-xl overflow-hidden">
+      <Card className="border border-border-default bg-card radius-xl overflow-hidden">
         <CardContent className="p-space-6 flex flex-col justify-center h-full">
           <div className="flex items-center justify-between mb-space-4">
             <h3 className="text-body-sm font-semibold tracking-wide uppercase text-muted-foreground">

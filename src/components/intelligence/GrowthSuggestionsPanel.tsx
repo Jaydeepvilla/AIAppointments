@@ -20,9 +20,9 @@ const typeConfig: Record<
 };
 
 const effortConfig = {
-  quick:   { label: "Quick Win", badge: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" },
-  medium:  { label: "Medium",    badge: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20" },
-  project: { label: "Project",   badge: "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20" },
+  quick:   { label: "Quick Win", badge: "bg-[hsl(var(--state-success-bg))] text-[hsl(var(--state-success-text))] border-[hsl(var(--state-success-border))]" },
+  medium:  { label: "Medium",    badge: "bg-[hsl(var(--state-warning-bg))] text-[hsl(var(--state-warning-text))] border-[hsl(var(--state-warning-border))]" },
+  project: { label: "Project",   badge: "bg-[hsl(var(--state-info-bg))] text-[hsl(var(--state-info-text))] border-[hsl(var(--state-info-border))]" },
 } as const;
 
 function GrowthIdeaCard({ idea }: { idea: GrowthIdea }) {

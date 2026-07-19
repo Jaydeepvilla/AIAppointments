@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { SetupProgressItem } from "@/lib/dashboard-engine/index";
 import { Card } from "@/components/shared/card";
 import { ScoreRing } from "../shared/score-ring";
@@ -47,7 +49,8 @@ export function SetupProgressWidget({ progress }: SetupProgressWidgetProps) {
   const done       = items.filter((i) => i.completed);
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
+    <m.div whileHover={hoverScale}>
+<Card className="h-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-space-5 pt-space-5 pb-space-3">
         <div className="flex items-center gap-space-2">
@@ -146,5 +149,6 @@ export function SetupProgressWidget({ progress }: SetupProgressWidgetProps) {
         )}
       </div>
     </Card>
+</m.div>
   );
 }

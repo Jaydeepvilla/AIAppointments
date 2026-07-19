@@ -2,18 +2,20 @@
 
 import * as React from "react";
 import * as TabsPrimitive from "@radix-ui/react-tabs";
-import { cva } from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "./utils";
+import { m, AnimatePresence } from "framer-motion";
+import { fade } from "@/components/motion";
 
-// ─── Tabs Context ─────────────────────────────────────────────────────────────
-type TabsVariant = "default" | "pills" | "underline" | "segmented";
-type TabsSize = "sm" | "md" | "lg";
-type TabsOrientation = "horizontal" | "vertical";
+export type TabsVariant = "default" | "pills" | "underline" | "segmented";
+export type TabsSize = "sm" | "md" | "lg";
+export type TabsOrientation = "horizontal" | "vertical";
 
 interface TabsContextType {
   variant: TabsVariant;
   size: TabsSize;
   orientation: TabsOrientation;
+  activeTab?: string;
 }
 
 const TabsContext = React.createContext<TabsContextType>({
@@ -31,11 +33,23 @@ export interface TabsProps extends React.ComponentPropsWithoutRef<typeof TabsPri
 const Tabs = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Root>,
   TabsProps
->(({ className, variant = "default", size = "md", orientation = "horizontal", ...props }, ref) => {
+>(({ className, variant = "default", size = "md", orientation = "horizontal", value, defaultValue, onValueChange, ...props }, ref) => {
+  const [internalValue, setInternalValue] = React.useState(value || defaultValue);
+
+  const handleValueChange = React.useCallback((val: string) => {
+    setInternalValue(val);
+    onValueChange?.(val);
+  }, [onValueChange]);
+
+  const activeTab = value !== undefined ? value : internalValue;
+
   return (
-    <TabsContext.Provider value={{ variant, size, orientation }}>
+    <TabsContext.Provider value={{ variant, size, orientation, activeTab }}>
       <TabsPrimitive.Root
         ref={ref}
+        value={value}
+        defaultValue={defaultValue}
+        onValueChange={handleValueChange}
         orientation={orientation}
         className={cn(
           orientation === "vertical" ? "flex gap-space-6 w-full" : "w-full",
@@ -55,9 +69,9 @@ const listVariants = cva(
     variants: {
       variant: {
         default: "",
-        pills: "bg-[hsl(var(--foreground)/0.03)] dark:bg-[hsl(var(--foreground)/0.05)] border border-[hsl(var(--foreground)/0.04)]",
+        pills: "bg-[hsl(var(--foreground)/0.04)] border border-[hsl(var(--foreground)/0.06)]",
         underline: "border-[hsl(var(--foreground)/0.06)]",
-        segmented: "bg-[hsl(var(--foreground)/0.035)] dark:bg-[hsl(var(--foreground)/0.05)] border border-[hsl(var(--foreground)/0.04)] shadow-inner-sm",
+        segmented: "bg-[hsl(var(--foreground)/0.04)] border border-[hsl(var(--foreground)/0.06)] shadow-inner-sm",
       },
       orientation: {
         horizontal: "w-full flex-row overflow-x-auto",
@@ -103,7 +117,7 @@ TabsList.displayName = TabsPrimitive.List.displayName;
 // ─── Trigger Component ────────────────────────────────────────────────────────
 const triggerVariants = cva(
   [
-    "inline-flex items-center justify-center whitespace-nowrap text-caption transition-all duration-fast ease-standard cursor-pointer select-none",
+    "inline-flex items-center relative justify-center whitespace-nowrap text-caption transition-all duration-fast ease-standard cursor-pointer select-none",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 focus-visible:ring-offset-1",
     "disabled:pointer-events-none disabled:opacity-40",
   ].join(" "),
@@ -111,9 +125,9 @@ const triggerVariants = cva(
     variants: {
       variant: {
         default: "text-muted-foreground/80 hover:text-foreground data-[state=active]:text-primary font-semibold border-transparent",
-        pills: "border border-transparent text-muted-foreground hover:bg-foreground/[0.025] hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:border-primary font-semibold radius-full",
+        pills: "border border-transparent text-muted-foreground hover:bg-[hsl(var(--foreground)/0.04)] hover:text-foreground data-[state=active]:text-primary-foreground font-semibold radius-full",
         underline: "text-muted-foreground/85 hover:text-foreground data-[state=active]:text-primary data-[state=active]:font-semibold border-transparent",
-        segmented: "border-none text-muted-foreground/80 hover:text-foreground data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:font-semibold radius-md",
+        segmented: "border-none text-muted-foreground/80 hover:text-foreground data-[state=active]:text-foreground data-[state=active]:shadow-sm data-[state=active]:font-semibold radius-md",
       },
       orientation: {
         horizontal: "",
@@ -146,14 +160,30 @@ export interface TabsTriggerProps extends React.ComponentPropsWithoutRef<typeof 
 const TabsTrigger = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Trigger>,
   TabsTriggerProps
->(({ className, ...props }, ref) => {
-  const { variant, size, orientation } = React.useContext(TabsContext);
+>(({ className, children, value, ...props }, ref) => {
+  const { variant, size, orientation, activeTab } = React.useContext(TabsContext);
+  const isActive = activeTab === value;
+
   return (
     <TabsPrimitive.Trigger
       ref={ref}
+      value={value}
       className={cn(triggerVariants({ variant, size, orientation }), className)}
       {...props}
-    />
+    >
+      <span className="relative z-10 flex items-center gap-2">{children}</span>
+      {isActive && (variant === "segmented" || variant === "pills") && (
+        <m.div
+          layoutId={`tab-indicator-${variant}`}
+          className={cn(
+            "absolute inset-0 z-0",
+            variant === "segmented" ? "bg-background radius-md shadow-sm" : "bg-primary radius-full"
+          )}
+          initial={false}
+          transition={{ type: "spring", stiffness: 500, damping: 30 }}
+        />
+      )}
+    </TabsPrimitive.Trigger>
   );
 });
 TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
@@ -162,18 +192,35 @@ TabsTrigger.displayName = TabsPrimitive.Trigger.displayName;
 const TabsContent = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Content>
->(({ className, ...props }, ref) => {
-  const { orientation } = React.useContext(TabsContext);
+>(({ className, children, value, ...props }, ref) => {
+  const { orientation, activeTab } = React.useContext(TabsContext);
   return (
     <TabsPrimitive.Content
       ref={ref}
-      className={cn(
-        "animate-fade-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2",
-        orientation === "vertical" ? "flex-1 min-w-0" : "w-full mt-space-4",
-        className
-      )}
+      value={value}
+      asChild
       {...props}
-    />
+    >
+      <div
+        className={cn(
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2",
+          orientation === "vertical" ? "flex-1 min-w-0" : "w-full mt-space-4",
+          className
+        )}
+      >
+        <AnimatePresence mode="wait">
+          {activeTab === value && (
+            <m.div
+              key={value}
+              {...fade}
+              className="h-full w-full"
+            >
+              {children}
+            </m.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </TabsPrimitive.Content>
   );
 });
 TabsContent.displayName = TabsPrimitive.Content.displayName;

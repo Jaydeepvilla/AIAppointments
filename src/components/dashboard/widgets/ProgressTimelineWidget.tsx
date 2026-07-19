@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { SetupTimelineStep } from "@/lib/types/progress";
 import { CheckCircle2, Circle, Clock, Zap, ArrowRight, Check } from "lucide-react";
 import { cn } from "@/components/shared/utils";

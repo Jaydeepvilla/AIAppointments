@@ -58,7 +58,7 @@ const StripeLogo = (props: React.SVGProps<SVGSVGElement>) =>
 const RazorpayLogo = (props: React.SVGProps<SVGSVGElement>) =>
 <svg viewBox="0 0 127 146" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
  <path d="M54.3828 47.1751L47.2567 73.1251L87.4627 47.0438L61.2088 145.65H87.8565L126.656 0L54.3828 47.1751Z" fill="#3395FF" />
- <path d="M11.0641 104.175L0 145.65H54.6643L77.0364 61.2748L11.0641 104.175Z" fill="#0C2651" className="dark:fill-white fill-neutral-800" />
+ <path d="M11.0641 104.175L0 145.65H54.6643L77.0364 61.2748L11.0641 104.175Z" fill="#0C2651" className="fill-white" />
  </svg>;
 
 

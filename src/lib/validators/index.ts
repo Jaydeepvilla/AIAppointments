@@ -39,7 +39,7 @@ export const registrationSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
   email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(12, "Password must be at least 12 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
   acceptTerms: z.boolean().refine((val) => val === true, "Terms must be accepted"),
   acceptPrivacy: z.boolean().refine((val) => val === true, "Privacy Policy must be accepted"),
   marketingConsent: z.boolean().optional().default(false),
@@ -51,6 +51,6 @@ export const forgotPasswordSchema = z.object({
 
 export const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token is required"),
-  password: z.string().min(12, "Password must be at least 12 characters"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 

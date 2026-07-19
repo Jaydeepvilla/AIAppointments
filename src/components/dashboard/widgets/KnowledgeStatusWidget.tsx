@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { KPICard } from "../shared/kpi-card";
 import { MetricBar } from "../shared/metric-bar";
 import { Brain, BookOpen } from "lucide-react";

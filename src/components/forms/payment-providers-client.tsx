@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { 
   CreditCard, Shield, Check, Globe, RefreshCw, AlertCircle,
@@ -8,6 +7,8 @@ import {
 import { updateProviderSettingsAction } from "@/server/actions/billing";
 import { Button } from "@/components/shared/button";
 import { cn } from "@/components/shared/utils";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 interface ProviderCompat {
   providerId: string;
@@ -124,7 +125,6 @@ export function PaymentProvidersClient({
           We have automatically filtered out incompatible billing networks.
         </p>
       </div>
-
       {/* Recommended Providers */}
       {recommended.length > 0 && (
         <div className="space-y-3">
@@ -146,7 +146,6 @@ export function PaymentProvidersClient({
                     style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))", color: "white" }}>
                     <Sparkles className="h-3 w-3 fill-white" /> Recommended
                   </div>
-
                   <div className="flex items-start gap-4 pr-24">
                     <div className="h-12 w-12 rounded-xl flex items-center justify-center text-white text-xs font-black shadow-lg"
                       style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))" }}>
@@ -165,7 +164,6 @@ export function PaymentProvidersClient({
                       )}
                     </div>
                   </div>
-
                   {/* Capabilities List */}
                   <div className="flex flex-wrap gap-1.5 mt-5">
                     {provider.capabilities.subscriptions && <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">Subscriptions</span>}
@@ -175,11 +173,15 @@ export function PaymentProvidersClient({
                     {provider.capabilities.googlePay && <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-white/60">Google Pay</span>}
                     {provider.capabilities.bnpl && <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-500/10 border border-amber-500/20 text-amber-400">BNPL</span>}
                   </div>
-
                   {/* Connect Buttons */}
                   <div className="flex items-center gap-4 mt-6 pt-4 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
                     <button type="button" onClick={() => handleOpenConfig(provider)}
-                      className="px-4 py-2 rounded-xl text-xs font-black text-white transition-all duration-200"
+                      className={getButtonClasses(
+                        'primary',
+                        'filled',
+                        'medium',
+                        'text-xs font-black transition-all duration-200'
+                      )}
                       style={{ background: isConnected ? "rgba(52,211,153,0.15)" : "rgba(255,255,255,0.06)", border: isConnected ? "1px solid rgba(52,211,153,0.3)" : "1px solid rgba(255,255,255,0.1)" }}>
                       {isConnected ? "✓ Connected (Configure)" : "Configure API Keys"}
                     </button>
@@ -195,7 +197,6 @@ export function PaymentProvidersClient({
           </div>
         </div>
       )}
-
       {/* Supported / Alternative Providers */}
       {supported.length > 0 && (
         <div className="space-y-3">
@@ -222,14 +223,17 @@ export function PaymentProvidersClient({
                     </div>
                   </div>
                   <p className="text-xs text-white/40 mt-3 leading-relaxed">{provider.description}</p>
-
                   <div className="flex flex-wrap gap-1 mt-4">
                     {provider.capabilities.subscriptions && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white/5 text-white/50">Recurring</span>}
                     {provider.capabilities.applePay && <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-white/5 text-white/50">Apple Pay</span>}
                   </div>
-
                   <button type="button" onClick={() => handleOpenConfig(provider)}
-                    className="w-full py-2 rounded-xl text-xs font-black text-white/80 mt-5 transition-all duration-200"
+                    className={getButtonClasses(
+                      'primary',
+                      'filled',
+                      'medium',
+                      'w-full text-xs font-black/80 mt-5 transition-all duration-200'
+                    )}
                     style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}>
                     {isConnected ? "✓ Connected" : "Connect Provider"}
                   </button>
@@ -239,7 +243,6 @@ export function PaymentProvidersClient({
           </div>
         </div>
       )}
-
       {/* Modal Dialog Configuration Sheet */}
       {selectedProvider && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
@@ -260,7 +263,12 @@ export function PaymentProvidersClient({
                   <div className="text-xs font-bold text-white">Sandbox Mode</div>
                   <div className="text-[10px] text-white/35 mt-0.5">Use test/sandbox environment keys</div>
                 </div>
-                <button type="button" onClick={() => setIsSandbox(!isSandbox)} className="text-white hover:scale-105 active:scale-95 transition-transform duration-200">
+                <button type="button" onClick={() => setIsSandbox(!isSandbox)} className={getButtonClasses(
+                  'primary',
+                  'filled',
+                  'medium',
+                  'hover:scale-105 transition-transform duration-200'
+                )}>
                   {isSandbox ? <ToggleRight className="h-8 w-8 text-violet-400" /> : <ToggleLeft className="h-8 w-8 text-white/20" />}
                 </button>
               </div>

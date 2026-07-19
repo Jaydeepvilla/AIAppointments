@@ -30,7 +30,7 @@ interface Requirement {
 
 function getRequirements(password: string): Requirement[] {
   return [
-    { label: "12+ characters",               met: password.length >= 12 },
+    { label: "6+ characters",               met: password.length >= 6 },
     { label: "Uppercase letter",             met: /[A-Z]/.test(password) },
     { label: "Lowercase letter",             met: /[a-z]/.test(password) },
     { label: "Number",                       met: /[0-9]/.test(password) },
@@ -68,7 +68,8 @@ export function PasswordStrength({
 
   const requirements = getRequirements(password);
 
-  if (!password) return null;
+  const allRequirementsMet = requirements.every((r) => r.met);
+  if (allRequirementsMet) return null; // automatically hide when done
 
   const score = Math.min(strength.score, 5); // 0–5
   const segment = STRENGTH_SEGMENTS[Math.max(0, score - 1)] ?? STRENGTH_SEGMENTS[0];
@@ -77,6 +78,7 @@ export function PasswordStrength({
   return (
     <div
       className={cn(
+        "absolute top-[calc(100%+0.5rem)] left-0 w-full z-20 shadow-lg",
         "space-y-space-3 p-space-3 radius-lg border border-border-default bg-bg-layer-1 animate-fade-in",
         className
       )}

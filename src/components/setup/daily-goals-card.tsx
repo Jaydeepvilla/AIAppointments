@@ -16,7 +16,7 @@ export function DailyGoalsCard({
   const totalTime = goals.reduce((acc, task) => acc + task.estimatedTimeMinutes, 0);
 
   return (
-    <Card className="border border-border-default bg-white dark:bg-card radius-xl overflow-hidden">
+    <Card className="border border-border-default bg-card radius-xl overflow-hidden">
       <CardHeader className="p-space-5 pb-space-3 border-b border-border-default/50">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-space-2">

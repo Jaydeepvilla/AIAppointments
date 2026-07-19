@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -48,6 +47,8 @@ import {
   deleteAccountAction,
 } from "@/server/actions/user-profile";
 import { analyzePasswordStrength } from "@/lib/auth/security-checks";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 interface SettingsFormProps {
   initialData: {
@@ -368,11 +369,14 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                 setActiveTab(tab.id);
                 setErrorMsg(null);
               }}
-              className={`flex items-center gap-3 px-4 py-3 text-sm font-semibold rounded-xl text-left transition-all duration-300 w-full active:scale-[0.99] ${
-                activeTab === tab.id
-                  ? "bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm"
-                  : "text-slate-400 hover:text-white hover:bg-white/[0.02] border border-transparent"
-              }`}
+              className={getButtonClasses(
+                'primary',
+                'filled',
+                'medium',
+                `flex items-center gap-3 text-sm text-left transition-all duration-300 w-full] ${activeTab === tab.id
+  ? "bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm"
+  : "text-slate-400 hover:text-white hover:bg-white/[0.02] border border-transparent"}`
+              )}
             >
               <Icon className="h-4.5 w-4.5" />
               <span>{tab.label}</span>
@@ -380,7 +384,6 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
           );
         })}
       </div>
-
       {/* Main Settings Display */}
       <div className="flex-1 w-full bg-[#0d0c18]/30 border border-white/5 rounded-2xl p-6 sm:p-8 backdrop-blur-md relative min-h-[400px]">
         {errorMsg && (
@@ -405,7 +408,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                 <div className="h-12 w-12 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center overflow-hidden shrink-0 text-violet-400 font-bold uppercase">
                   {avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={avatar} alt="Avatar" className="h-full w-full object-cover" />
+                    (<img src={avatar} alt="Avatar" className="h-full w-full object-cover" />)
                   ) : (
                     `${firstName.charAt(0)}${lastName.charAt(0)}`
                   )}
@@ -712,7 +715,12 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 focus:outline-none transition-colors"
+                    className={getButtonClasses(
+                      'primary',
+                      'filled',
+                      'medium',
+                      'absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 focus:outline-none transition-colors'
+                    )}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -868,7 +876,12 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                         <button
                           onClick={() => handleRevokeSession(session.id)}
                           aria-label="Terminate session"
-                          className="p-2 hover:bg-rose-500/10 rounded-lg text-slate-500 hover:text-rose-400 border border-transparent hover:border-rose-500/15 transition-all duration-300"
+                          className={getButtonClasses(
+                            'primary',
+                            'filled',
+                            'medium',
+                            'p-2 text-slate-500 border border-transparent transition-all duration-300'
+                          )}
                         >
                           <LogOut className="h-4 w-4" />
                         </button>

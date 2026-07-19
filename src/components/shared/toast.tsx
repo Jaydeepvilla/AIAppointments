@@ -4,6 +4,7 @@ import React, { createContext, useContext, useCallback, useReducer, useEffect, u
 import { CheckCircle2, XCircle, AlertTriangle, Info, X } from "lucide-react";
 import { Button } from "@/components/shared/button";
 import { cn } from "./utils";
+import { m, AnimatePresence } from "framer-motion";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -51,12 +52,28 @@ function toastReducer(state: Toast[], action: ToastAction): Toast[] {
 
 const variantConfig: Record<ToastVariant, { icon: React.ReactNode; border: string; progressColor: string }> = {
   success: {
-    icon: <CheckCircle2 className="h-4 w-4 text-success-500 shrink-0" />,
+    icon: (
+      <m.div
+        initial={{ scale: 0.5, rotate: -30, opacity: 0 }}
+        animate={{ scale: 1, rotate: 0, opacity: 1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 15 }}
+      >
+        <CheckCircle2 className="h-4 w-4 text-success-500 shrink-0" />
+      </m.div>
+    ),
     border: "border-success-500/20",
     progressColor: "bg-success-500",
   },
   error: {
-    icon: <XCircle className="h-4 w-4 text-error-500 shrink-0" />,
+    icon: (
+      <m.div
+        initial={{ x: -10, opacity: 0 }}
+        animate={{ x: [10, -8, 6, -4, 0], opacity: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
+        <XCircle className="h-4 w-4 text-error-500 shrink-0" />
+      </m.div>
+    ),
     border: "border-error-500/20",
     progressColor: "bg-error-500",
   },
@@ -92,7 +109,6 @@ function ToastItem({ toast, onDismiss }: { toast: Toast; onDismiss: () => void }
     <div
       className={cn(
         "group relative flex w-full max-w-sm items-start gap-space-3 radius-lg border bg-card backdrop-blur-md p-space-4 overflow-hidden",
-        "animate-in slide-in-from-right-full duration-300 ease-out",
         config.border
       )}
       role="alert"
@@ -175,11 +191,21 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         aria-label="Notifications"
         className="fixed bottom-space-6 right-space-6 z-50 flex flex-col gap-space-3 w-full max-w-sm pointer-events-none"
       >
-        {toasts.map((t) => (
-          <div key={t.id} className="pointer-events-auto">
-            <ToastItem toast={t} onDismiss={() => dismiss(t.id)} />
-          </div>
-        ))}
+        <AnimatePresence mode="popLayout">
+          {toasts.map((t) => (
+            <m.div
+              layout
+              key={t.id}
+              initial={{ opacity: 0, y: 50, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.15 } }}
+              transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              className="pointer-events-auto origin-bottom"
+            >
+              <ToastItem toast={t} onDismiss={() => dismiss(t.id)} />
+            </m.div>
+          ))}
+        </AnimatePresence>
       </div>
     </ToastContext.Provider>
   );

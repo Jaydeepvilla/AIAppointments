@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { Card } from "@/components/shared/card";
 import {
   CalendarPlus,
@@ -31,7 +33,7 @@ const QUICK_ACTIONS = [
     href: "/contacts",
     icon: UserPlus,
     gradient: "from-emerald-500/15 to-emerald-400/5",
-    iconBg: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
+    iconBg: "bg-[hsl(var(--state-success-bg))] text-[hsl(var(--state-success-text))]",
     accent: "group-hover:shadow-emerald-500/20",
     badge: null,
     badgeColor: "",
@@ -42,7 +44,7 @@ const QUICK_ACTIONS = [
     href: "/kb",
     icon: BrainCircuit,
     gradient: "from-violet-500/15 to-fuchsia-500/5",
-    iconBg: "bg-violet-500/10 text-violet-500 dark:text-violet-400",
+    iconBg: "bg-primary/10 text-primary",
     accent: "group-hover:shadow-violet-500/20",
     badge: null,
     badgeColor: "",
@@ -53,7 +55,7 @@ const QUICK_ACTIONS = [
     href: "/settings",
     icon: Settings2,
     gradient: "from-slate-500/10 to-slate-400/5",
-    iconBg: "bg-slate-500/10 text-slate-500 dark:text-slate-400",
+    iconBg: "bg-[hsl(var(--foreground)/0.06)] text-muted-foreground",
     accent: "group-hover:shadow-slate-500/15",
     badge: null,
     badgeColor: "",
@@ -64,7 +66,7 @@ const QUICK_ACTIONS = [
     href: "/channels",
     icon: Share2,
     gradient: "from-amber-500/15 to-orange-400/5",
-    iconBg: "bg-amber-500/10 text-amber-600 dark:text-amber-400",
+    iconBg: "bg-[hsl(var(--state-warning-bg))] text-[hsl(var(--state-warning-text))]",
     accent: "group-hover:shadow-amber-500/20",
     badge: null,
     badgeColor: "",
@@ -75,7 +77,7 @@ const QUICK_ACTIONS = [
     href: "/automations",
     icon: Tv,
     gradient: "from-sky-500/15 to-cyan-400/5",
-    iconBg: "bg-sky-500/10 text-sky-500 dark:text-sky-400",
+    iconBg: "bg-[hsl(var(--state-info-bg))] text-[hsl(var(--state-info-text))]",
     accent: "group-hover:shadow-sky-500/20",
     badge: null,
     badgeColor: "",
@@ -84,7 +86,8 @@ const QUICK_ACTIONS = [
 
 export function QuickActionsWidget() {
   return (
-    <Card className="w-full overflow-hidden border border-[hsl(var(--foreground)/0.07)]">
+    <m.div whileHover={hoverScale}>
+<Card className="w-full overflow-hidden border border-[hsl(var(--foreground)/0.07)]">
       {/* Header bar */}
       <div className="flex items-center justify-between px-space-5 py-space-3.5 border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.005)]">
         <div className="flex items-center gap-space-2">
@@ -120,7 +123,7 @@ export function QuickActionsWidget() {
                         px-3 py-1 rounded-full
                         bg-gradient-to-r from-primary to-violet-500
                         text-white shadow-md shadow-primary/40
-                        ring-2 ring-white/10 dark:ring-black/20
+                        ring-2 ring-[hsl(var(--foreground)/0.08)]
                       `}
                     >
                       <Zap className="w-2.5 h-2.5 fill-white/80 stroke-none" />
@@ -159,5 +162,6 @@ export function QuickActionsWidget() {
         </div>
       </div>
     </Card>
+</m.div>
   );
 }

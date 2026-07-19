@@ -220,7 +220,7 @@ function SortableCard({
 
  {/* Enhanced Required Pill */}
  {q.isRequired && (
- <span className="inline-flex items-center gap-space-1 text-caption font-normal px-space-1.5 py-space-0.5 rounded-md uppercase tracking-wider bg-gradient-to-r from-rose-500/15 to-orange-500/10 border border-rose-400/25 text-rose-500 dark:text-rose-400 inset_0_1px_0_rgba(255,255,255,0.08)]">
+ <span className="inline-flex items-center gap-space-1 text-caption font-normal px-space-1.5 py-space-0.5 rounded-md uppercase tracking-wider bg-gradient-to-r from-rose-500/15 to-orange-500/10 border border-rose-400/25 text-rose-500 inset_0_1px_0_rgba(255,255,255,0.08)]">
  <ShieldCheck className="h-2.5 w-2.5"/>
  Required
  </span>
@@ -473,53 +473,53 @@ export function QualificationBuilder({ initialQuestions }: Props) {
  </div>
  ) : (
  <ScrollArea className="flex-1 min-h-0 pb-space-4" horizontal={false}>
-                      <DndContext
-                      sensors={sensors}
-                      collisionDetection={closestCenter}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      >
-                      <SortableContext
-                      items={questions.map((q) => q.id)}
-                      strategy={verticalListSortingStrategy}
-                      >
-                      {/* Timeline */}
-                      <div className="relative">
-                      {/* Vertical connector line */}
-                      <div className="absolute left-space-5 top-space-10 bottom-space-10 w-px bg-gradient-to-b from-primary/25 via-primary/10 to-transparent pointer-events-none"/>
+ <DndContext
+ sensors={sensors}
+ collisionDetection={closestCenter}
+ onDragStart={handleDragStart}
+ onDragEnd={handleDragEnd}
+ >
+ <SortableContext
+ items={questions.map((q) => q.id)}
+ strategy={verticalListSortingStrategy}
+ >
+ {/* Timeline */}
+ <div className="relative">
+ {/* Vertical connector line */}
+ <div className="absolute left-space-5 top-space-10 bottom-space-10 w-px bg-gradient-to-b from-primary/25 via-primary/10 to-transparent pointer-events-none"/>
 
-                      <div className="space-y-space-3">
-                      {questions.map((q, idx) => (
-                      <SortableCard
-                      key={q.id}
-                      q={q}
-                      idx={idx}
-                      totalCount={questions.length}
-                      onEdit={handleOpenDialog}
-                      onDelete={handleDelete}
-                      deletingId={deletingId}
-                      />
-                      ))}
-                      </div>
-                      </div>
-                      </SortableContext>
+ <div className="space-y-space-3">
+ {questions.map((q, idx) => (
+ <SortableCard
+ key={q.id}
+ q={q}
+ idx={idx}
+ totalCount={questions.length}
+ onEdit={handleOpenDialog}
+ onDelete={handleDelete}
+ deletingId={deletingId}
+ />
+ ))}
+ </div>
+ </div>
+ </SortableContext>
 
-                      {/* Drag Overlay — floating ghost card */}
-                      <DragOverlay dropAnimation={{ duration: 180, easing:"ease"}}>
-                      {activeQuestion && (
-                      <SortableCard
-                      q={activeQuestion}
-                      idx={questions.findIndex((q) => q.id === activeQuestion.id)}
-                      totalCount={questions.length}
-                      onEdit={() => {}}
-                      onDelete={() => {}}
-                      deletingId={null}
-                      isDragOverlay
-                      />
-                      )}
-                      </DragOverlay>
-                      </DndContext>
-                      </ScrollArea>
+ {/* Drag Overlay — floating ghost card */}
+ <DragOverlay dropAnimation={{ duration: 180, easing:"ease"}}>
+ {activeQuestion && (
+ <SortableCard
+ q={activeQuestion}
+ idx={questions.findIndex((q) => q.id === activeQuestion.id)}
+ totalCount={questions.length}
+ onEdit={() => {}}
+ onDelete={() => {}}
+ deletingId={null}
+ isDragOverlay
+ />
+ )}
+ </DragOverlay>
+ </DndContext>
+ </ScrollArea>
  )}
  </div>
 

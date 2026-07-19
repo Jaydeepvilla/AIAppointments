@@ -25,14 +25,14 @@ export function AutomationOpportunitiesCard({ automations }: Props) {
   }
 
   return (
-    <Card className="col-span-1 shadow-sm border-purple-100 dark:border-purple-900 bg-gradient-to-br from-purple-50/50 to-white dark:from-purple-900/10 dark:to-background">
+    <Card className="col-span-1 shadow-sm border-[hsl(var(--primary)/0.2)] bg-gradient-to-br from-[hsl(var(--primary)/0.05)] to-background">
       <CardHeader className="pb-space-3">
         <div className="flex justify-between items-center">
-          <CardTitle className="text-xl flex items-center gap-space-2 text-purple-700 dark:text-purple-400">
+          <CardTitle className="text-xl flex items-center gap-space-2 text-primary">
             <Sparkles className="w-5 h-5" />
             Automation Opportunities
           </CardTitle>
-          <Badge variant="secondary" className="bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+          <Badge variant="secondary" className="bg-primary/10 text-primary">
             {automations.length} Detected
           </Badge>
         </div>
@@ -57,8 +57,8 @@ export function AutomationOpportunitiesCard({ automations }: Props) {
                     <Clock className="w-3 h-3" />
                     ~{action.estimatedTimeMinutes} min
                   </span>
-                  <span className="text-caption flex items-center gap-space-1 text-green-600 dark:text-green-400">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-600 dark:bg-green-400" />
+                  <span className="text-caption flex items-center gap-space-1 text-[hsl(var(--state-success-text))]">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--state-success-text))]" />
                     {action.confidence}% Confidence
                   </span>
                 </div>

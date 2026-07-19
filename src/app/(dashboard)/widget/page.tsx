@@ -288,32 +288,32 @@ export default function WidgetSettingsPage() {
  
  {/* Sidebar Sub-Navigation */}
  <Tabs value={activeTab} onValueChange={(val: any) => { setActiveTab(val); setSaveSuccess(false); }} variant="default" orientation="vertical" className="w-full lg:w-56 shrink-0">
-  <TabsList className="w-full flex flex-row lg:flex-col lg:overflow-x-visible pb-space-2 lg:pb-space-0 border-b lg:border-b-0 lg:border-r border-border/60 lg:pr-space-6 gap-space-1.5 whitespace-nowrap lg:whitespace-normal bg-transparent border-none"><ScrollArea className="h-full w-full" vertical={false}>
-                   {[
-                   { id:"install", label:"Installation", icon: Code },
-                   { id:"branding", label:"Branding", icon: Sparkles },
-                   { id:"appearance", label:"Appearance", icon: Palette },
-                   { id:"triggers", label:"Triggers & Actions", icon: Settings },
-                   { id:"analytics", label:"Analytics", icon: BarChart2 }
-                   ].map((tab) => {
-                   const Icon = tab.icon;
-                   const isSelected = activeTab === tab.id;
-                   return (
-                   <TabsTrigger
-                   key={tab.id}
-                   value={tab.id}
-                   className="flex items-center gap-space-2.5 px-space-3.5 py-space-2.5 text-caption font-medium transition-all duration-200 cursor-pointer w-auto lg:w-full text-left radius-lg relative select-none border-none"
-                   >
-                   {isSelected && (
-                   <span className="absolute left-space-0 top-space-2.5 bottom-space-2.5 w-0.75 bg-primary radius-full hidden lg:block"/>
-                   )}
-                   <Icon className="h-4 w-4 shrink-0 text-current"/>
-                   <span className="leading-none">{tab.label}</span>
-                   </TabsTrigger>
-                   );
-                   })}
-                   </ScrollArea></TabsList>
-  </Tabs>
+ <TabsList className="w-full flex flex-row lg:flex-col lg:overflow-x-visible pb-space-2 lg:pb-space-0 border-b lg:border-b-0 lg:border-r border-border/60 lg:pr-space-6 gap-space-1.5 whitespace-nowrap lg:whitespace-normal bg-transparent border-none"><ScrollArea className="h-full w-full" vertical={false}>
+ {[
+ { id:"install", label:"Installation", icon: Code },
+ { id:"branding", label:"Branding", icon: Sparkles },
+ { id:"appearance", label:"Appearance", icon: Palette },
+ { id:"triggers", label:"Triggers & Actions", icon: Settings },
+ { id:"analytics", label:"Analytics", icon: BarChart2 }
+ ].map((tab) => {
+ const Icon = tab.icon;
+ const isSelected = activeTab === tab.id;
+ return (
+ <TabsTrigger
+ key={tab.id}
+ value={tab.id}
+ className="flex items-center gap-space-2.5 px-space-3.5 py-space-2.5 text-caption font-medium transition-all duration-200 cursor-pointer w-auto lg:w-full text-left radius-lg relative select-none border-none"
+ >
+ {isSelected && (
+ <span className="absolute left-space-0 top-space-2.5 bottom-space-2.5 w-0.75 bg-primary radius-full hidden lg:block"/>
+ )}
+ <Icon className="h-4 w-4 shrink-0 text-current"/>
+ <span className="leading-none">{tab.label}</span>
+ </TabsTrigger>
+ );
+ })}
+ </ScrollArea></TabsList>
+ </Tabs>
 
  {/* Center: Configuration Panels */}
  <div className="flex-1 min-w-0 space-y-space-6">
@@ -414,9 +414,9 @@ export default function WidgetSettingsPage() {
  <div className="flex items-center gap-space-2.5">
  <span className="text-foreground font-semibold">{d.domain}</span>
  {d.isVerified ? (
- <span className="inline-flex items-center text-caption font-semibold bg-emerald-500/8 border border-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-space-2 py-space-0.5 radius-full uppercase tracking-wider">Verified</span>
+ <span className="inline-flex items-center text-caption font-semibold bg-emerald-500/8 border border-emerald-500/15 text-emerald-500 px-space-2 py-space-0.5 radius-full uppercase tracking-wider">Verified</span>
  ) : (
- <span className="inline-flex items-center text-caption font-semibold bg-amber-500/8 border border-amber-500/15 text-amber-600 dark:text-amber-400 px-space-2 py-space-0.5 radius-full uppercase tracking-wider">Pending DNS Check</span>
+ <span className="inline-flex items-center text-caption font-semibold bg-amber-500/8 border border-amber-500/15 text-amber-500 px-space-2 py-space-0.5 radius-full uppercase tracking-wider">Pending DNS Check</span>
  )}
  </div>
  {!d.isVerified && (
@@ -486,7 +486,7 @@ export default function WidgetSettingsPage() {
  <span className="text-caption text-muted-foreground/60 block mt-space-0.5">Last Detected: {new Date(inst.lastDetectedAt).toLocaleString()}</span>
  </div>
  </div>
- <span className="inline-flex items-center text-caption font-semibold bg-emerald-500/8 border border-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-space-2.5 py-space-0.5 radius-full uppercase tracking-wider leading-none">Operational</span>
+ <span className="inline-flex items-center text-caption font-semibold bg-emerald-500/8 border border-emerald-500/15 text-emerald-500 px-space-2.5 py-space-0.5 radius-full uppercase tracking-wider leading-none">Operational</span>
  </div>
  ))}
  </div>
@@ -1014,7 +1014,7 @@ export default function WidgetSettingsPage() {
  </div>
 
  <div className="grid grid-cols-1 gap-space-4">
- <div className="bg-white dark:bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
+ <div className="bg-card border border-border-default radius-xl overflow-hidden flex flex-col">
  <div className="p-space-5 pb-space-2 shrink-0">
  <h3 className="text-body-sm font-semibold">Engagement Trend</h3>
  <p className="text-caption text-muted-foreground">Widget opens vs active chats over time</p>
@@ -1172,117 +1172,117 @@ export default function WidgetSettingsPage() {
 
  {/* Preview Chat list content */}
  <ScrollArea className="flex-1 p-space-5 space-y-space-5 bg-background/2 flex flex-col" horizontal={false}>
-                          
-                          {/* AI Welcome Message */}
-                          <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in">
-                          <div 
-                          className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
-                          style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
-                          >
-                          <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
-                          </div>
-                          <div 
-                          className="p-space-3.5 text-caption leading-relaxed border"
-                          style={{ 
-                          backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
-                          borderColor: theme.borderColor,
-                          color: theme.textColor,
-                          borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
-                          }}
-                          >
-                          {branding.welcomeMessage ||"Hello! How can I help you book or view services today?"}
-                          </div>
-                          </div>
+ 
+ {/* AI Welcome Message */}
+ <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in">
+ <div 
+ className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
+ style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
+ >
+ <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
+ </div>
+ <div 
+ className="p-space-3.5 text-caption leading-relaxed border"
+ style={{ 
+ backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
+ borderColor: theme.borderColor,
+ color: theme.textColor,
+ borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
+ }}
+ >
+ {branding.welcomeMessage ||"Hello! How can I help you book or view services today?"}
+ </div>
+ </div>
 
-                          {/* User Mock Message */}
-                          <div className="flex items-start justify-end gap-space-2.5 max-w-5/6 self-end animate-fade-in [animation-delay:200ms]">
-                          <div 
-                          className="p-space-3.5 text-caption leading-relaxed text-white bg-gradient-to-br font-semibold bg-[linear-gradient(135deg,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.05)_100%)]"
-                          style={{ 
-                          backgroundColor: theme.primaryColor,
-                          borderRadius:`${theme.borderRadius} 0px ${theme.borderRadius} ${theme.borderRadius}`
-                          }}
-                          >
-                          Can I book an appointment for tomorrow?
-                          </div>
-                          </div>
+ {/* User Mock Message */}
+ <div className="flex items-start justify-end gap-space-2.5 max-w-5/6 self-end animate-fade-in [animation-delay:200ms]">
+ <div 
+ className="p-space-3.5 text-caption leading-relaxed text-white bg-gradient-to-br font-semibold bg-[linear-gradient(135deg,_rgba(255,255,255,0.1)_0%,_rgba(0,0,0,0.05)_100%)]"
+ style={{ 
+ backgroundColor: theme.primaryColor,
+ borderRadius:`${theme.borderRadius} 0px ${theme.borderRadius} ${theme.borderRadius}`
+ }}
+ >
+ Can I book an appointment for tomorrow?
+ </div>
+ </div>
 
-                          {/* AI Mock Response */}
-                          <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in [animation-delay:400ms]">
-                          <div 
-                          className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
-                          style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
-                          >
-                          <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
-                          </div>
-                          <div 
-                          className="p-space-3.5 text-caption leading-relaxed border space-y-space-3.5"
-                          style={{ 
-                          backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
-                          borderColor: theme.borderColor,
-                          color: theme.textColor,
-                          borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
-                          }}
-                          >
-                          <p>Sure! I can help you book an appointment. Select a quick action below to schedule instantly.</p>
-                          
-                          {/* Calendar Mock Card in Chat */}
-                          <div className="p-space-3.5 radius-xl border flex items-center justify-between gap-space-3"style={{ borderColor: theme.borderColor, backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.02)"}}>
-                          <div className="flex items-center gap-space-2.5">
-                          <div 
-                          className="h-8.5 w-8.5 radius-lg flex items-center justify-center shrink-0"
-                          style={{ color: theme.primaryColor, backgroundColor:`${theme.primaryColor}15`}}
-                          >
-                          <Sparkles className="h-4 w-4"style={{ color: theme.primaryColor }} />
-                          </div>
-                          <div className="text-left">
-                          <span className="text-caption font-semibold block leading-none"style={{ color: theme.textColor }}>Schedule Appointment</span>
-                          <span className="text-caption block mt-space-1"style={{ color: theme.themeMode ==="dark"?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.45)"}}>Takes less than 1 minute</span>
-                          </div>
-                          </div>
-                          <Button 
-                          type="button"
-                          className="h-7.5 px-space-3 text-caption font-semibold text-white shrink-0 hover:brightness-105 active:brightness-95 transition-all"
-                          style={{ backgroundColor: theme.primaryColor }}
-                          >
-                          Book Now
-                          </Button>
-                          </div>
-                          </div>
-                          </div>
+ {/* AI Mock Response */}
+ <div className="flex items-start gap-space-2.5 max-w-5/6 self-start animate-fade-in [animation-delay:400ms]">
+ <div 
+ className="h-7 w-7 radius-full border flex items-center justify-center shrink-0 mt-space-0.5"
+ style={{ backgroundColor:`${theme.primaryColor}15`, borderColor:`${theme.primaryColor}20`}}
+ >
+ <Sparkles className="h-3.5 w-3.5"style={{ color: theme.primaryColor }} />
+ </div>
+ <div 
+ className="p-space-3.5 text-caption leading-relaxed border space-y-space-3.5"
+ style={{ 
+ backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.03)":"rgba(0,0,0,0.03)", 
+ borderColor: theme.borderColor,
+ color: theme.textColor,
+ borderRadius:`0px ${theme.borderRadius} ${theme.borderRadius} ${theme.borderRadius}`
+ }}
+ >
+ <p>Sure! I can help you book an appointment. Select a quick action below to schedule instantly.</p>
+ 
+ {/* Calendar Mock Card in Chat */}
+ <div className="p-space-3.5 radius-xl border flex items-center justify-between gap-space-3"style={{ borderColor: theme.borderColor, backgroundColor: theme.themeMode ==="dark"?"rgba(255,255,255,0.04)":"rgba(0,0,0,0.02)"}}>
+ <div className="flex items-center gap-space-2.5">
+ <div 
+ className="h-8.5 w-8.5 radius-lg flex items-center justify-center shrink-0"
+ style={{ color: theme.primaryColor, backgroundColor:`${theme.primaryColor}15`}}
+ >
+ <Sparkles className="h-4 w-4"style={{ color: theme.primaryColor }} />
+ </div>
+ <div className="text-left">
+ <span className="text-caption font-semibold block leading-none"style={{ color: theme.textColor }}>Schedule Appointment</span>
+ <span className="text-caption block mt-space-1"style={{ color: theme.themeMode ==="dark"?"rgba(255,255,255,0.4)":"rgba(0,0,0,0.45)"}}>Takes less than 1 minute</span>
+ </div>
+ </div>
+ <Button 
+ type="button"
+ className="h-7.5 px-space-3 text-caption font-semibold text-white shrink-0 hover:brightness-105 active:brightness-95 transition-all"
+ style={{ backgroundColor: theme.primaryColor }}
+ >
+ Book Now
+ </Button>
+ </div>
+ </div>
+ </div>
 
-                          {/* Starter questions stubs */}
-                          {customization.starterQuestions.length > 0 && (
-                          <div className="space-y-space-2 pt-space-3 mt-auto">
-                          <span className="text-caption font-semibold text-muted-foreground/75 uppercase tracking-wider block">Suggested Questions</span>
-                          <div className="grid gap-space-2 grid-cols-2">
-                          {customization.starterQuestions.slice(0, 4).map((q, i) => (
-                          <div 
-                          key={i} 
-                          className="p-space-2.5 px-space-3 border text-caption font-medium text-muted-foreground/80 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.02)] transition-all duration-200 truncate text-center cursor-pointer select-none"
-                          style={{ borderColor: theme.borderColor, borderRadius: theme.borderRadius }}
-                          >
-                          {q}
-                          </div>
-                          ))}
-                          </div>
-                          </div>
-                          )}
-                          </ScrollArea>
+ {/* Starter questions stubs */}
+ {customization.starterQuestions.length > 0 && (
+ <div className="space-y-space-2 pt-space-3 mt-auto">
+ <span className="text-caption font-semibold text-muted-foreground/75 uppercase tracking-wider block">Suggested Questions</span>
+ <div className="grid gap-space-2 grid-cols-2">
+ {customization.starterQuestions.slice(0, 4).map((q, i) => (
+ <div 
+ key={i} 
+ className="p-space-2.5 px-space-3 border text-caption font-medium text-muted-foreground/80 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.02)] transition-all duration-200 truncate text-center cursor-pointer select-none"
+ style={{ borderColor: theme.borderColor, borderRadius: theme.borderRadius }}
+ >
+ {q}
+ </div>
+ ))}
+ </div>
+ </div>
+ )}
+ </ScrollArea>
 
  {/* Suggestions Footer */}
  {customization.suggestedActions.length > 0 && (
  <ScrollArea className="flex gap-space-2 p-space-3 bg-background/15 border-t shrink-0"style={{ borderColor: theme.borderColor }} vertical={false}>
-                              {customization.suggestedActions.map((act: any, idx: number) => (
-                              <div
-                              key={idx}
-                              className="text-caption font-semibold border px-space-3.5 py-space-1.5 bg-background/55 text-foreground/90 shrink-0 select-none cursor-pointer hover:bg-background/80 transition-colors radius-full"
-                              style={{ borderColor: theme.borderColor }}
-                              >
-                              {act.label}
-                              </div>
-                              ))}
-                              </ScrollArea>
+ {customization.suggestedActions.map((act: any, idx: number) => (
+ <div
+ key={idx}
+ className="text-caption font-semibold border px-space-3.5 py-space-1.5 bg-background/55 text-foreground/90 shrink-0 select-none cursor-pointer hover:bg-background/80 transition-colors radius-full"
+ style={{ borderColor: theme.borderColor }}
+ >
+ {act.label}
+ </div>
+ ))}
+ </ScrollArea>
  )}
 
  {/* Input preview */}

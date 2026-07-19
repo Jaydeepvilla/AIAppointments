@@ -2,551 +2,1040 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Scale, Scissors, Activity, Sparkles, Presentation,
-  Home, Dumbbell, Bot, Globe, Mail, Phone, MapPin, Clock,
-  ArrowRight, ArrowLeft, Building, Check, Loader2, Rocket,
-  AlertCircle, Stethoscope, Flame,
+  Globe,
+  ArrowRight,
+  Sparkles,
+  Check,
+  Loader2,
+  Rocket,
+  AlertCircle,
+  Building2,
+  Clock,
+  Phone,
+  Mail,
+  MapPin,
+  Bot,
+  ChevronRight,
+  Zap,
+  Star,
+  Scale,
+  Scissors,
+  Activity,
+  Presentation,
+  Home,
+  Dumbbell,
+  Stethoscope,
 } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/shared/select";
 import { cn } from "@/components/shared/utils";
+import { Button } from "@/components/shared/button";
+import { Input } from "@/components/shared/input";
+import { Label } from "@/components/shared/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/shared/select";
 import { INDUSTRIES, TIMEZONES } from "@/lib/constants";
-import { onboardingSchema, OnboardingInput } from "@/lib/validators";
 import { createOrganizationAction } from "@/server/actions/onboarding";
+import { LogoIcon } from "@/components/shared/logo";
 
-type Step = 1 | 2 | 3 | 4 | 5;
 
-/* ── Industry config ─────────────────────────────────────── */
-const INDUSTRY_CONFIG: Record<
-  string,
-  { icon: React.ComponentType<any>; gradient: string; glow: string; emoji: string }
-> = {
-  "Dental Clinic":   { icon: Stethoscope,  gradient: "135deg, hsl(199,90%,40%), hsl(217,90%,50%)", glow: "hsl(199,90%,50%)", emoji: "🦷" },
-  "Medical Clinic":  { icon: Activity,     gradient: "135deg, hsl(152,80%,35%), hsl(171,80%,40%)", glow: "hsl(152,80%,45%)", emoji: "🏥" },
-  "Salon":           { icon: Scissors,     gradient: "135deg, hsl(330,80%,50%), hsl(350,80%,55%)", glow: "hsl(330,80%,55%)", emoji: "✂️" },
-  "Spa":             { icon: Sparkles,     gradient: "135deg, hsl(270,80%,50%), hsl(290,80%,55%)", glow: "hsl(270,80%,55%)", emoji: "💆" },
-  "Law Firm":        { icon: Scale,        gradient: "135deg, hsl(38,90%,45%), hsl(30,90%,50%)",   glow: "hsl(38,90%,50%)",  emoji: "⚖️" },
-  "Consultant":      { icon: Presentation, gradient: "135deg, hsl(210,80%,45%), hsl(230,80%,55%)", glow: "hsl(210,80%,55%)", emoji: "💼" },
-  "Real Estate":     { icon: Home,         gradient: "135deg, hsl(142,70%,35%), hsl(160,70%,42%)", glow: "hsl(142,70%,45%)", emoji: "🏠" },
-  "Gym":             { icon: Flame,        gradient: "135deg, hsl(14,90%,50%), hsl(35,90%,50%)",   glow: "hsl(14,90%,55%)",  emoji: "💪" },
-  "Other":           { icon: Bot,          gradient: "135deg, hsl(258,70%,50%), hsl(278,70%,55%)", glow: "hsl(258,70%,55%)", emoji: "✨" },
+// ─── Types ───────────────────────────────────────────────────────────────────
+
+type Step = "url" | "generating" | "verify" | "launching" | "golive";
+
+interface GeneratedData {
+  businessName: string;
+  industry: string;
+  timezone: string;
+  email: string;
+  phone: string;
+  address: string;
+  website: string;
+  services: { name: string; duration: number; accepted: boolean }[];
+  hours: string;
+  greeting: string;
+}
+
+// ─── Industry metadata ────────────────────────────────────────────────────────
+
+const INDUSTRY_META: Record<string, { icon: React.ComponentType<any>; color: string; emoji: string }> = {
+  "Dental Clinic":  { icon: Stethoscope,  color: "hsl(199 90% 45%)",  emoji: "🦷" },
+  "Medical Clinic": { icon: Activity,     color: "hsl(152 80% 38%)",  emoji: "🏥" },
+  "Salon":          { icon: Scissors,     color: "hsl(330 80% 52%)",  emoji: "✂️" },
+  "Spa":            { icon: Sparkles,     color: "hsl(270 80% 52%)",  emoji: "💆" },
+  "Law Firm":       { icon: Scale,        color: "hsl(38 90% 48%)",   emoji: "⚖️" },
+  "Consultant":     { icon: Presentation, color: "hsl(210 80% 48%)",  emoji: "💼" },
+  "Real Estate":    { icon: Home,         color: "hsl(142 70% 38%)",  emoji: "🏠" },
+  "Gym":            { icon: Dumbbell,     color: "hsl(14 90% 52%)",   emoji: "💪" },
+  "Other":          { icon: Bot,          color: "hsl(258 70% 52%)",  emoji: "✨" },
 };
 
-/* ── Step Progress ──────────────────────────────────────── */
-const STEP_META = [
-  { label: "Industry", desc: "Business type" },
-  { label: "Details",  desc: "Contact info" },
-  { label: "Location", desc: "Where you are" },
-  { label: "Review",   desc: "Confirm & launch" },
+// ─── Generation log lines ─────────────────────────────────────────────────────
+
+const GENERATION_LOGS = [
+  "Fetching website metadata…",
+  "Detecting industry vertical…",
+  "Extracting business hours…",
+  "Indexing service offerings…",
+  "Synthesizing FAQ database…",
+  "Generating AI greeting voice…",
+  "Configuring conversation flows…",
+  "Building knowledge base…",
+  "AI Receptionist ready ✔",
 ];
 
-function StepBar({ step }: { step: number }) {
+// ─── Default generated data for demo ─────────────────────────────────────────
+
+function buildGeneratedData(url: string, detectedIndustry: string): GeneratedData {
+  const domain = url.replace(/^https?:\/\//, "").replace(/^www\./, "").split("/")[0];
+  const nameParts = domain.split(".")[0];
+  const businessName = nameParts.charAt(0).toUpperCase() + nameParts.slice(1);
+
+  return {
+    businessName,
+    industry: detectedIndustry,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC",
+    email: `info@${domain}`,
+    phone: "",
+    address: "",
+    website: url.startsWith("http") ? url : `https://${url}`,
+    services: [
+      { name: "General Consultation", duration: 30, accepted: true },
+      { name: "Follow-up Appointment", duration: 15, accepted: true },
+      { name: "Initial Assessment", duration: 60, accepted: true },
+    ],
+    hours: "Mon–Fri  9:00 AM – 5:00 PM",
+    greeting: `Hi, thank you for calling ${businessName}. I'm your AI receptionist and I can help you book appointments, check availability, or answer general questions. How can I help you today?`,
+  };
+}
+
+// ─── Step indicator ───────────────────────────────────────────────────────────
+
+const STEPS: { id: Step; label: string }[] = [
+  { id: "url", label: "Website" },
+  { id: "generating", label: "Building" },
+  { id: "verify", label: "Review" },
+  { id: "golive", label: "Go Live" },
+];
+
+function StepIndicator({ current }: { current: Step }) {
+  const order: Step[] = ["url", "generating", "verify", "golive"];
+  const currentIdx = order.indexOf(current === "launching" ? "golive" : current);
+
   return (
-    <div className="mb-8">
-      {/* Progress track */}
-      <div className="flex items-center mb-4">
-        {STEP_META.map((_, idx) => {
-          const s = idx + 1;
-          const done = step > s;
-          const current = step === s;
-          return (
-            <React.Fragment key={s}>
-              {/* Node */}
-              <div className={cn(
-                "relative flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-black transition-all duration-500 z-10",
-              )}>
-                {done ? (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full"
-                    style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(290,80%,50%))", boxShadow: "0 0 16px hsl(258,80%,55%,0.6)" }}>
-                    <Check className="h-4 w-4 text-white" strokeWidth={3} />
-                  </div>
-                ) : current ? (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full relative"
-                    style={{ background: "rgba(139,92,246,0.15)", border: "2px solid hsl(258,80%,60%)", boxShadow: "0 0 20px hsl(258,80%,60%,0.3)" }}>
-                    <span style={{ color: "hsl(258,100%,78%)", fontSize: "12px", fontWeight: 900 }}>{s}</span>
-                    {/* Pulse ring */}
-                    <div className="absolute inset-0 rounded-full border-2 border-violet-500/30 animate-ping [animation-duration:2s]" />
-                  </div>
-                ) : (
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full"
-                    style={{ background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.09)" }}>
-                    <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "12px", fontWeight: 700 }}>{s}</span>
-                  </div>
+    <div className="flex items-center gap-space-2 mb-space-8">
+      {STEPS.map((s, idx) => {
+        const done = idx < currentIdx;
+        const active = idx === currentIdx;
+        return (
+          <React.Fragment key={s.id}>
+            <div className="flex items-center gap-space-1.5">
+              <div
+                className={cn(
+                  "flex h-6 w-6 items-center justify-center rounded-full text-[11px] font-semibold transition-all duration-300",
+                  done
+                    ? "bg-primary text-primary-foreground"
+                    : active
+                    ? "border-2 border-primary text-primary bg-primary/5"
+                    : "border border-border text-muted-foreground"
                 )}
+              >
+                {done ? <Check className="h-3 w-3" strokeWidth={2.5} /> : idx + 1}
               </div>
-              {/* Connector */}
-              {s < 4 && (
-                <div className="flex-1 h-px mx-1 relative" style={{ background: "rgba(255,255,255,0.07)" }}>
-                  <div className="absolute inset-0 rounded-full transition-all duration-700"
-                    style={{
-                      background: "linear-gradient(to right, hsl(258,80%,55%), hsl(290,80%,50%))",
-                      width: done ? "100%" : "0%",
-                    }} />
-                </div>
-              )}
-            </React.Fragment>
-          );
-        })}
-      </div>
-      {/* Labels row */}
-      <div className="flex items-start">
-        {STEP_META.map((meta, idx) => {
-          const s = idx + 1;
-          const done = step > s;
-          const current = step === s;
-          const isLast = s === 4;
-          return (
-            <React.Fragment key={s}>
-              <div className={cn("flex flex-col items-center w-9 shrink-0")}>
-                <span className={cn("text-[10px] font-bold leading-none whitespace-nowrap",
-                  current ? "text-violet-400" : done ? "text-white/50" : "text-white/20")}>
-                  {meta.label}
-                </span>
-              </div>
-              {!isLast && <div className="flex-1 mx-1" />}
-            </React.Fragment>
-          );
-        })}
-      </div>
+              <span
+                className={cn(
+                  "text-[11px] font-medium hidden sm:block",
+                  active ? "text-foreground" : done ? "text-muted-foreground" : "text-muted-foreground/50"
+                )}
+              >
+                {s.label}
+              </span>
+            </div>
+            {idx < STEPS.length - 1 && (
+              <div className="flex-1 h-px bg-border min-w-[16px]" />
+            )}
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }
 
-/* ── Glassmorphism Panel ────────────────────────────────── */
-function GlassPanel({ children }: { children: React.ReactNode }) {
+// ─── Screen A: URL Entry ──────────────────────────────────────────────────────
+
+function ScreenUrl({
+  onNext,
+}: {
+  onNext: (url: string) => void;
+}) {
+  const [url, setUrl] = React.useState("");
+  const [noWebsite, setNoWebsite] = React.useState(false);
+  const [error, setError] = React.useState("");
+
+  const isValidUrl = (v: string) => {
+    try {
+      const full = v.startsWith("http") ? v : `https://${v}`;
+      new URL(full);
+      return full.includes(".");
+    } catch {
+      return false;
+    }
+  };
+
+  const handleContinue = () => {
+    if (noWebsite) {
+      onNext("no-website");
+      return;
+    }
+    if (!url.trim()) {
+      setError("Please enter your website URL.");
+      return;
+    }
+    if (!isValidUrl(url.trim())) {
+      setError("Please enter a valid URL, e.g. acmedental.com");
+      return;
+    }
+    setError("");
+    onNext(url.trim());
+  };
+
   return (
-    <div className="w-full rounded-2xl overflow-hidden"
-      style={{
-        background: "linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.03) 100%)",
-        border: "1px solid rgba(255,255,255,0.10)",
-        boxShadow: "0 24px 64px rgba(0,0,0,0.5), 0 1px 0 rgba(255,255,255,0.08) inset, 0 -1px 0 rgba(0,0,0,0.3) inset",
-        backdropFilter: "blur(20px)",
-      }}>
-      {children}
-    </div>
-  );
-}
+    <div className="space-y-space-8 animate-fade-up" style={{ animationFillMode: "both" }}>
+      {/* Header */}
+      <div className="space-y-space-3">
+        <div className="inline-flex items-center gap-space-2 px-space-3 py-space-1.5 rounded-full border border-primary/20 bg-primary/5">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[11px] font-semibold text-primary tracking-wide">Live AI Setup</span>
+        </div>
+        <h1 className="text-heading-lg font-bold text-foreground tracking-tight leading-heading">
+          Your AI Receptionist<br />
+          <span className="text-primary">starts here.</span>
+        </h1>
+        <p className="text-body-sm text-muted-foreground leading-body max-w-[360px]">
+          Enter your website and we'll configure your entire AI receptionist automatically — greeting, services, hours, and FAQs.
+        </p>
+      </div>
 
-/* ── Input ──────────────────────────────────────────────── */
-const Field = React.forwardRef<
-  HTMLInputElement,
-  React.InputHTMLAttributes<HTMLInputElement> & {
-    label: string; icon: React.ComponentType<any>; error?: string; optional?: boolean;
-  }
->(({ label, icon: Icon, error, optional, className, ...props }, ref) => (
-  <div className="space-y-2">
-    <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em]"
-      style={{ color: "rgba(255,255,255,0.4)" }}>
-      {label}
-      {optional && <span className="normal-case tracking-normal font-normal text-white/20">(optional)</span>}
-    </label>
-    <div className="relative">
-      <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none z-10 transition-colors duration-200"
-        style={{ color: "rgba(255,255,255,0.25)" }} />
-      <input
-        ref={ref}
-        className={cn(
-          "w-full h-11 pl-10 pr-4 rounded-xl text-sm text-white font-medium transition-all duration-200 outline-none",
-          "placeholder:text-white/20",
-          className
+      {/* Input area */}
+      <div className="space-y-space-4">
+        {!noWebsite ? (
+          <div className="space-y-space-2">
+            <Label htmlFor="ob-url">Your website URL</Label>
+            <div className="relative">
+              <Globe
+                className="absolute left-space-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none"
+                aria-hidden
+              />
+              <Input
+                id="ob-url"
+                value={url}
+                onChange={(e) => {
+                  setUrl(e.target.value);
+                  if (error) setError("");
+                }}
+                onKeyDown={(e) => e.key === "Enter" && handleContinue()}
+                placeholder="acmedental.com"
+                className="pl-space-10 pr-space-4 text-body-sm"
+                autoFocus
+                error={!!error}
+              />
+            </div>
+            {error && (
+              <p className="flex items-center gap-space-1.5 text-caption text-state-error-text">
+                <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                {error}
+              </p>
+            )}
+          </div>
+        ) : (
+          <div className="space-y-space-2">
+            <Label htmlFor="ob-nowebsite">What does your business do?</Label>
+            <Input
+              id="ob-nowebsite"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="e.g. We run a dental clinic in New York…"
+              className="text-body-sm"
+              autoFocus
+            />
+          </div>
         )}
-        style={{
-          background: "rgba(255,255,255,0.06)",
-          border: "1.5px solid rgba(255,255,255,0.09)",
-        }}
-        onFocus={e => {
-          e.target.style.border = "1.5px solid hsl(258,80%,60%)";
-          e.target.style.boxShadow = "0 0 0 3px hsl(258,80%,60%,0.15), 0 0 20px hsl(258,80%,60%,0.08)";
-          e.target.style.background = "rgba(139,92,246,0.08)";
-        }}
-        onBlur={e => {
-          e.target.style.border = "1.5px solid rgba(255,255,255,0.09)";
-          e.target.style.boxShadow = "none";
-          e.target.style.background = "rgba(255,255,255,0.06)";
-        }}
-        {...props}
-      />
+
+        <button
+          type="button"
+          onClick={() => {
+            setNoWebsite((v) => !v);
+            setUrl("");
+            setError("");
+          }}
+          className="text-caption text-muted-foreground hover:text-primary transition-colors underline underline-offset-2"
+        >
+          {noWebsite ? "I have a website" : "I don't have a website yet"}
+        </button>
+      </div>
+
+      {/* Stats */}
+      <div className="flex items-center gap-space-6 pt-space-2">
+        {[["< 3 min", "to go live"], ["100%", "automated"], ["24/7", "coverage"]].map(([v, l]) => (
+          <div key={l}>
+            <div className="text-body-md font-bold text-foreground">{v}</div>
+            <div className="text-[10px] text-muted-foreground uppercase tracking-wider mt-0.5">{l}</div>
+          </div>
+        ))}
+      </div>
+
+      <Button size="lg" shape="pill" className="w-full" onClick={handleContinue}>
+        Build My AI Receptionist
+        <ArrowRight className="h-4 w-4" />
+      </Button>
     </div>
-    {error && (
-      <p className="flex items-center gap-1.5 text-[11px] text-rose-400 mt-1">
-        <span className="inline-block h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0" />
-        {error}
-      </p>
-    )}
-  </div>
-));
-Field.displayName = "Field";
-
-/* ── Buttons ────────────────────────────────────────────── */
-function Btn({ children, onClick, type = "button", disabled, wide }: {
-  children: React.ReactNode; onClick?: () => void;
-  type?: "button" | "submit"; disabled?: boolean; wide?: boolean;
-}) {
-  return (
-    <button type={type} onClick={onClick} disabled={disabled}
-      className={cn("inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-xs font-black text-white transition-all duration-200",
-        "hover:scale-[1.03] active:scale-[0.97] disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100",
-        wide && "min-w-44")}
-      style={{
-        background: disabled ? "rgba(139,92,246,0.4)" : "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))",
-        boxShadow: disabled ? "none" : "0 4px 24px hsl(258,80%,55%,0.45), 0 1px 0 rgba(255,255,255,0.15) inset",
-      }}>
-      {children}
-    </button>
   );
 }
 
-function OutlineBtn({ children, onClick, disabled }: {
-  children: React.ReactNode; onClick?: () => void; disabled?: boolean;
+// ─── Screen B: AI Generation Console ─────────────────────────────────────────
+
+function ScreenGenerating({
+  url,
+  onComplete,
+}: {
+  url: string;
+  onComplete: (data: GeneratedData) => void;
 }) {
+  const [completedLogs, setCompletedLogs] = React.useState<number>(0);
+
+  React.useEffect(() => {
+    let idx = 0;
+    const tick = () => {
+      if (idx < GENERATION_LOGS.length) {
+        setCompletedLogs((v) => v + 1);
+        idx++;
+        setTimeout(tick, 320 + Math.random() * 260);
+      } else {
+        setTimeout(() => {
+          const industry = "Medical Clinic";
+          const generated = buildGeneratedData(url === "no-website" ? "mybusiness.com" : url, industry);
+          onComplete(generated);
+        }, 600);
+      }
+    };
+    const t = setTimeout(tick, 200);
+    return () => clearTimeout(t);
+  }, [url, onComplete]);
+
+  const displayUrl = url === "no-website" ? "your business" : url.replace(/^https?:\/\//, "");
+
   return (
-    <button type="button" onClick={onClick} disabled={disabled}
-      className="inline-flex items-center gap-2 rounded-xl px-5 py-2.5 text-xs font-bold text-white/50 transition-all duration-200 hover:text-white/80 hover:scale-[1.02] active:scale-[0.97] disabled:opacity-30"
-      style={{ background: "rgba(255,255,255,0.05)", border: "1.5px solid rgba(255,255,255,0.10)" }}>
-      {children}
-    </button>
+    <div className="space-y-space-8 animate-fade-up" style={{ animationFillMode: "both" }}>
+      {/* Header */}
+      <div className="space-y-space-2">
+        <div className="flex items-center gap-space-2">
+          <div className="relative flex h-8 w-8 items-center justify-center">
+            <div className="absolute inset-0 rounded-full bg-primary/10 animate-ping [animation-duration:2s]" />
+            <LogoIcon className="h-4.5 w-4.5 text-primary relative" />
+          </div>
+          <h2 className="text-title-lg font-bold text-foreground">Building your AI Receptionist…</h2>
+        </div>
+        <p className="text-body-sm text-muted-foreground">
+          Analysing <span className="font-medium text-foreground">{displayUrl}</span> and configuring everything automatically.
+        </p>
+      </div>
+
+      {/* Progress console */}
+      <div className="rounded-xl border border-border bg-muted/30 overflow-hidden">
+        <div className="px-space-4 py-space-2.5 border-b border-border bg-muted/50 flex items-center gap-space-2">
+          <div className="flex gap-space-1.5">
+            <div className="h-2.5 w-2.5 rounded-full bg-red-400/60" />
+            <div className="h-2.5 w-2.5 rounded-full bg-amber-400/60" />
+            <div className="h-2.5 w-2.5 rounded-full bg-emerald-400/60" />
+          </div>
+          <span className="text-[11px] text-muted-foreground font-medium ml-space-1">operator — ai-config</span>
+        </div>
+        <div className="p-space-4 space-y-space-2 min-h-[200px] font-mono">
+          {GENERATION_LOGS.map((log, idx) => {
+            const done = idx < completedLogs;
+            const active = idx === completedLogs - 1 && completedLogs < GENERATION_LOGS.length;
+            const last = idx === GENERATION_LOGS.length - 1 && done;
+            if (idx >= completedLogs) return null;
+            return (
+              <div
+                key={log}
+                className={cn(
+                  "flex items-center gap-space-2 text-[12px] transition-all duration-300",
+                  last ? "text-emerald-500" : active ? "text-foreground" : "text-muted-foreground"
+                )}
+              >
+                {last ? (
+                  <Check className="h-3 w-3 shrink-0 text-emerald-500" strokeWidth={2.5} />
+                ) : active ? (
+                  <Loader2 className="h-3 w-3 shrink-0 animate-spin text-primary" />
+                ) : (
+                  <Check className="h-3 w-3 shrink-0 opacity-40" />
+                )}
+                {log}
+              </div>
+            );
+          })}
+          {completedLogs < GENERATION_LOGS.length && (
+            <div className="flex items-center gap-space-2 text-[12px] text-muted-foreground/50">
+              <Loader2 className="h-3 w-3 shrink-0 animate-spin" />
+              {GENERATION_LOGS[completedLogs]}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="space-y-space-2">
+        <div className="flex items-center justify-between text-caption text-muted-foreground">
+          <span>Setting up your workspace</span>
+          <span className="font-medium text-foreground">
+            {Math.round((completedLogs / GENERATION_LOGS.length) * 100)}%
+          </span>
+        </div>
+        <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+          <div
+            className="h-full rounded-full bg-primary transition-all duration-500"
+            style={{ width: `${(completedLogs / GENERATION_LOGS.length) * 100}%` }}
+          />
+        </div>
+      </div>
+    </div>
   );
 }
 
-/* ── Main Wizard ────────────────────────────────────────── */
+// ─── HoursField (inline editable) ────────────────────────────────────────────
+
+function HoursField({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  const [editing, setEditing] = React.useState(false);
+  const [draft, setDraft] = React.useState(value);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (editing) {
+      setDraft(value);
+      requestAnimationFrame(() => inputRef.current?.focus());
+    }
+  }, [editing, value]);
+
+  const save = () => {
+    onChange(draft.trim() || value);
+    setEditing(false);
+  };
+
+  const cancel = () => {
+    setDraft(value);
+    setEditing(false);
+  };
+
+  return (
+    <div
+      className={cn(
+        "flex items-center gap-space-3 px-space-4 py-space-3 rounded-xl border transition-colors duration-200",
+        editing ? "border-primary/40 bg-primary/5" : "border-border bg-muted/20"
+      )}
+    >
+      <Clock className="h-4 w-4 text-muted-foreground shrink-0" />
+
+      <div className="flex-1 min-w-0">
+        <p className="text-caption text-muted-foreground mb-0.5">Business hours</p>
+        {editing ? (
+          <input
+            ref={inputRef}
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") save();
+              if (e.key === "Escape") cancel();
+            }}
+            className={cn(
+              "w-full bg-transparent border-none outline-none",
+              "text-body-sm font-medium text-foreground placeholder:text-muted-foreground"
+            )}
+            placeholder="e.g. Mon–Fri 9:00 AM – 5:00 PM"
+          />
+        ) : (
+          <p className="text-body-sm font-medium text-foreground truncate">{value}</p>
+        )}
+      </div>
+
+      {editing ? (
+        <div className="flex items-center gap-space-2 shrink-0">
+          <button
+            type="button"
+            onClick={save}
+            className="text-caption font-semibold text-primary hover:opacity-70 transition-opacity"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={cancel}
+            className="text-caption text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Cancel
+          </button>
+        </div>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setEditing(true)}
+          className="ml-auto text-caption text-primary hover:opacity-70 transition-opacity shrink-0"
+        >
+          Edit →
+        </button>
+      )}
+    </div>
+  );
+}
+
+// ─── Screen C: Verification Studio ───────────────────────────────────────────
+
+function ScreenVerify({
+  data,
+  onLaunch,
+}: {
+  data: GeneratedData;
+  onLaunch: (updated: GeneratedData) => void;
+}) {
+  const [form, setForm] = React.useState(data);
+  const [services, setServices] = React.useState(data.services);
+  const [activeTab, setActiveTab] = React.useState<"info" | "services" | "greeting">("info");
+  const [isLaunching, setIsLaunching] = React.useState(false);
+
+  const meta = INDUSTRY_META[form.industry] || INDUSTRY_META["Other"];
+  const Icon = meta.icon;
+
+  const tabs = [
+    { id: "info" as const, label: "Business Info", icon: Building2 },
+    { id: "services" as const, label: "Services", icon: Star },
+    { id: "greeting" as const, label: "AI Greeting", icon: Bot },
+  ];
+
+  return (
+    <div className="space-y-space-6 animate-fade-up" style={{ animationFillMode: "both" }}>
+      {/* Header */}
+      <div className="flex items-start justify-between gap-space-4">
+        <div className="space-y-space-1">
+          <div className="flex items-center gap-space-2">
+            <div
+              className="flex h-9 w-9 items-center justify-center rounded-xl text-white shrink-0"
+              style={{ backgroundColor: meta.color }}
+            >
+              <Icon className="h-4.5 w-4.5" />
+            </div>
+            <div>
+              <h2 className="text-title-lg font-bold text-foreground leading-none">{form.businessName}</h2>
+              <p className="text-caption text-muted-foreground mt-0.5">{form.industry}</p>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center gap-space-1.5 px-space-2.5 py-space-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 shrink-0">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="text-[11px] font-medium text-emerald-600">AI Ready</span>
+        </div>
+      </div>
+
+      {/* Info callout */}
+      <div className="flex items-start gap-space-3 px-space-4 py-space-3 rounded-xl border border-primary/20 bg-primary/5">
+        <Sparkles className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+        <p className="text-body-sm text-foreground/80 leading-body">
+          We've auto-configured everything below. Review and adjust if needed, or{" "}
+          <span className="font-semibold text-primary">launch immediately.</span>
+        </p>
+      </div>
+
+      {/* Tab navigation */}
+      <div className="flex border-b border-border">
+        {tabs.map((t) => {
+          const TIcon = t.icon;
+          return (
+            <button
+              key={t.id}
+              type="button"
+              onClick={() => setActiveTab(t.id)}
+              className={cn(
+                "flex items-center gap-space-1.5 px-space-4 py-space-2.5 text-body-sm font-medium transition-colors border-b-2 -mb-px",
+                activeTab === t.id
+                  ? "border-primary text-primary"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              )}
+            >
+              <TIcon className="h-3.5 w-3.5" />
+              {t.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Tab: Business Info */}
+      {activeTab === "info" && (
+        <div className="space-y-space-4 animate-fade-up" style={{ animationFillMode: "both" }}>
+          <div className="grid grid-cols-2 gap-space-3">
+            <div className="space-y-space-1.5">
+              <Label htmlFor="vfy-name">Business Name</Label>
+              <div className="relative">
+                <Building2 className="absolute left-space-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Input
+                  id="vfy-name"
+                  value={form.businessName}
+                  onChange={(e) => setForm((f) => ({ ...f, businessName: e.target.value }))}
+                  className="pl-space-10"
+                />
+              </div>
+            </div>
+            <div className="space-y-space-1.5">
+              <Label htmlFor="vfy-industry">Industry</Label>
+              <Select
+                value={form.industry}
+                onValueChange={(v) => setForm((f) => ({ ...f, industry: v }))}
+              >
+                <SelectTrigger id="vfy-industry">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {INDUSTRIES.map((ind) => (
+                    <SelectItem key={ind} value={ind}>{ind}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-space-1.5">
+            <Label htmlFor="vfy-email">Email</Label>
+            <div className="relative">
+              <Mail className="absolute left-space-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                id="vfy-email"
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
+                placeholder="info@yourbusiness.com"
+                className="pl-space-10"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-space-3">
+            <div className="space-y-space-1.5">
+              <Label htmlFor="vfy-phone">Phone <span className="text-muted-foreground font-normal">(optional)</span></Label>
+              <div className="relative">
+                <Phone className="absolute left-space-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                <Input
+                  id="vfy-phone"
+                  value={form.phone}
+                  onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))}
+                  placeholder="+1 555-0199"
+                  className="pl-space-10"
+                />
+              </div>
+            </div>
+            <div className="space-y-space-1.5">
+              <Label htmlFor="vfy-tz">Timezone</Label>
+              <Select
+                value={form.timezone}
+                onValueChange={(v) => setForm((f) => ({ ...f, timezone: v }))}
+              >
+                <SelectTrigger id="vfy-tz">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {TIMEZONES.map((tz) => (
+                    <SelectItem key={tz.value} value={tz.value}>{tz.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-space-1.5">
+            <Label htmlFor="vfy-address">Address <span className="text-muted-foreground font-normal">(optional)</span></Label>
+            <div className="relative">
+              <MapPin className="absolute left-space-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+              <Input
+                id="vfy-address"
+                value={form.address}
+                onChange={(e) => setForm((f) => ({ ...f, address: e.target.value }))}
+                placeholder="123 Main St, New York, NY"
+                className="pl-space-10"
+              />
+            </div>
+          </div>
+
+          {/* Hours display — inline editable */}
+          <HoursField
+            value={form.hours}
+            onChange={(v) => setForm((f) => ({ ...f, hours: v }))}
+          />
+        </div>
+      )}
+
+      {/* Tab: Services */}
+      {activeTab === "services" && (
+        <div className="space-y-space-3 animate-fade-up" style={{ animationFillMode: "both" }}>
+          <p className="text-body-sm text-muted-foreground">
+            These services were detected from your website. Toggle off any you don't offer.
+          </p>
+          <div className="space-y-space-2">
+            {services.map((svc, idx) => (
+              <div
+                key={idx}
+                className={cn(
+                  "flex items-center gap-space-3 px-space-4 py-space-3 rounded-xl border transition-all duration-200",
+                  svc.accepted
+                    ? "border-primary/20 bg-primary/5"
+                    : "border-border bg-muted/20 opacity-50"
+                )}
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setServices((prev) =>
+                      prev.map((s, i) => (i === idx ? { ...s, accepted: !s.accepted } : s))
+                    )
+                  }
+                  className={cn(
+                    "h-5 w-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-200",
+                    svc.accepted ? "bg-primary border-primary" : "border-border bg-transparent"
+                  )}
+                >
+                  {svc.accepted && <Check className="h-2.5 w-2.5 text-white" strokeWidth={3} />}
+                </button>
+                <div className="flex-1 min-w-0">
+                  <p className="text-body-sm font-medium text-foreground">{svc.name}</p>
+                  <p className="text-caption text-muted-foreground">{svc.duration} min</p>
+                </div>
+                <Zap className="h-3.5 w-3.5 text-primary/40 shrink-0" />
+              </div>
+            ))}
+          </div>
+          <button
+            type="button"
+            className="flex items-center gap-space-2 text-body-sm text-primary hover:opacity-70 transition-opacity"
+          >
+            <span className="flex h-5 w-5 items-center justify-center rounded-full border border-primary/40 text-[12px] font-semibold">+</span>
+            Add a service
+          </button>
+        </div>
+      )}
+
+      {/* Tab: AI Greeting */}
+      {activeTab === "greeting" && (
+        <div className="space-y-space-4 animate-fade-up" style={{ animationFillMode: "both" }}>
+          <div className="flex items-start gap-space-3 px-space-4 py-space-4 rounded-xl border border-border bg-muted/20">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 shrink-0 mt-0.5">
+              <Bot className="h-4 w-4 text-primary" />
+            </div>
+            <div>
+              <p className="text-caption text-muted-foreground mb-space-1">AI Receptionist says:</p>
+              <p className="text-body-sm text-foreground leading-body italic">"{form.greeting}"</p>
+            </div>
+          </div>
+
+          <div className="space-y-space-1.5">
+            <Label htmlFor="vfy-greeting">Edit greeting</Label>
+            <textarea
+              id="vfy-greeting"
+              value={form.greeting}
+              onChange={(e) => setForm((f) => ({ ...f, greeting: e.target.value }))}
+              rows={4}
+              className={cn(
+                "w-full rounded-xl border border-border bg-background px-space-4 py-space-3",
+                "text-body-sm text-foreground placeholder:text-muted-foreground",
+                "resize-none outline-none focus:border-primary focus:ring-2 focus:ring-primary/10",
+                "transition-all duration-fast"
+              )}
+            />
+          </div>
+
+          <div className="flex items-center gap-space-2 text-caption text-muted-foreground">
+            <Sparkles className="h-3.5 w-3.5 text-primary" />
+            Greeting is auto-customized for {form.industry} businesses.
+          </div>
+        </div>
+      )}
+
+      {/* Launch button */}
+      <div className="pt-space-2 border-t border-border">
+        <Button
+          size="lg"
+          shape="pill"
+          className="w-full"
+          loading={isLaunching}
+          onClick={async () => {
+            setIsLaunching(true);
+            setTimeout(() => {
+              onLaunch({ ...form, services: services.filter((s) => s.accepted) });
+            }, 200);
+          }}
+        >
+          {!isLaunching && (
+            <>
+              <Rocket className="h-4 w-4" />
+              Launch AI Receptionist
+            </>
+          )}
+        </Button>
+        <p className="text-center text-caption text-muted-foreground mt-space-3">
+          You can refine everything later in Settings & Knowledge Base.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Screen D: Launching ──────────────────────────────────────────────────────
+
+const LAUNCH_STEPS = [
+  "Creating your workspace…",
+  "Seeding industry templates…",
+  "Configuring AI knowledge base…",
+  "Activating your AI Receptionist…",
+];
+
+function ScreenLaunching() {
+  const [step, setStep] = React.useState(0);
+
+  React.useEffect(() => {
+    let i = 0;
+    const tick = () => {
+      if (i < LAUNCH_STEPS.length - 1) {
+        i++;
+        setStep(i);
+        setTimeout(tick, 800 + Math.random() * 400);
+      }
+    };
+    const t = setTimeout(tick, 600);
+    return () => clearTimeout(t);
+  }, []);
+
+  return (
+    <div className="flex flex-col items-center text-center space-y-space-8 py-space-8 animate-fade-up" style={{ animationFillMode: "both" }}>
+      <div className="relative flex items-center justify-center">
+        <div className="absolute h-28 w-28 rounded-full border border-primary/20 animate-ping [animation-duration:2.5s]" />
+        <div className="absolute h-20 w-20 rounded-full bg-primary/5 animate-pulse [animation-duration:2s]" />
+        <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-lg shadow-primary/30">
+          <LogoIcon className="h-8 w-8 text-white" />
+        </div>
+      </div>
+
+      <div className="space-y-space-2">
+        <h2 className="text-title-lg font-bold text-foreground">Launching your receptionist…</h2>
+        <p className="text-body-sm text-muted-foreground max-w-[280px]">{LAUNCH_STEPS[step]}</p>
+      </div>
+
+      <div className="w-full max-w-[280px] space-y-space-2">
+        {LAUNCH_STEPS.map((s, idx) => (
+          <div key={s} className="flex items-center gap-space-3 text-left">
+            <div
+              className={cn(
+                "flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-300",
+                idx < step
+                  ? "bg-emerald-500/15 border border-emerald-500/30"
+                  : idx === step
+                  ? "bg-primary/10 border border-primary/30"
+                  : "bg-muted border border-border"
+              )}
+            >
+              {idx < step ? (
+                <Check className="h-2.5 w-2.5 text-emerald-500" strokeWidth={3} />
+              ) : idx === step ? (
+                <Loader2 className="h-2.5 w-2.5 text-primary animate-spin" />
+              ) : null}
+            </div>
+            <span
+              className={cn(
+                "text-[12px] leading-none",
+                idx <= step ? "text-foreground font-medium" : "text-muted-foreground"
+              )}
+            >
+              {s}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Screen E: Go Live ────────────────────────────────────────────────────────
+
+function ScreenGoLive({ businessName }: { businessName: string }) {
+  const router = useRouter();
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText("<!-- Operator widget coming soon -->");
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="space-y-space-8 animate-fade-up" style={{ animationFillMode: "both" }}>
+      {/* Success badge */}
+      <div className="flex flex-col items-center text-center space-y-space-4 pt-space-2">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20">
+          <Check className="h-8 w-8 text-emerald-500" strokeWidth={2} />
+        </div>
+        <div className="space-y-space-1.5">
+          <h2 className="text-heading-sm font-bold text-foreground">
+            {businessName}'s AI is live.
+          </h2>
+          <p className="text-body-sm text-muted-foreground max-w-[320px] leading-body">
+            Your AI receptionist is configured and ready to handle calls, bookings, and customer questions.
+          </p>
+        </div>
+      </div>
+
+      {/* Achievement cards */}
+      <div className="space-y-space-2">
+        {[
+          { icon: Check, label: "AI knowledge base created", sub: "Services, FAQs and hours loaded" },
+          { icon: Check, label: "Conversation flows active", sub: "Booking and qualification ready" },
+          { icon: Check, label: "14-day trial started",     sub: "Full access, no credit card needed" },
+        ].map((item) => (
+          <div
+            key={item.label}
+            className="flex items-center gap-space-3 px-space-4 py-space-3 rounded-xl border border-emerald-500/15 bg-emerald-500/5"
+          >
+            <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-500/15 shrink-0">
+              <Check className="h-3.5 w-3.5 text-emerald-500" strokeWidth={2.5} />
+            </div>
+            <div>
+              <p className="text-body-sm font-medium text-foreground">{item.label}</p>
+              <p className="text-caption text-muted-foreground">{item.sub}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Next steps */}
+      <div className="space-y-space-3">
+        <p className="text-caption text-muted-foreground uppercase tracking-wider font-medium">Next steps</p>
+        <div className="space-y-space-2">
+          {[
+            { label: "Connect a phone number", href: "/channels", desc: "Let customers call your AI" },
+            { label: "Review your knowledge base", href: "/kb",       desc: "Add FAQs and documents" },
+            { label: "Try the live chat widget",   href: "/widget",   desc: "Embed it on your website" },
+          ].map((ns) => (
+            <button
+              key={ns.label}
+              type="button"
+              onClick={() => router.push(ns.href)}
+              className="w-full flex items-center gap-space-3 px-space-4 py-space-3 rounded-xl border border-border hover:border-primary/30 hover:bg-primary/5 transition-all duration-200 text-left group"
+            >
+              <div className="flex-1 min-w-0">
+                <p className="text-body-sm font-medium text-foreground">{ns.label}</p>
+                <p className="text-caption text-muted-foreground">{ns.desc}</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <Button
+        size="lg"
+        shape="pill"
+        className="w-full"
+        onClick={() => router.push("/dashboard")}
+      >
+        <Rocket className="h-4 w-4" />
+        Go to Dashboard
+      </Button>
+    </div>
+  );
+}
+
+// ─── Root Wizard ──────────────────────────────────────────────────────────────
+
 export function OnboardingWizard() {
   const router = useRouter();
-  const [step, setStep] = React.useState<Step>(1);
-  const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [step, setStep] = React.useState<Step>("url");
+  const [url, setUrl] = React.useState("");
+  const [generated, setGenerated] = React.useState<GeneratedData | null>(null);
   const [submitError, setSubmitError] = React.useState<string | null>(null);
-  const [hoveredIndustry, setHoveredIndustry] = React.useState<string | null>(null);
 
-  const { register, handleSubmit, setValue, watch, formState: { errors }, trigger } = useForm<OnboardingInput>({
-    resolver: zodResolver(onboardingSchema),
-    defaultValues: { industry: undefined, name: "", website: "", email: "", phone: "", address: "", timezone: "UTC" },
-  });
-
-  const selectedIndustry = watch("industry");
-  const formValues = watch();
-
-  const nextStep = async () => {
-    let valid = false;
-    if (step === 1) valid = await trigger(["industry"]);
-    else if (step === 2) valid = await trigger(["name", "website", "email", "phone"]);
-    else if (step === 3) valid = await trigger(["address", "timezone"]);
-    if (valid) setStep(p => (p + 1) as Step);
+  const handleUrlNext = (inputUrl: string) => {
+    setUrl(inputUrl);
+    setStep("generating");
   };
 
-  const onSubmit = async (data: OnboardingInput) => {
-    setIsSubmitting(true);
-    setSubmitError(null);
-    setStep(5);
+  const handleGenerationComplete = (data: GeneratedData) => {
+    setGenerated(data);
+    setStep("verify");
+  };
+
+  const handleLaunch = async (data: GeneratedData) => {
+    setStep("launching");
+
+    // Map generated data to the onboarding schema
+    const payload = {
+      industry: (INDUSTRIES as readonly string[]).includes(data.industry)
+        ? (data.industry as typeof INDUSTRIES[number])
+        : "Other",
+      name: data.businessName || "My Business",
+      website: data.website,
+      email: data.email || "info@mybusiness.com",
+      phone: data.phone || "+1 555-0000",
+      address: data.address || "123 Main St",
+      timezone: (TIMEZONES as readonly { value: string; label: string }[]).find(
+        (t) => t.value === data.timezone
+      )
+        ? data.timezone
+        : "UTC",
+    };
+
     try {
-      const res = await createOrganizationAction(data);
-      if (res.success) { router.refresh(); router.push("/dashboard"); }
-      else { setSubmitError(res.error || "Failed"); setStep(4); }
+      const result = await createOrganizationAction(payload as any);
+      if (result.success) {
+        setTimeout(() => {
+          setStep("golive");
+        }, 3200);
+      } else {
+        setSubmitError(result.error || "Failed to create workspace. Please try again.");
+        setStep("verify");
+      }
     } catch (e: any) {
-      setSubmitError(e?.message || "Unexpected error");
-      setStep(4);
-    } finally { setIsSubmitting(false); }
+      setSubmitError(e?.message || "An unexpected error occurred.");
+      setStep("verify");
+    }
   };
+
+  const showIndicator = step !== "launching" && step !== "golive";
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      {step < 5 && <StepBar step={step} />}
+    <div>
+      {showIndicator && <StepIndicator current={step} />}
 
-      {/* ── STEP 1: Industry ── */}
-      {step === 1 && (
-        <GlassPanel>
-          {/* Header */}
-          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <h3 className="text-base font-black text-white mb-1">What type of business do you run?</h3>
-            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>
-              We'll auto-configure your AI Receptionist — no manual setup needed.
-            </p>
-          </div>
-
-          {/* Industry grid */}
-          <div className="p-5">
-            <div className="grid grid-cols-3 gap-3">
-              {INDUSTRIES.map((industry) => {
-                const cfg = INDUSTRY_CONFIG[industry] || INDUSTRY_CONFIG["Other"];
-                const Icon = cfg.icon;
-                const isSelected = selectedIndustry === industry;
-                const isHovered = hoveredIndustry === industry;
-
-                return (
-                  <button key={industry} type="button"
-                    onClick={() => setValue("industry", industry, { shouldValidate: true })}
-                    onMouseEnter={() => setHoveredIndustry(industry)}
-                    onMouseLeave={() => setHoveredIndustry(null)}
-                    className="relative flex flex-col items-center justify-center gap-3 py-5 px-3 rounded-2xl text-center cursor-pointer select-none transition-all duration-300"
-                    style={{
-                      background: isSelected
-                        ? `linear-gradient(135deg, ${cfg.gradient.split(", ").map(c => c + "25").join(", ")})`
-                        : isHovered
-                          ? "rgba(255,255,255,0.07)"
-                          : "rgba(255,255,255,0.03)",
-                      border: isSelected
-                        ? `2px solid ${cfg.glow}60`
-                        : isHovered
-                          ? "2px solid rgba(255,255,255,0.15)"
-                          : "2px solid rgba(255,255,255,0.07)",
-                      boxShadow: isSelected
-                        ? `0 0 24px ${cfg.glow}30, 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08)`
-                        : isHovered
-                          ? "0 4px 16px rgba(0,0,0,0.2)"
-                          : "none",
-                      transform: isSelected ? "scale(1.03)" : isHovered ? "scale(1.02)" : "scale(1)",
-                    }}>
-
-                    {/* Checkmark */}
-                    {isSelected && (
-                      <div className="absolute top-2.5 right-2.5 flex h-5 w-5 items-center justify-center rounded-full"
-                        style={{ background: `linear-gradient(135deg, ${cfg.gradient})`, boxShadow: `0 0 10px ${cfg.glow}80` }}>
-                        <Check className="h-3 w-3 text-white" strokeWidth={3} />
-                      </div>
-                    )}
-
-                    {/* Icon */}
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl transition-all duration-300"
-                      style={{
-                        background: isSelected || isHovered
-                          ? `linear-gradient(135deg, ${cfg.gradient})`
-                          : "rgba(255,255,255,0.07)",
-                        boxShadow: isSelected
-                          ? `0 4px 20px ${cfg.glow}50`
-                          : isHovered
-                            ? `0 4px 16px ${cfg.glow}30`
-                            : "none",
-                      }}>
-                      <Icon className="h-5 w-5 text-white" />
-                    </div>
-
-                    <span className="text-[11px] font-bold leading-tight transition-colors duration-200"
-                      style={{ color: isSelected ? "rgba(255,255,255,0.95)" : isHovered ? "rgba(255,255,255,0.75)" : "rgba(255,255,255,0.45)" }}>
-                      {industry}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {errors.industry && (
-              <p className="flex items-center gap-1.5 text-[11px] text-rose-400 mt-3">
-                <span className="h-1.5 w-1.5 rounded-full bg-rose-400 shrink-0 inline-block" />
-                {errors.industry.message}
-              </p>
-            )}
-          </div>
-
-          {/* Footer */}
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
-            <span className="text-[11px]" style={{ color: selectedIndustry ? "hsl(258,100%,78%)" : "rgba(255,255,255,0.25)" }}>
-              {selectedIndustry
-                ? <span className="flex items-center gap-1.5 font-semibold"><Check className="h-3.5 w-3.5" /> {selectedIndustry} selected</span>
-                : "Select your industry to continue"}
-            </span>
-            <Btn onClick={nextStep} disabled={!selectedIndustry}>
-              Continue <ArrowRight className="h-3.5 w-3.5" />
-            </Btn>
-          </div>
-        </GlassPanel>
+      {submitError && (
+        <div className="flex items-start gap-space-3 px-space-4 py-space-3 rounded-xl border border-destructive/20 bg-destructive/5 mb-space-6">
+          <AlertCircle className="h-4 w-4 text-destructive shrink-0 mt-0.5" />
+          <p className="text-body-sm text-destructive">{submitError}</p>
+        </div>
       )}
 
-      {/* ── STEP 2: Details ── */}
-      {step === 2 && (
-        <GlassPanel>
-          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <h3 className="text-base font-black text-white mb-1">Your contact details</h3>
-            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>How customers and your AI Receptionist will identify your business.</p>
-          </div>
-          <div className="p-6 space-y-4">
-            <Field label="Business Name" icon={Building} error={errors.name?.message} id="name"
-              placeholder="Acme Dental Clinic" {...register("name")} />
-            <Field label="Website" icon={Globe} error={errors.website?.message} id="website"
-              optional placeholder="https://acmedental.com" {...register("website")} />
-            <div className="grid grid-cols-2 gap-3">
-              <Field label="Email" icon={Mail} error={errors.email?.message} id="email"
-                type="email" placeholder="info@acme.com" {...register("email")} />
-              <Field label="Phone" icon={Phone} error={errors.phone?.message} id="phone"
-                placeholder="+1 555-0199" {...register("phone")} />
-            </div>
-          </div>
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
-            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)}>
-              <ArrowLeft className="h-3.5 w-3.5" /> Back
-            </OutlineBtn>
-            <Btn onClick={nextStep}>Continue <ArrowRight className="h-3.5 w-3.5" /></Btn>
-          </div>
-        </GlassPanel>
+      {step === "url" && <ScreenUrl onNext={handleUrlNext} />}
+      {step === "generating" && (
+        <ScreenGenerating url={url} onComplete={handleGenerationComplete} />
       )}
-
-      {/* ── STEP 3: Location ── */}
-      {step === 3 && (
-        <GlassPanel>
-          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <h3 className="text-base font-black text-white mb-1">Where are you located?</h3>
-            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>Used for scheduling in the right timezone and location-based answers.</p>
-          </div>
-          <div className="p-6 space-y-4">
-            <Field label="Business Address" icon={MapPin} error={errors.address?.message} id="address"
-              placeholder="123 Main St, Suite 100, New York, NY" {...register("address")} />
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.15em]"
-                style={{ color: "rgba(255,255,255,0.4)" }}>Timezone</label>
-              <div className="relative">
-                <Clock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 pointer-events-none z-10" style={{ color: "rgba(255,255,255,0.25)" }} />
-                <Select defaultValue={watch("timezone")} onValueChange={v => setValue("timezone", v, { shouldValidate: true })}>
-                  <SelectTrigger className="pl-10 h-11 rounded-xl text-sm text-white font-medium w-full"
-                    style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.09)", outline: "none" }}>
-                    <SelectValue placeholder="Select timezone" />
-                  </SelectTrigger>
-                  <SelectContent style={{ background: "hsl(240,22%,10%)", border: "1px solid rgba(255,255,255,0.10)", color: "white" }}>
-                    {TIMEZONES.map(tz => (
-                      <SelectItem key={tz.value} value={tz.value}
-                        style={{ color: "rgba(255,255,255,0.75)" }}>{tz.label}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              {errors.timezone && <p className="text-[11px] text-rose-400">{errors.timezone.message}</p>}
-            </div>
-          </div>
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
-            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)}>
-              <ArrowLeft className="h-3.5 w-3.5" /> Back
-            </OutlineBtn>
-            <Btn onClick={nextStep}>Continue <ArrowRight className="h-3.5 w-3.5" /></Btn>
-          </div>
-        </GlassPanel>
+      {step === "verify" && generated && (
+        <ScreenVerify data={generated} onLaunch={handleLaunch} />
       )}
-
-      {/* ── STEP 4: Review ── */}
-      {step === 4 && (
-        <GlassPanel>
-          <div className="px-6 pt-6 pb-5" style={{ borderBottom: "1px solid rgba(255,255,255,0.07)" }}>
-            <h3 className="text-base font-black text-white mb-1">Everything look right?</h3>
-            <p className="text-[11px]" style={{ color: "rgba(255,255,255,0.4)" }}>Review your details. You can change these later in settings.</p>
-          </div>
-          <div className="p-6 space-y-5">
-            {submitError && (
-              <div className="flex items-start gap-3 p-4 rounded-xl" style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
-                <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                <p className="text-[11px] text-rose-300 leading-relaxed">{submitError}</p>
-              </div>
-            )}
-
-            {/* Selected industry hero */}
-            {formValues.industry && (() => {
-              const cfg = INDUSTRY_CONFIG[formValues.industry] || INDUSTRY_CONFIG["Other"];
-              const Icon = cfg.icon;
-              return (
-                <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: `linear-gradient(135deg, ${cfg.gradient.split(", ").map(c => c + "20").join(", ")})`, border: `1px solid ${cfg.glow}30` }}>
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl shrink-0" style={{ background: `linear-gradient(135deg, ${cfg.gradient})`, boxShadow: `0 4px 20px ${cfg.glow}40` }}>
-                    <Icon className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-black text-white">{formValues.industry}</div>
-                    <div className="text-[11px] text-white/40 mt-0.5">Industry configuration ready</div>
-                  </div>
-                  <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.25)" }}>
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                    <span className="text-[10px] font-bold text-emerald-400">Ready</span>
-                  </div>
-                </div>
-              );
-            })()}
-
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { l: "Business Name", v: formValues.name },
-                { l: "Email", v: formValues.email },
-                { l: "Phone", v: formValues.phone },
-                { l: "Address", v: formValues.address },
-                ...(formValues.website ? [{ l: "Website", v: formValues.website }] : []),
-                { l: "Timezone", v: TIMEZONES.find(t => t.value === formValues.timezone)?.label || formValues.timezone },
-              ].map(({ l, v }) => (
-                <div key={l} className="flex flex-col gap-1 px-4 py-3 rounded-xl"
-                  style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                  <span className="text-[9px] font-black uppercase tracking-[0.12em]" style={{ color: "rgba(255,255,255,0.25)" }}>{l}</span>
-                  <span className="text-[11px] font-bold text-white/80 truncate">{v || "—"}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Launch callout */}
-            <div className="flex items-center gap-4 p-4 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(139,92,246,0.1), rgba(168,85,247,0.08))", border: "1px solid rgba(139,92,246,0.2)" }}>
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl" style={{ background: "linear-gradient(135deg, hsl(258,80%,55%), hsl(278,80%,50%))", boxShadow: "0 4px 20px hsl(258,80%,55%,0.4)" }}>
-                <Rocket className="h-5 w-5 text-white" />
-              </div>
-              <p className="text-[11px] text-white/55 leading-relaxed">
-                <span className="text-white font-black">Ready to launch.</span> Your AI Receptionist for{" "}
-                <span className="font-bold" style={{ color: "hsl(258,100%,78%)" }}>{formValues.industry}</span> will go live the moment you click below.
-              </p>
-            </div>
-          </div>
-          <div className="px-6 py-4 flex items-center justify-between" style={{ borderTop: "1px solid rgba(255,255,255,0.07)", background: "rgba(0,0,0,0.15)" }}>
-            <OutlineBtn onClick={() => setStep(p => (p - 1) as Step)} disabled={isSubmitting}>
-              <ArrowLeft className="h-3.5 w-3.5" /> Back
-            </OutlineBtn>
-            <Btn type="submit" disabled={isSubmitting} wide>
-              {isSubmitting ? <><Loader2 className="h-3.5 w-3.5 animate-spin" />Creating…</>
-                : <><Rocket className="h-3.5 w-3.5" />Launch Workspace</>}
-            </Btn>
-          </div>
-        </GlassPanel>
+      {step === "launching" && <ScreenLaunching />}
+      {step === "golive" && generated && (
+        <ScreenGoLive businessName={generated.businessName} />
       )}
-
-      {/* ── STEP 5: Loading ── */}
-      {step === 5 && (
-        <GlassPanel>
-          <div className="px-6 py-24 flex flex-col items-center text-center gap-8">
-            {/* Animated orb */}
-            <div className="relative flex items-center justify-center">
-              <div className="absolute h-32 w-32 rounded-full animate-ping [animation-duration:2.5s]"
-                style={{ border: "1px solid hsl(258,80%,60%,0.2)" }} />
-              <div className="absolute h-24 w-24 rounded-full animate-pulse [animation-duration:1.8s]"
-                style={{ background: "radial-gradient(circle, hsl(258,80%,60%,0.15), transparent)" }} />
-              <div className="relative flex h-20 w-20 items-center justify-center rounded-full"
-                style={{
-                  background: "linear-gradient(135deg, hsl(258,80%,50%), hsl(290,80%,45%))",
-                  boxShadow: "0 0 40px hsl(258,80%,60%,0.6), 0 0 80px hsl(258,80%,60%,0.2)",
-                }}>
-                <Bot className="h-9 w-9 text-white animate-bounce [animation-duration:1.5s]" />
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <h3 className="text-lg font-black text-white tracking-tight">Building your AI Receptionist…</h3>
-              <p className="text-[11px] text-white/40 leading-relaxed max-w-[260px] mx-auto">
-                Configuring templates, scheduling models, and tuning your AI for {formValues.industry}.
-              </p>
-            </div>
-
-            {/* Progress checklist */}
-            <div className="w-full max-w-[280px] space-y-3 p-5 rounded-2xl text-left"
-              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-              {[
-                { label: "Setting up your organization profile", done: true },
-                { label: `Loading templates for ${formValues.industry}`, done: true },
-                { label: "Tuning AI conversational flow", done: false },
-              ].map(({ label, done }) => (
-                <div key={label} className="flex items-center gap-3">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full transition-all duration-300"
-                    style={done
-                      ? { background: "rgba(52,211,153,0.15)", border: "1px solid rgba(52,211,153,0.3)" }
-                      : { background: "rgba(139,92,246,0.15)", border: "1px solid rgba(139,92,246,0.3)" }}>
-                    {done
-                      ? <Check className="h-3 w-3 text-emerald-400" strokeWidth={3} />
-                      : <Loader2 className="h-3 w-3 animate-spin" style={{ color: "hsl(258,100%,78%)" }} />}
-                  </div>
-                  <span className="text-[11px] leading-none" style={{ color: done ? "rgba(255,255,255,0.35)" : "rgba(255,255,255,0.85)", fontWeight: done ? 400 : 700 }}>
-                    {label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </GlassPanel>
-      )}
-    </form>
+    </div>
   );
 }

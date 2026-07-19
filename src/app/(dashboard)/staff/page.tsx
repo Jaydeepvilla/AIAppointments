@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import { Badge } from "@/components/shared/badge";
 import { useState, useEffect } from "react";
 import {
@@ -45,6 +44,8 @@ import {
 } from "@/components/shared/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/components/shared/utils";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 interface StaffItem {
   id: string;
@@ -257,15 +258,18 @@ export default function StaffPage() {
           </Button>
         }
       />
-
       {errorMsg && (
-        <div className="flex items-center gap-3 rounded-xl bg-rose-500/8 border border-rose-500/20 px-4 py-3 text-caption text-rose-600 dark:text-rose-400 shrink-0">
+        <div className="flex items-center gap-3 rounded-xl bg-rose-500/8 border border-rose-500/20 px-4 py-3 text-caption text-[hsl(var(--state-error-text))] shrink-0">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span className="flex-1 font-medium">{errorMsg}</span>
-          <button onClick={() => setErrorMsg("")} className="hover:opacity-70 transition-opacity font-bold text-base leading-none">×</button>
+          <button onClick={() => setErrorMsg("")} className={getButtonClasses(
+            'primary',
+            'filled',
+            'medium',
+            'hover:opacity-70 transition-opacity text-base leading-none'
+          )}>×</button>
         </div>
       )}
-
       {/* ── Main 3-column grid ── */}
       <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-space-4">
 
@@ -333,7 +337,7 @@ export default function StaffPage() {
                             <span className={cn(
                               "text-[9px] uppercase font-bold tracking-wider rounded-full px-1.5 py-0.5 border shrink-0",
                               staff.isActive
-                                ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                                ? "bg-emerald-500/10 text-[hsl(var(--state-success-text))] border-emerald-500/20"
                                 : "bg-neutral-500/8 text-muted-foreground/60 border-neutral-500/15"
                             )}>
                               {staff.isActive ? "Active" : "Off"}
@@ -383,7 +387,7 @@ export default function StaffPage() {
                         <span className={cn(
                           "text-[9px] uppercase font-bold tracking-wider rounded-full px-2 py-0.5 border",
                           activeDetails.staff.isActive
-                            ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
+                            ? "bg-emerald-500/10 text-[hsl(var(--state-success-text))] border-emerald-500/20"
                             : "bg-neutral-500/8 text-muted-foreground/60 border-neutral-500/15"
                         )}>
                           {activeDetails.staff.isActive ? "Active" : "Inactive"}
@@ -550,8 +554,8 @@ export default function StaffPage() {
                                     <span className={cn(
                                       "text-[9px] uppercase font-bold tracking-wider px-1.5 py-0.5 rounded border",
                                       exc.isAvailable
-                                        ? "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20"
-                                        : "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20"
+                                        ? "bg-blue-500/10 text-[hsl(var(--state-info-text))] border-blue-500/20"
+                                        : "bg-rose-500/10 text-[hsl(var(--state-error-text))] border-rose-500/20"
                                     )}>
                                       {exc.isAvailable ? "Custom Hours" : "Closed"}
                                     </span>
@@ -563,7 +567,12 @@ export default function StaffPage() {
                                 <button
                                   type="button"
                                   onClick={() => handleDeleteException(exc.id)}
-                                  className="h-7 w-7 rounded-md text-muted-foreground/40 hover:text-rose-500 hover:bg-rose-500/8 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shrink-0"
+                                  className={getButtonClasses(
+                                    'primary',
+                                    'filled',
+                                    'small',
+                                    'h-7 w-7 text-muted-foreground/40 flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 shrink-0'
+                                  )}
                                 >
                                   <X className="h-3.5 w-3.5" />
                                 </button>
@@ -643,7 +652,7 @@ export default function StaffPage() {
                               <span className={cn(
                                 "text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md flex-1",
                                 isWeekend
-                                  ? "text-amber-600/70 dark:text-amber-400/60 bg-amber-500/5"
+                                  ? "text-[hsl(var(--state-warning-text))]/70 bg-amber-500/5"
                                   : "text-muted-foreground/40 bg-[hsl(var(--foreground)/0.02)]"
                               )}>
                                 {isWeekend ? "Weekend" : "Rest Day"}
@@ -662,7 +671,6 @@ export default function StaffPage() {
         </div>
 
       </div>
-
       {/* ── Add Staff Dialog ── */}
       <Dialog open={createOpen} onOpenChange={setCreateOpen}>
         <DialogContent className="sm:max-w-lg bg-card border-[hsl(var(--foreground)/0.08)] radius-xl">
@@ -706,7 +714,6 @@ export default function StaffPage() {
           </form>
         </DialogContent>
       </Dialog>
-
       {/* ── Exception Dialog ── */}
       <Dialog open={exceptionOpen} onOpenChange={setExceptionOpen}>
         <DialogContent className="sm:max-w-md bg-card border-[hsl(var(--foreground)/0.08)] radius-xl">

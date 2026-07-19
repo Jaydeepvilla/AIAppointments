@@ -100,32 +100,38 @@ export function analyzePasswordStrength(
   const unmetRequirements: string[] = [];
   const suggestions: string[] = [];
 
-  // Length requirement (min 12)
-  if (password.length < 12) {
-    unmetRequirements.push("At least 12 characters");
-    suggestions.push("Make the password longer (currently " + password.length + " characters).");
+  // Check core requirements for consolidated suggestion
+  const hasLength = password.length >= 6;
+  const hasLower = /[a-z]/.test(password);
+  const hasNum = /[0-9]/.test(password);
+  const hasSym = /[!@#$%^&*()_+\-=\[\]\{\};':",.\/<>?]/.test(password);
+  const hasUpper = /[A-Z]/.test(password);
+
+  if (!hasLength || !hasLower || !hasNum || !hasSym) {
+    suggestions.push("Password must be at least 6 characters long and include a lowercase letter, a digit, and a symbol.");
+  }
+
+  // Length requirement
+  if (!hasLength) {
+    unmetRequirements.push("At least 6 characters");
   }
 
   // Case checks
-  if (!/[A-Z]/.test(password)) {
+  if (!hasUpper) {
     unmetRequirements.push("At least one uppercase letter");
-    suggestions.push("Add an uppercase letter (A-Z).");
   }
-  if (!/[a-z]/.test(password)) {
+  if (!hasLower) {
     unmetRequirements.push("At least one lowercase letter");
-    suggestions.push("Add a lowercase letter (a-z).");
   }
 
   // Numeric checks
-  if (!/[0-9]/.test(password)) {
+  if (!hasNum) {
     unmetRequirements.push("At least one number");
-    suggestions.push("Add at least one digit (0-9).");
   }
 
   // Special character checks
-  if (!/[!@#$%^&*()_+\-=\[\]\{\};':",.\/<>?]/.test(password)) {
+  if (!hasSym) {
     unmetRequirements.push("At least one special character");
-    suggestions.push("Add a symbol (e.g. !, @, #, $, %, etc.).");
   }
 
   // Email context checks
@@ -155,7 +161,7 @@ export function analyzePasswordStrength(
 
   // Score calculation
   let scorePoints = 0;
-  if (password.length >= 8) scorePoints++;
+  if (password.length >= 6) scorePoints++;
   if (password.length >= 12) scorePoints++;
   if (/[a-z]/.test(password) && /[A-Z]/.test(password)) scorePoints++;
   if (/[0-9]/.test(password)) scorePoints++;
@@ -173,7 +179,7 @@ export function analyzePasswordStrength(
   }
 
   // If critical requirements unmet, cap score at Medium (2) or Weak (1)
-  if (password.length < 12) {
+  if (password.length < 6) {
     scorePoints = Math.min(2, scorePoints);
   }
 

@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import { useState, useEffect } from "react";
 import {
   getTemplatesAction,
@@ -23,6 +22,8 @@ import { Input } from "@/components/shared/input";
 import { Label } from "@/components/shared/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/shared/card";
 import { cn } from "@/components/shared/utils";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 const DEFAULT_VARIABLES = ["customer_name", "appointment_time", "service_name", "staff_name", "business_name", "cancel_link"];
 
@@ -131,18 +132,21 @@ export default function TemplatesPage() {
           </Button>
         }
       />
-
       {errorMsg && (
         <div className="flex items-center gap-space-2 radius-lg bg-error-500/10 border border-error-500/20 p-space-3 text-caption text-error-500">
           <AlertCircle className="h-4 w-4"/>
           <span>{errorMsg}</span>
-          <button className="ml-auto flex items-center justify-center h-6 w-6 radius-full hover:bg-error-500/20 transition-colors" onClick={() => setErrorMsg("")}>
+          <button className={getButtonClasses(
+            'primary',
+            'filled',
+            'small',
+            'ml-auto flex items-center justify-center h-6 w-6 transition-colors'
+          )} onClick={() => setErrorMsg("")}>
             <span className="sr-only">Dismiss</span>
             &times;
           </button>
         </div>
       )}
-
       {loading ? (
         <div className="h-96 flex flex-col items-center justify-center text-caption text-muted-foreground gap-space-2">
           <Loader2 className="h-5 w-5 animate-spin text-primary"/>
@@ -280,7 +284,12 @@ export default function TemplatesPage() {
                             key={v}
                             type="button"
                             onClick={() => insertVariable(v)}
-                            className="text-[11px] font-medium bg-[hsl(var(--foreground)/0.03)] border border-[hsl(var(--foreground)/0.08)] radius-md px-space-2 py-space-1 text-muted-foreground hover:text-foreground hover:bg-primary/10 hover:border-primary/20 hover:text-primary transition-all select-none cursor-pointer"
+                            className={getButtonClasses(
+                              'primary',
+                              'filled',
+                              'small',
+                              'text-[11px] bg-[hsl(var(--foreground)/0.03)] border border-[hsl(var(--foreground)/0.08)] text-muted-foreground hover: hover: transition-all select-none cursor-pointer'
+                            )}
                           >
                             {v}
                           </button>

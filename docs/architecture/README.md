@@ -1,12 +1,37 @@
 # Enterprise System Architecture
 
-This directory contains the production-grade architectural blueprints for the AI Receptionist SaaS platform.
+# Overview
+Explain the purpose.
 
-## Technology Stack
-- Next.js 16 (App Router)
-- React 19
-- TypeScript
-- Tailwind CSS v4
-- PostgreSQL & Drizzle ORM
-- AI SDK
-- Vercel
+# Real Screenshot
+![Enterprise System Architecture](/docs-assets/screenshots/enterprise-system-architecture.png)
+
+# UI Walkthrough
+① Element 1
+Explain.
+
+② Element 2
+Explain.
+
+③ Element 3
+Explain.
+
+# Step-by-step Guide
+Walk through the actual workflow.
+
+# Tips
+Explain best practices.
+
+# Common Mistakes
+Explain what users usually do wrong.
+
+# Troubleshooting
+Explain common issues.
+
+# FAQ
+Answer common questions.
+
+# Related Features
+Link to related documentation.
+
+**Last Updated:** 2026-07-19

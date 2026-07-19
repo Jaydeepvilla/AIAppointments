@@ -88,7 +88,7 @@ export function SocialButton({
         // Type
         "text-body-sm font-semibold tracking-tight text-foreground",
         // Surface
-        "bg-bg-layer-1 border border-border-default radius-lg",
+        "bg-bg-layer-1 border border-border-default radius-full",
         // Hover — lift + border brightens
         "hover:-translate-y-px hover:bg-foreground/[0.03] hover:border-border-hover",
         // Active — press down
@@ -119,7 +119,6 @@ export function SocialButton({
 // ── Pair of social buttons ────────────────────────────────────────────────
 interface AuthSocialButtonsProps {
   onGoogleClick?: () => void;
-  onAppleClick?: () => void;
   isLoading?: boolean;
   /** Legacy: keeps API compatible with pages that pass `disabled` */
   disabled?: boolean;
@@ -127,22 +126,16 @@ interface AuthSocialButtonsProps {
 
 export function AuthSocialButtons({
   onGoogleClick,
-  onAppleClick,
   isLoading,
   disabled,
 }: AuthSocialButtonsProps) {
-  const loading = isLoading || disabled;
   return (
     <div className="space-y-space-3">
       <SocialButton
         provider="google"
         onClick={onGoogleClick}
-        isLoading={loading}
-      />
-      <SocialButton
-        provider="apple"
-        onClick={onAppleClick}
-        isLoading={loading}
+        isLoading={isLoading}
+        disabled={disabled || isLoading}
       />
     </div>
   );

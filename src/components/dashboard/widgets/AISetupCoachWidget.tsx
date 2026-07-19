@@ -1,5 +1,7 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { Button } from "@/components/shared/button";
 import { SetupState } from "@/lib/setup-engine/types";
 import { RecommendationAction } from "@/lib/recommendation-engine/types";

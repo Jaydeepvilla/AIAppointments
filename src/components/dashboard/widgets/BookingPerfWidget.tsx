@@ -1,5 +1,8 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
+
 import { DailyBriefData } from "@/lib/dashboard-engine/daily-brief";
 import { KPICard } from "../shared/kpi-card";
 import { MetricBar } from "../shared/metric-bar";

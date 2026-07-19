@@ -16,7 +16,7 @@ export function KnowledgeIntelligenceCard({ quality }: KnowledgeIntelligenceCard
     <Card className="border border-border-default radius-xl overflow-hidden flex flex-col h-full bg-gradient-to-br from-background to-blue-500/5 hover:border-blue-500/30 transition-colors">
       <CardHeader className="border-b border-border-default/50 pb-space-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-body-md font-semibold flex items-center gap-space-2 text-blue-600 dark:text-blue-400">
+          <CardTitle className="text-body-md font-semibold flex items-center gap-space-2 text-[hsl(var(--state-info-text))]">
             <BrainCircuit className="h-5 w-5" />
             Knowledge Quality Engine
           </CardTitle>

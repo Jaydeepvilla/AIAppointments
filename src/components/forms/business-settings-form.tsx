@@ -413,8 +413,8 @@ export function BusinessSettingsForm({ settings, connections = [], bookingRules 
         <span className={cn(
          "inline-flex text-[10px] font-semibold border px-space-2 py-space-0.5 rounded-full uppercase tracking-wider shrink-0",
          !dayHours.closed
-          ? "bg-emerald-500/8 border-emerald-500/15 text-emerald-600 dark:text-emerald-400"
-          : "bg-rose-500/8 border-rose-500/15 text-rose-600 dark:text-rose-400"
+          ? "bg-[hsl(var(--state-success-bg))] border-[hsl(var(--state-success-border))] text-[hsl(var(--state-success-text))]"
+          : "bg-[hsl(var(--state-error-bg))] border-[hsl(var(--state-error-border))] text-[hsl(var(--state-error-text))]"
         )}>
          {!dayHours.closed ? "Open" : "Closed"}
         </span>

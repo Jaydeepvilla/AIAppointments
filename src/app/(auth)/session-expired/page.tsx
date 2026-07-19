@@ -4,6 +4,8 @@ import { Clock, ArrowRight } from "lucide-react";
 import { AuthLayout } from "@/components/auth/auth-layout";
 import { AuthHeader } from "@/components/shared/auth-forms";
 
+import { getButtonClasses } from '@/design-system/button-tokens';
+
 export const metadata: Metadata = {
   title: "Session Expired | Operator",
   description: "Your session has expired. Please sign in again.",
@@ -45,7 +47,12 @@ export default async function SessionExpiredPage({ searchParams }: PageProps) {
           <div className="flex flex-col gap-space-3">
             <Link
               href={`/sign-in${returnUrl !== "/dashboard" ? `?returnUrl=${encodeURIComponent(returnUrl)}` : ""}`}
-              className="inline-flex items-center justify-center gap-space-2 w-full px-space-4 py-space-3 radius-xl bg-primary text-primary-foreground text-body-sm font-semibold hover:bg-primary-light active:scale-[0.99] transition-all duration-fast"
+              className={getButtonClasses(
+                'primary',
+                'filled',
+                'medium',
+                'inline-flex items-center justify-center gap-space-2 w-full text-body-sm hover:-light] transition-all duration-fast'
+              )}
             >
               Sign in again <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>

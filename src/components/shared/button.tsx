@@ -5,6 +5,8 @@ import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { cn } from "./utils";
+import { m } from "framer-motion";
+import { hoverScale, tapScale } from "@/components/motion";
 
 /**
  * ================================================================
@@ -34,8 +36,8 @@ const buttonVariants = cva(
     "whitespace-nowrap",
     // Typography — max weight 600 (semibold), never bold/extrabold
     "text-label font-semibold tracking-tight",
-    // Transitions — uses motion tokens
-    "transition-all duration-fast ease-standard",
+    // Transitions — uses motion tokens (explicitly 120ms)
+    "transition-all duration-[120ms] ease-standard",
     // Focus ring — WCAG 2.2 AA: visible, offset, branded
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
     // Pressed state
@@ -84,7 +86,7 @@ const buttonVariants = cva(
          * Use for: secondary in card/sidebar, filter toggles
          */
         outline:
-          "border border-border-default bg-transparent text-foreground " +
+          "border border-border-strong bg-transparent text-foreground " +
           "hover:bg-foreground/[0.04] hover:border-border-hover " +
           "active:bg-foreground/[0.08] " +
           "data-[state=active]:border-primary data-[state=active]:text-primary data-[state=active]:bg-primary/5 " +
@@ -221,14 +223,16 @@ const buttonVariants = cva(
 
       // ─── Shape ────────────────────────────────────────────────────
       shape: {
-        /** Default — uses radius-md (matches design system card radius) */
-        default: "radius-md",
-        /** Rounded corners via design system token */
+        /** Default — premium pill shape (radius-full) for all CTA buttons */
+        default: "radius-full",
+        /** Subtle rounding — for grouped/card-embedded buttons */
         rounded: "radius-lg",
-        /** Fully round — for pill/tag style */
+        /** Explicit pill alias — same as default, kept for clarity */
         pill: "radius-full",
         /** Circular — for icon-only round buttons */
         circle: "radius-full aspect-square",
+        /** Medium radius — legacy/card style (was the old default) */
+        md: "radius-md",
         /** Sharp corners — for grouped button clusters */
         square: "rounded-none",
       },
@@ -253,7 +257,7 @@ const buttonVariants = cva(
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  VariantProps<typeof buttonVariants> {
   /** Render as child component (e.g., Next.js Link) via Radix Slot */
   asChild?: boolean;
   /** Show loading spinner. Disables button and sets aria-busy */
@@ -292,24 +296,31 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     },
     ref
   ) => {
-    const Comp = asChild ? Slot : "button";
+    const isMotion = !asChild;
+    const Comp = asChild ? Slot : m.button;
 
     const isDisabled = disabled || loading;
 
     // Determine current state for data attribute
     const dataState = active ? "active" : selected ? "selected" : undefined;
 
+    const motionProps = isMotion && !isDisabled ? {
+      whileHover: hoverScale,
+      whileTap: tapScale,
+    } : {};
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, shape, width, className }))}
-        ref={ref}
+        ref={ref as any}
         disabled={isDisabled}
         aria-busy={loading ? true : undefined}
         aria-disabled={isDisabled ? true : undefined}
         aria-pressed={active ? true : selected ? false : undefined}
         data-state={dataState}
         data-loading={loading ? true : undefined}
-        {...props}
+        {...motionProps}
+        {...(props as any)}
       >
         {asChild ? (
           children

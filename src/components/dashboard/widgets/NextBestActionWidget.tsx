@@ -1,3 +1,5 @@
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { Button } from "@/components/shared/button";
 import { RecommendationAction } from "@/lib/recommendation-engine/types";
 import { ArrowRight, Zap, Clock, CheckCircle2, TrendingUp, Target } from "lucide-react";

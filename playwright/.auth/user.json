@@ -1,0 +1,25 @@
+{
+  "cookies": [
+    {
+      "name": "refresh_token",
+      "value": "eccbfb1b5ab075ce20130e682079baa4e37787847efa52326ca44624e3f8a4e0",
+      "domain": "localhost",
+      "path": "/api/auth/refresh",
+      "expires": 1787044490.022227,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Strict"
+    },
+    {
+      "name": "session_token",
+      "value": "47be46abe57d271cd1ce2311ff675e09948e3567d5f7398bdcd7216730a09114",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1787044490.020826,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": []
+}

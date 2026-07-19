@@ -17,8 +17,8 @@ const DialogOverlay = React.forwardRef<
  <DialogPrimitive.Overlay
  ref={ref}
  className={cn(
- "fixed inset-space-0 z-50 bg-black/50 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
- className
+   "fixed inset-space-0 z-50 bg-[hsl(var(--overlay))] backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+   className
  )}
  {...props}
  />
@@ -32,18 +32,18 @@ const DialogContent = React.forwardRef<
  <DialogPortal>
  <DialogOverlay />
  <DialogPrimitive.Content
- ref={ref}
- className={cn(
- "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-space-4 border border-border bg-background p-space-6 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-space-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-space-1/2 data-[state=open]:slide-in-from-top-[48%] radius-xl",
- className
- )}
- {...props}
+   ref={ref}
+   className={cn(
+     "fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-space-4 border border-border bg-background shadow-xl p-space-6 duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-space-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-space-1/2 data-[state=open]:slide-in-from-top-[48%] radius-xl",
+     className
+   )}
+   {...props}
  >
- {children}
- <DialogPrimitive.Close className="absolute right-space-4 top-space-4 radius-md p-space-1 text-muted-foreground/60 transition-all duration-150 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.06)] focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1 focus:ring-offset-background disabled:pointer-events-none cursor-pointer active:scale-95">
- <X className="h-4 w-4"/>
- <span className="sr-only">Close</span>
- </DialogPrimitive.Close>
+   {children}
+   <DialogPrimitive.Close className="absolute right-space-4 top-space-4 radius-md p-space-1 text-muted-foreground/60 transition-all duration-150 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.06)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[hsl(var(--ring)/0.3)] focus-visible:ring-offset-1 focus-visible:ring-offset-background disabled:pointer-events-none cursor-pointer active:scale-95">
+   <X className="h-4 w-4"/>
+   <span className="sr-only">Close</span>
+   </DialogPrimitive.Close>
  </DialogPrimitive.Content>
  </DialogPortal>
 ));

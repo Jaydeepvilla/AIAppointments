@@ -15,8 +15,8 @@ export default function SignUpPage() {
     <AuthLayout>
       <div className="space-y-space-8">
         <AuthHeader
-          heading="Create your workspace."
-          subheading="Start your free 14-day trial. No credit card required."
+          heading="Welcome to Operator 👋"
+          subheading="We're glad to have you onboard!"
         />
         <Suspense
           fallback={

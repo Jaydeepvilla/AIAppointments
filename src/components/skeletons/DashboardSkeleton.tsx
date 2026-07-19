@@ -12,7 +12,7 @@ export function DashboardSkeleton() {
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-space-4">
         {Array.from({ length: 4 }).map((_, i) => (
-          <div key={i} className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-card text-card-foreground shadow-sm p-space-6 space-y-space-4">
+          <div key={i} className="rounded-xl border border-border bg-card text-card-foreground shadow-sm p-space-6 space-y-space-4">
             <div className="flex items-center justify-between">
               <Skeleton className="h-4 w-20" />
               <Skeleton className="h-4 w-4 rounded-full" />
@@ -28,8 +28,8 @@ export function DashboardSkeleton() {
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-space-6">
           {Array.from({ length: 2 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-card text-card-foreground shadow-sm">
-              <div className="p-space-6 border-b border-neutral-200 dark:border-neutral-800">
+            <div key={i} className="rounded-xl border border-border bg-card text-card-foreground shadow-sm">
+              <div className="p-space-6 border-b border-border">
                 <Skeleton className="h-5 w-40 mb-space-2" />
                 <Skeleton className="h-4 w-60" />
               </div>
@@ -43,7 +43,7 @@ export function DashboardSkeleton() {
         {/* Sidebar Widgets */}
         <div className="space-y-space-6">
           {Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-card text-card-foreground shadow-sm p-space-6 space-y-space-4">
+            <div key={i} className="rounded-xl border border-border bg-card text-card-foreground shadow-sm p-space-6 space-y-space-4">
               <Skeleton className="h-5 w-32 mb-space-4" />
               <div className="space-y-space-3">
                 <Skeleton className="h-4 w-full" />

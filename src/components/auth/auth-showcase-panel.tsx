@@ -1,358 +1,531 @@
 "use client";
 
 import * as React from "react";
-import {
-  CheckCircle2,
-  Calendar,
-  Clock,
-  Bot,
-  Phone,
-  PhoneIncoming,
-  Star,
-} from "lucide-react";
 import { cn } from "@/components/shared/utils";
-import { Logo } from "@/components/shared/logo";
 
 /* ════════════════════════════════════════════════════════════════════════════
-   SLIDE 1 — Appointment schedule
+   SHARED CARD SHELL
    ════════════════════════════════════════════════════════════════════════════ */
-
-const APPOINTMENTS = [
-  { initials: "SM", name: "Sarah Mitchell", service: "Dental Hygiene", time: "10:30 AM", status: "active" },
-  { initials: "JK", name: "James Kowalski", service: "Root Canal", time: "11:15 AM", status: "confirmed" },
-  { initials: "ER", name: "Emily Rosen",    service: "Teeth Whitening", time: "2:00 PM", status: "upcoming" },
-  { initials: "DL", name: "David Lee",      service: "Braces Check",    time: "3:45 PM", status: "upcoming" },
-];
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, string> = {
-    active:    "bg-state-success-bg text-state-success-text border border-state-success-text/30",
-    confirmed: "bg-primary/10 text-primary border border-primary/25",
-    upcoming:  "bg-state-warning-bg text-state-warning-text border border-state-warning-text/25",
-  };
+function DashCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <span className={cn("px-space-1.5 py-space-0.5 radius-full text-caption font-semibold", map[status] ?? map.upcoming)}>
-      {status}
-    </span>
+    <div
+      className={cn(
+        "rounded-2xl border border-white/[0.05] bg-[#181B2A]",
+        "shadow-[0_2px_20px_rgba(0,0,0,0.4)]",
+        "transition-transform duration-300 hover:-translate-y-0.5",
+        className
+      )}
+    >
+      {children}
+    </div>
   );
 }
 
-function ScheduleCard() {
+/* ════════════════════════════════════════════════════════════════════════════
+   CHART PRIMITIVES
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/** Compact sparkline bars — sits in top-right of Revenue card */
+function SparkBars({
+  bars,
+  accent = "#7C5CFC",
+  barW = 7,
+  height = 30,
+}: {
+  bars: number[];
+  accent?: string;
+  barW?: number;
+  height?: number;
+}) {
+  const max = Math.max(...bars);
   return (
-    <div
-      className="bg-bg-layer-1 radius-2xl p-space-5 -rotate-2"
-      style={{ boxShadow: "0 20px 60px hsl(var(--primary) / 0.18), 0 4px 16px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center justify-between mb-space-4">
-        <div>
-          <p className="text-caption text-foreground/40 font-medium">Today&apos;s Schedule</p>
-          <p className="text-label font-semibold text-foreground">Thursday, Jul 24</p>
-        </div>
-        <div className="flex items-center gap-space-1.5 px-space-2.5 py-space-1 radius-full bg-state-success-bg border border-state-success-text/25">
-          <div className="h-1.5 w-1.5 rounded-full bg-state-success-text animate-pulse-soft shrink-0" style={{ animationDuration: "2s" }} aria-hidden="true" />
-          <span className="text-caption text-state-success-text font-semibold">AI Active</span>
+    <div className="flex items-end gap-[2.5px]" style={{ height }}>
+      {bars.map((v, i) => {
+        const h = Math.max(3, Math.round((v / max) * height * 0.92));
+        const isLast = i === bars.length - 1;
+        return (
+          <div
+            key={i}
+            style={{
+              width: barW,
+              height: h,
+              borderRadius: 2,
+              background: isLast ? accent : `${accent}60`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+/** Bar chart with horizontal grid lines — used in Appointments card */
+function GridBarChart({
+  data,
+  height = 90,
+  accent = "#7C5CFC",
+}: {
+  data: { a: number; b: number }[];
+  height?: number;
+  accent?: string;
+}) {
+  const maxVal = Math.max(...data.map((d) => d.a + d.b));
+  const gridCount = 4;
+
+  return (
+    <div className="relative w-full" style={{ height }}>
+      {/* Horizontal grid lines */}
+      {Array.from({ length: gridCount }).map((_, i) => (
+        <div
+          key={i}
+          className="absolute left-0 right-0 border-t border-white/[0.04]"
+          style={{ top: `${(i / (gridCount - 1)) * 100}%` }}
+        />
+      ))}
+      {/* Bars */}
+      <div className="absolute inset-0 flex items-end gap-[3px]">
+        {data.map((d, i) => {
+          const totalH = Math.round(((d.a + d.b) / maxVal) * (height - 2));
+          const bH = Math.max(2, Math.round((d.b / (d.a + d.b)) * totalH));
+          const aH = Math.max(2, totalH - bH);
+          return (
+            <div key={i} className="flex flex-col-reverse flex-1 gap-[1px]">
+              <div
+                style={{ height: aH, background: `${accent}50`, borderRadius: "2px 2px 0 0" }}
+              />
+              <div
+                style={{ height: bH, background: accent, borderRadius: "2px 2px 0 0" }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/** Circular progress ring */
+function RingChart({
+  percent,
+  size = 64,
+  stroke = 5,
+  accent = "#7C5CFC",
+  label,
+}: {
+  percent: number;
+  size?: number;
+  stroke?: number;
+  accent?: string;
+  label?: string;
+}) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const dash = Math.max(0, (percent / 100) * circ);
+
+  return (
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg width={size} height={size} aria-hidden="true">
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none" stroke="rgba(255,255,255,0.07)" strokeWidth={stroke}
+        />
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none" stroke={accent} strokeWidth={stroke}
+          strokeDasharray={`${dash} ${circ - dash}`}
+          strokeLinecap="round"
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      </svg>
+      {label && (
+        <span className="absolute inset-0 flex items-center justify-center text-[10px] font-black text-white">
+          {label}
+        </span>
+      )}
+    </div>
+  );
+}
+
+/** Large centered donut for Segmentation card */
+function DonutChart({
+  segments,
+  size = 92,
+  stroke = 13,
+  centerSub,
+  centerLabel,
+}: {
+  segments: { value: number; color: string }[];
+  size?: number;
+  stroke?: number;
+  centerSub?: string;
+  centerLabel?: string;
+}) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const total = segments.reduce((s, g) => s + g.value, 0);
+  let offset = 0;
+
+  return (
+    <div className="relative mx-auto" style={{ width: size, height: size }}>
+      <svg width={size} height={size} aria-hidden="true">
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke}
+        />
+        {segments.map((seg, i) => {
+          const len = (seg.value / total) * circ;
+          const gap = 2;
+          const el = (
+            <circle
+              key={i}
+              cx={size / 2} cy={size / 2} r={r}
+              fill="none"
+              stroke={seg.color}
+              strokeWidth={stroke}
+              strokeDasharray={`${Math.max(0, len - gap)} ${circ - Math.max(0, len - gap)}`}
+              strokeDashoffset={-offset}
+              strokeLinecap="butt"
+              transform={`rotate(-90 ${size / 2} ${size / 2})`}
+            />
+          );
+          offset += len;
+          return el;
+        })}
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        {centerSub && (
+          <span className="text-[6.5px] text-white/35 leading-none mb-0.5">{centerSub}</span>
+        )}
+        {centerLabel && (
+          <span className="text-[16px] font-black text-white leading-none">{centerLabel}</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/** Slim horizontal progress bar */
+function ProgressBar({
+  pct,
+  color = "#7C5CFC",
+  className,
+}: {
+  pct: number;
+  color?: string;
+  className?: string;
+}) {
+  return (
+    <div className={cn("h-[4px] w-full rounded-full bg-white/[0.06]", className)}>
+      <div
+        className="h-full rounded-full"
+        style={{ width: `${Math.min(100, pct)}%`, background: color }}
+      />
+    </div>
+  );
+}
+
+/* ════════════════════════════════════════════════════════════════════════════
+   DASHBOARD CARDS
+   ════════════════════════════════════════════════════════════════════════════ */
+
+/** Card 1 — Monthly Revenue (sparkline bars top-right) */
+function RevenueCard() {
+  const bars = [32, 48, 40, 58];
+  return (
+    <DashCard className="p-4">
+      <div className="flex items-start justify-between">
+        <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider">
+          Monthly Revenue
+        </p>
+        <div className="flex flex-col items-end gap-1.5">
+          <SparkBars bars={bars} barW={7} height={28} />
+          <div className="flex gap-1.5">
+            {["Apr", "May", "Jun", "Jul"].map((m) => (
+              <span key={m} className="text-[6px] text-white/25">{m}</span>
+            ))}
+          </div>
         </div>
       </div>
-      <div className="space-y-space-0.5">
-        {APPOINTMENTS.map((a, i) => (
-          <div key={i} className="flex items-center gap-space-3 px-space-2.5 py-space-2 radius-lg hover:bg-foreground/[0.03] transition-colors duration-fast">
-            <div className="h-8 w-8 shrink-0 radius-full bg-primary/10 border border-primary/15 flex items-center justify-center">
-              <span className="text-primary font-bold text-caption">{a.initials}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-caption font-semibold text-foreground truncate">{a.name}</p>
-              <p className="text-caption text-foreground/40 truncate">{a.service}</p>
-            </div>
-            <div className="flex flex-col items-end gap-space-0.5 shrink-0">
-              <p className="text-caption font-medium text-foreground/60 tabular-nums">{a.time}</p>
-              <StatusBadge status={a.status} />
-            </div>
+      <p className="mt-2 text-[19px] font-black text-white leading-none tracking-tight">
+        <span className="text-[11px] font-semibold text-white/45 mr-px">$</span>24,830
+      </p>
+      <p className="mt-1.5 text-[7px] text-white/30 leading-relaxed">
+        Your revenue decreased this month by about{" "}
+        <span className="text-rose-400/80 font-semibold">–$421</span>
+      </p>
+    </DashCard>
+  );
+}
+
+/** Card 2 — Target Status (ring + numbers) */
+function TargetCard() {
+  return (
+    <DashCard className="p-4 flex flex-col h-full">
+      <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider mb-3">
+        Target Status
+      </p>
+      <div className="flex items-center gap-3 flex-1">
+        <RingChart percent={80} size={60} stroke={5} accent="#7C5CFC" label="80%" />
+        <div>
+          <p className="text-[22px] font-black text-white leading-none">3,415</p>
+          <p className="text-[7px] text-white/30 mt-0.5">/ 4,000</p>
+          <p className="text-[7px] text-amber-400/75 mt-2 leading-snug">
+            less than 20% of your<br />sales target will be achieved.
+          </p>
+        </div>
+      </div>
+    </DashCard>
+  );
+}
+
+/** Card 3 — Appointments / Closed Won (tall, bar chart with gridlines) */
+function AppointmentsCard() {
+  const data = [
+    { a: 32, b: 14 }, { a: 44, b: 20 }, { a: 38, b: 16 },
+    { a: 58, b: 26 }, { a: 50, b: 22 }, { a: 64, b: 30 },
+  ];
+  return (
+    <DashCard className="p-4 flex flex-col flex-1">
+      <div className="flex items-start justify-between mb-1.5">
+        <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider">
+          Appointments Booked
+        </p>
+        <span className="text-[9px] text-white/20">›</span>
+      </div>
+      <p className="text-[19px] font-black text-white leading-none tracking-tight">
+        <span className="text-[11px] font-semibold text-white/45 mr-px">$</span>11,680
+      </p>
+      <p className="mt-1.5 text-[7px] text-white/30 leading-relaxed">
+        this month&apos;s total booking value increased<br />
+        from last month&apos;s around{" "}
+        <span className="text-emerald-400/80 font-semibold">+$6,450</span>
+      </p>
+
+      <div className="mt-3 flex-1">
+        <GridBarChart data={data} height={86} />
+      </div>
+
+      <div className="flex gap-3 mt-2">
+        {[
+          { label: "Existing Customers", color: "#7C5CFC50" },
+          { label: "New Customers",      color: "#7C5CFC" },
+        ].map(({ label, color }) => (
+          <span key={label} className="flex items-center gap-1 text-[6.5px] text-white/30">
+            <span className="w-1.5 h-1.5 rounded-sm shrink-0" style={{ background: color }} />
+            {label}
+          </span>
+        ))}
+      </div>
+    </DashCard>
+  );
+}
+
+/** Card 4 — Customer Segmentation (large centered donut) */
+function SegmentationCard() {
+  const segments = [
+    { value: 1650, color: "#7C5CFC" },
+    { value: 458,  color: "#60A5FA" },
+    { value: 350,  color: "#34D399" },
+    { value: 300,  color: "#F59E0B" },
+  ];
+  const rows = [
+    { label: "Small Business", val: "1,650", delta: "↑ 434", color: "#7C5CFC" },
+    { label: "Enterprise",     val: "350",   delta: "↑ 34",  color: "#60A5FA" },
+    { label: "Individuals",    val: "458",   delta: "↑ 111", color: "#34D399" },
+  ];
+
+  return (
+    <DashCard className="p-4 flex flex-col flex-1">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider">
+          Customer Segmentation
+        </p>
+        <span className="text-[9px] text-white/20">›</span>
+      </div>
+
+      {/* Large centered donut */}
+      <div className="flex justify-center my-2.5">
+        <DonutChart
+          segments={segments}
+          size={90}
+          stroke={13}
+          centerSub="Total"
+          centerLabel="2,758"
+        />
+      </div>
+
+      {/* Legend rows */}
+      <div className="space-y-2 flex-1">
+        {rows.map((r) => (
+          <div key={r.label} className="flex items-center gap-1.5">
+            <div
+              className="w-[3px] h-3.5 rounded-full shrink-0"
+              style={{ background: r.color }}
+            />
+            <span className="text-[7px] text-white/40 flex-1 min-w-0 truncate">{r.label}</span>
+            <span className="text-[7px] font-bold text-white/60">{r.val}</span>
+            <span className="text-[6.5px] text-emerald-400/60 w-8 text-right">{r.delta}</span>
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-space-2 border-t border-border-subtle mt-space-3 pt-space-3">
-        <Bot className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-        <span className="text-caption text-foreground/40">AI handling 3 new requests…</span>
-        <div className="flex gap-space-0.5 ml-auto">
-          {[0, 1, 2].map((i) => (
-            <span key={i} className="h-1 w-1 rounded-full bg-primary animate-bounce"
-              style={{ animationDelay: `${i * 120}ms`, animationDuration: "0.8s" }} />
+
+      {/* Pill "More details" button */}
+      <button
+        type="button"
+        className="mt-3 w-full rounded-full border border-white/[0.08] py-1.5 text-[7.5px] font-semibold text-white/35 hover:text-white/55 hover:border-white/15 transition-all"
+      >
+        More details
+      </button>
+    </DashCard>
+  );
+}
+
+/** Card 5 — Task / AI Resolution Rate */
+function TaskCard() {
+  return (
+    <DashCard className="p-4">
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider">
+          AI Resolution Rate
+        </p>
+        <span className="text-[9px] text-white/20">›</span>
+      </div>
+      <div className="flex items-end justify-between">
+        <div className="flex items-baseline gap-1.5">
+          <p className="text-[22px] font-black text-white leading-none">92%</p>
+          <span className="text-[7px] text-emerald-400 font-semibold">↑ 3%</span>
+        </div>
+        {/* Avatar stack — mirrors the face-bubbles in reference */}
+        <div className="flex -space-x-1.5">
+          {["#7C5CFC", "#60A5FA", "#34D399"].map((c, i) => (
+            <div
+              key={i}
+              className="w-5 h-5 rounded-full border border-[#181B2A] flex items-center justify-center"
+              style={{ background: c }}
+            />
           ))}
         </div>
       </div>
-    </div>
+      <ProgressBar pct={92} className="mt-3" />
+    </DashCard>
   );
 }
 
-function ConfirmationCard() {
+/** Card 6 — Conversion Rates */
+function ConversionCard() {
+  const rows = [
+    { pct: 75.3, label: "↑ 7,434", sub: "12,800 booked",     color: "#7C5CFC" },
+    { pct: 24.7, label: "↑ 711",   sub: "1,421 Product sales", color: "#F59E0B" },
+  ];
+
   return (
-    <div
-      className="bg-bg-layer-1 radius-xl p-space-4 rotate-3 animate-float"
-      style={{ animationDuration: "8s", boxShadow: "0 12px 40px hsl(var(--primary) / 0.16), 0 2px 8px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center gap-space-2 mb-space-2">
-        <CheckCircle2 className="h-4 w-4 text-state-success-text shrink-0 animate-success" aria-hidden="true" />
-        <span className="text-caption font-semibold text-state-success-text">Appointment Confirmed</span>
+    <DashCard className="p-4">
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[8px] font-semibold text-white/35 uppercase tracking-wider">
+          Conversion Rates
+        </p>
+        <span className="text-[9px] text-white/20">›</span>
       </div>
-      <p className="text-label font-semibold text-foreground">Sarah Mitchell</p>
-      <div className="flex items-center gap-space-3 mt-space-1.5">
-        <div className="flex items-center gap-space-1 text-foreground/45">
-          <Calendar className="h-3 w-3" aria-hidden="true" />
-          <span className="text-caption">Thu, Jul 24</span>
-        </div>
-        <div className="flex items-center gap-space-1 text-foreground/45">
-          <Clock className="h-3 w-3" aria-hidden="true" />
-          <span className="text-caption">10:30 AM</span>
-        </div>
-      </div>
-      <p className="text-caption text-foreground/30 mt-space-1.5">SMS confirmation sent ✓</p>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   SLIDE 2 — Recent calls
-   ════════════════════════════════════════════════════════════════════════════ */
-
-const CALLS = [
-  { initials: "AT", name: "Alicia Torres",  duration: "2:14", outcome: "booked",  time: "9:12 AM" },
-  { initials: "MR", name: "Marcus Reid",    duration: "1:47", outcome: "informed", time: "9:38 AM" },
-  { initials: "PK", name: "Priya Kapoor",   duration: "3:02", outcome: "booked",  time: "10:05 AM" },
-  { initials: "CW", name: "Chris Walsh",    duration: "0:58", outcome: "missed",   time: "10:22 AM" },
-];
-
-function OutcomeBadge({ outcome }: { outcome: string }) {
-  const map: Record<string, string> = {
-    booked:   "bg-state-success-bg text-state-success-text border border-state-success-text/30",
-    informed: "bg-primary/10 text-primary border border-primary/25",
-    missed:   "bg-state-error-bg text-state-error-text border border-state-error-text/25",
-  };
-  return (
-    <span className={cn("px-space-1.5 py-space-0.5 radius-full text-caption font-semibold", map[outcome] ?? map.informed)}>
-      {outcome}
-    </span>
-  );
-}
-
-function CallsCard() {
-  return (
-    <div
-      className="bg-bg-layer-1 radius-2xl p-space-5 -rotate-2"
-      style={{ boxShadow: "0 20px 60px hsl(var(--primary) / 0.18), 0 4px 16px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center justify-between mb-space-4">
-        <div>
-          <p className="text-caption text-foreground/40 font-medium">Recent Calls</p>
-          <p className="text-label font-semibold text-foreground">Thursday, Jul 24</p>
-        </div>
-        <div className="flex items-center gap-space-1.5 px-space-2.5 py-space-1 radius-full bg-primary/10 border border-primary/20">
-          <PhoneIncoming className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-          <span className="text-caption text-primary font-semibold">24 today</span>
-        </div>
-      </div>
-      <div className="space-y-space-0.5">
-        {CALLS.map((c, i) => (
-          <div key={i} className="flex items-center gap-space-3 px-space-2.5 py-space-2 radius-lg hover:bg-foreground/[0.03] transition-colors duration-fast">
-            <div className="h-8 w-8 shrink-0 radius-full bg-primary/10 border border-primary/15 flex items-center justify-center">
-              <span className="text-primary font-bold text-caption">{c.initials}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-caption font-semibold text-foreground truncate">{c.name}</p>
-              <p className="text-caption text-foreground/40 truncate">{c.time} · {c.duration}</p>
-            </div>
-            <div className="shrink-0">
-              <OutcomeBadge outcome={c.outcome} />
-            </div>
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center gap-space-2 border-t border-border-subtle mt-space-3 pt-space-3">
-        <Bot className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-        <span className="text-caption text-foreground/40">AI resolved 96% without escalation</span>
-      </div>
-    </div>
-  );
-}
-
-function LiveCallCard() {
-  return (
-    <div
-      className="bg-bg-layer-1 radius-xl p-space-4 -rotate-2 animate-float"
-      style={{ animationDuration: "9s", boxShadow: "0 12px 40px hsl(var(--primary) / 0.16), 0 2px 8px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center gap-space-2 mb-space-2">
-        <div className="flex items-center gap-space-1.5 px-space-2 py-space-0.5 radius-full bg-state-error-bg border border-state-error-text/25">
-          <div className="h-1.5 w-1.5 rounded-full bg-state-error-text animate-pulse-soft shrink-0" style={{ animationDuration: "1s" }} aria-hidden="true" />
-          <span className="text-caption text-state-error-text font-semibold">Live Call</span>
-        </div>
-      </div>
-      <div className="flex items-center gap-space-2 mb-space-1.5">
-        <div className="h-7 w-7 shrink-0 radius-full bg-primary/10 border border-primary/15 flex items-center justify-center">
-          <Phone className="h-3 w-3 text-primary" aria-hidden="true" />
-        </div>
-        <div>
-          <p className="text-label font-semibold text-foreground">Emma Rodriguez</p>
-        </div>
-      </div>
-      <p className="text-caption text-foreground/45 mb-space-2">Calling to book an appointment</p>
-      <div className="flex items-center justify-between">
-        <span className="text-caption text-foreground/35 tabular-nums">0:42</span>
-        <span className="text-caption text-state-success-text font-medium">AI handling…</span>
-      </div>
-    </div>
-  );
-}
-
-/* ════════════════════════════════════════════════════════════════════════════
-   SLIDE 3 — Patient satisfaction / reviews
-   ════════════════════════════════════════════════════════════════════════════ */
-
-const REVIEWS = [
-  { initials: "JL", name: "Jessica Liu",    rating: 5, text: "The AI booked my appointment in seconds. Absolutely seamless." },
-  { initials: "TR", name: "Tom Robertson",  rating: 5, text: "Couldn't believe how fast the reception handled my call!" },
-  { initials: "AK", name: "Anita Khan",     rating: 4, text: "Super convenient — even sent an SMS confirmation right away." },
-];
-
-function StarRating({ count, size = "sm" }: { count: number; size?: "sm" | "md" }) {
-  return (
-    <div className="flex items-center gap-space-0.5" aria-label={`${count} out of 5 stars`}>
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          className={cn(
-            "shrink-0 fill-current",
-            size === "md" ? "h-5 w-5" : "h-3 w-3",
-            s <= count ? "text-state-warning-text" : "text-foreground/15"
-          )}
-          aria-hidden="true"
-        />
-      ))}
-    </div>
-  );
-}
-
-function ReviewsCard() {
-  return (
-    <div
-      className="bg-bg-layer-1 radius-2xl p-space-5 -rotate-2"
-      style={{ boxShadow: "0 20px 60px hsl(var(--primary) / 0.18), 0 4px 16px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center justify-between mb-space-4">
-        <div>
-          <p className="text-caption text-foreground/40 font-medium">Patient Satisfaction</p>
-          <div className="flex items-baseline gap-space-2 mt-space-0.5">
-            <p className="text-heading-md font-bold text-foreground">4.9</p>
-            <StarRating count={5} size="sm" />
-          </div>
-        </div>
-        <div className="text-right">
-          <p className="text-caption text-foreground/35">Based on</p>
-          <p className="text-label font-semibold text-primary">1,247 reviews</p>
-        </div>
-      </div>
-      <div className="space-y-space-2">
-        {REVIEWS.map((r, i) => (
-          <div key={i} className="flex items-start gap-space-3 px-space-2.5 py-space-2 radius-lg hover:bg-foreground/[0.03] transition-colors duration-fast">
-            <div className="h-8 w-8 shrink-0 radius-full bg-primary/10 border border-primary/15 flex items-center justify-center">
-              <span className="text-primary font-bold text-caption">{r.initials}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-space-2 mb-space-0.5">
-                <p className="text-caption font-semibold text-foreground">{r.name}</p>
-                <StarRating count={r.rating} size="sm" />
+      <div className="space-y-3.5">
+        {rows.map((r) => (
+          <div key={r.label}>
+            <div className="flex items-center justify-between mb-1.5">
+              <div className="flex items-center gap-1.5">
+                <div
+                  className="w-[3px] h-3 rounded-full shrink-0"
+                  style={{ background: r.color }}
+                />
+                <span className="text-[8.5px] font-bold text-white/60">{r.pct}%</span>
+                <span className="text-[7px] text-emerald-400/70">{r.label}</span>
               </div>
-              <p className="text-caption text-foreground/45 leading-body line-clamp-1">{r.text}</p>
+              <span className="text-[6.5px] text-white/25">{r.sub}</span>
             </div>
+            <ProgressBar pct={r.pct} color={r.color} />
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-space-2 border-t border-border-subtle mt-space-3 pt-space-3">
-        <Bot className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
-        <span className="text-caption text-foreground/40">AI collected 47 new reviews this month</span>
-      </div>
-    </div>
-  );
-}
-
-function NewReviewCard() {
-  return (
-    <div
-      className="bg-bg-layer-1 radius-xl p-space-4 rotate-2 animate-float"
-      style={{ animationDuration: "10s", boxShadow: "0 12px 40px hsl(var(--primary) / 0.16), 0 2px 8px hsl(var(--primary) / 0.08)" }}
-    >
-      <div className="flex items-center gap-space-2 mb-space-2">
-        <Star className="h-4 w-4 text-state-warning-text fill-current shrink-0" aria-hidden="true" />
-        <span className="text-caption font-semibold text-state-warning-text">New 5-star Review</span>
-      </div>
-      <StarRating count={5} size="sm" />
-      <p className="text-caption text-foreground/55 leading-body mt-space-2 line-clamp-2">
-        &ldquo;Incredible! The AI booking system is the best thing that happened to this clinic.&rdquo;
-      </p>
-      <p className="text-caption text-foreground/35 mt-space-1.5 font-medium">— Michael Torres</p>
-    </div>
+    </DashCard>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
-   SLIDES CONFIG
+   DASHBOARD MOSAIC — TWO EQUAL COLUMNS, CARDS STACKED VERTICALLY
    ════════════════════════════════════════════════════════════════════════════ */
+function DashboardComposition() {
+  return (
+    <div className="select-none" aria-hidden="true">
+      <div className="grid grid-cols-2 gap-2.5">
+        {/* LEFT column: Revenue → Appointments (tall) → Task Rate */}
+        <div className="flex flex-col gap-2.5">
+          <RevenueCard />
+          <AppointmentsCard />
+          <TaskCard />
+        </div>
 
-const SLIDES = [
-  {
-    headline: "The AI front desk\nfor modern businesses.",
-    sub: "Operator handles every call and booking — automatically, 24/7.",
-    MainCard: ScheduleCard,
-    SmallCard: ConfirmationCard,
-  },
-  {
-    headline: "Never miss another\nappointment or call.",
-    sub: "Our AI receptionist is always on, capturing every opportunity for your practice.",
-    MainCard: CallsCard,
-    SmallCard: LiveCallCard,
-  },
-  {
-    headline: "Delight customers.\nAutomate the rest.",
-    sub: "From booking to confirmation, Operator manages the full patient journey seamlessly.",
-    MainCard: ReviewsCard,
-    SmallCard: NewReviewCard,
-  },
-] as const;
-
-const TRUST = ["SOC-2 Type II", "GDPR Ready", "256-bit SSL", "99.9% Uptime"];
+        {/* RIGHT column: Target Ring → Segmentation (tall) → Conversion */}
+        <div className="flex flex-col gap-2.5">
+          <TargetCard />
+          <SegmentationCard />
+          <ConversionCard />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 /* ════════════════════════════════════════════════════════════════════════════
-   MOBILE HERO
+   HEADLINE SLIDES
+   ════════════════════════════════════════════════════════════════════════════ */
+const HEADLINES = [
+  {
+    headline: "Transform Data into Cool Insights",
+    sub: "Make informed decisions with Operator's powerful analytics tools. Harness the power of data to drive your business forward.",
+  },
+  {
+    headline: "Never Miss Another Appointment or Lead",
+    sub: "Our AI receptionist answers calls 24/7, qualifies inquiries, and syncs directly with your calendar.",
+  },
+  {
+    headline: "Automate Your Entire Client Journey",
+    sub: "From first call to follow-up — Operator handles the full workflow so your team stays focused on what matters.",
+  },
+];
+
+/* ════════════════════════════════════════════════════════════════════════════
+   MOBILE CAROUSEL
    ════════════════════════════════════════════════════════════════════════════ */
 export function MobileShowcaseCarousel() {
+  const [active, setActive] = React.useState(0);
+  React.useEffect(() => {
+    const t = setInterval(() => setActive((i) => (i + 1) % HEADLINES.length), 5000);
+    return () => clearInterval(t);
+  }, []);
+
   return (
-    <div
-      className="relative overflow-hidden px-space-6 py-space-8 text-center"
-      style={{
-        background: `
-          radial-gradient(ellipse 80% 70% at 20% 30%, hsl(var(--primary) / 0.20) 0%, transparent 65%),
-          radial-gradient(ellipse 60% 55% at 80% 60%, hsl(var(--primary-light) / 0.15) 0%, transparent 60%),
-          hsl(var(--background))
-        `,
-      }}
-    >
-      <div className="relative z-10 space-y-space-2">
-        <p className="text-caption font-semibold text-primary/70 tracking-widest uppercase">AI Business Operating System</p>
-        <p className="text-title-lg font-semibold tracking-tight text-foreground leading-heading">
-          The AI front desk for<br />modern businesses.
-        </p>
-      </div>
+    <div className="relative overflow-hidden px-6 py-8 text-center" style={{ background: "#0F1120" }}>
+      <p className="text-[10px] font-black tracking-widest uppercase mb-2" style={{ color: "#7C5CFC" }}>
+        AI Business Operating System
+      </p>
+      <p className="text-xl font-bold tracking-tight text-white leading-snug min-h-[50px]">
+        {HEADLINES[active].headline}
+      </p>
     </div>
   );
 }
 
 /* ════════════════════════════════════════════════════════════════════════════
-   MAIN PANEL
+   MAIN AUTH SHOWCASE PANEL
    ════════════════════════════════════════════════════════════════════════════ */
 export function AuthShowcasePanel() {
   const [active, setActive] = React.useState(0);
-
   React.useEffect(() => {
-    const t = setInterval(() => setActive((i) => (i + 1) % SLIDES.length), 5000);
+    const t = setInterval(() => setActive((i) => (i + 1) % HEADLINES.length), 6000);
     return () => clearInterval(t);
   }, []);
 
@@ -361,116 +534,81 @@ export function AuthShowcasePanel() {
       className="relative flex h-full flex-col overflow-hidden"
       style={{
         background: `
-          radial-gradient(ellipse 75% 65% at 10% 15%, hsl(var(--primary) / 0.22) 0%, transparent 65%),
-          radial-gradient(ellipse 55% 50% at 85% 25%, hsl(var(--primary-light) / 0.18) 0%, transparent 60%),
-          radial-gradient(ellipse 65% 55% at 30% 80%, hsl(var(--primary) / 0.14) 0%, transparent 60%),
-          radial-gradient(ellipse 45% 45% at 90% 80%, hsl(var(--primary-light) / 0.10) 0%, transparent 55%),
-          hsl(var(--background))
+          radial-gradient(ellipse at 25% 0%, rgba(124, 92, 252, 0.18) 0%, transparent 55%),
+          radial-gradient(ellipse at 85% 100%, rgba(52, 211, 153, 0.06) 0%, transparent 50%),
+          #0F1120
         `,
       }}
     >
-      <div className="pointer-events-none absolute inset-0 dot-grid grid-fade-y" style={{ opacity: 0.05 }} aria-hidden="true" />
+      {/* Dot-grid texture */}
+      <div
+        className="absolute inset-0 opacity-[0.015] pointer-events-none"
+        style={{
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.8) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+        aria-hidden="true"
+      />
 
-      <div className="relative z-10 flex h-full flex-col px-space-10 xl:px-space-14 py-space-10">
+      <div className="relative z-10 flex h-full flex-col py-7 px-6 xl:px-8">
+        {/* Top spacer */}
+        <div className="h-3" />
 
-        {/* Logo */}
-        <div className="animate-fade-down" style={{ animationFillMode: "both" }}>
-          <Logo />
+        {/* Dashboard mosaic — fills remaining vertical space */}
+        <div className="flex-1 flex items-center overflow-hidden">
+          <div className="w-full">
+            <DashboardComposition />
+          </div>
         </div>
 
-        {/* Center */}
-        <div className="flex flex-1 flex-col justify-center gap-space-8">
-
-          {/* ── Cycling headline — display-xl ── */}
-          <div className="relative min-h-[13rem]">
-            {SLIDES.map((slide, i) => (
-              <div
-                key={i}
-                className="absolute inset-0 space-y-space-3"
-                style={{
-                  opacity: i === active ? 1 : 0,
-                  transform: i === active ? "translateY(0)" : "translateY(8px)",
-                  transition: "opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1)",
-                  pointerEvents: i === active ? "auto" : "none",
-                }}
-                aria-hidden={i !== active}
-              >
-                <h2
-                  className="text-display-xl font-bold tracking-tight text-foreground leading-display"
-                  style={{ whiteSpace: "pre-line" }}
-                >
-                  {slide.headline}
-                </h2>
-                <p className="text-body-md text-foreground/65 leading-body max-w-sm">
-                  {slide.sub}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* ── Card composition — switches per slide ── */}
-          <div className="relative min-h-[19rem]">
-            {SLIDES.map((slide, i) => {
-              const { MainCard, SmallCard } = slide;
+        {/* Bottom: headline rotation + pill dots */}
+        <div className="mt-5 text-center">
+          <div className="relative">
+            {HEADLINES.map((h, i) => {
+              const isActive = i === active;
               return (
                 <div
                   key={i}
-                  className="absolute inset-0 flex w-full justify-center"
-                  style={{
-                    opacity: i === active ? 1 : 0,
-                    transform: i === active ? "translateY(0)" : "translateY(8px)",
-                    transition: "opacity 0.45s cubic-bezier(0.22,1,0.36,1), transform 0.45s cubic-bezier(0.22,1,0.36,1)",
-                    pointerEvents: i === active ? "auto" : "none",
-                  }}
-                  aria-hidden={i !== active}
+                  className={cn(
+                    "transition-all duration-500 ease-out",
+                    isActive
+                      ? "relative opacity-100 translate-y-0"
+                      : "absolute inset-0 opacity-0 translate-y-2 pointer-events-none"
+                  )}
                 >
-                  <div
-                    className="relative"
-                    style={{ paddingTop: "3.5rem", paddingRight: "4.5rem" }}
-                  >
-                    {/* Small card — top-right corner of the main card */}
-                    <div className="absolute top-0 right-0 w-[200px] z-10">
-                      <SmallCard />
-                    </div>
-                    {/* Main card */}
-                    <div style={{ width: "320px", position: "relative", zIndex: 1 }}>
-                      <MainCard />
-                    </div>
-                  </div>
+                  <h2 className="text-[17px] xl:text-[19px] font-black text-white tracking-tight leading-tight max-w-xs mx-auto">
+                    {h.headline}
+                  </h2>
+                  <p className="text-[10px] text-white/35 leading-relaxed max-w-[260px] mx-auto mt-1.5">
+                    {h.sub}
+                  </p>
                 </div>
               );
             })}
           </div>
 
-          {/* Carousel dots */}
-          <div className="flex items-center gap-space-2" role="tablist" aria-label="Showcase slides">
-            {SLIDES.map((_, i) => (
+          <div
+            className="flex items-center justify-center gap-1.5 mt-4"
+            role="tablist"
+            aria-label="Showcase slides"
+          >
+            {HEADLINES.map((_, i) => (
               <button
                 key={i}
+                type="button"
                 role="tab"
                 aria-selected={i === active}
                 aria-label={`Slide ${i + 1}`}
                 onClick={() => setActive(i)}
                 className={cn(
-                  "h-1.5 radius-full transition-all duration-base",
-                  i === active ? "w-6 bg-primary" : "w-1.5 bg-primary/25 hover:bg-primary/40"
+                  "rounded-full transition-all duration-300 cursor-pointer",
+                  i === active
+                    ? "w-5 h-[5px] bg-white"
+                    : "w-[5px] h-[5px] bg-white/25 hover:bg-white/45"
                 )}
               />
             ))}
           </div>
-        </div>
-
-        {/* Trust row */}
-        <div
-          className="flex flex-wrap items-center gap-x-space-5 gap-y-space-1.5 border-t border-border-subtle pt-space-5 animate-fade-up"
-          style={{ animationDelay: "300ms", animationFillMode: "both" }}
-        >
-          {TRUST.map((badge) => (
-            <span key={badge} className="flex items-center gap-space-1.5 text-caption text-foreground/35 font-medium">
-              <span className="h-1 w-1 rounded-full bg-primary/30 shrink-0" aria-hidden="true" />
-              {badge}
-            </span>
-          ))}
         </div>
       </div>
     </div>

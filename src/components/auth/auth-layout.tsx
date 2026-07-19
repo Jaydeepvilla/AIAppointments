@@ -1,26 +1,21 @@
 import * as React from "react";
-import { AuthShowcasePanel, MobileShowcaseCarousel } from "./auth-showcase-panel";
 import { AuthFooter } from "./auth-footer";
+import { Logo } from "@/components/shared/logo";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
 /**
- * AuthLayout — Premium 60 / 40 split
+ * AuthLayout — Full-width centered form
  *
- * Desktop (≥1024px)
- *   LEFT  60% — Sticky brand showcase. Deep primary background. Logo,
- *               headline, floating white cards, carousel dots, trust row.
- *   RIGHT 40% — Clean form column. bg-background. Full whitespace.
- *
- * Mobile / Tablet
- *   Compact primary brand header above the form.
+ * No showcase panel. Form is perfectly centered horizontally
+ * and vertically within the full viewport. Logo pinned top-left.
  */
 export function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <div
-      className="flex min-h-screen w-full"
+      className="flex min-h-screen w-full flex-col bg-background"
       style={{
         /* Force light-mode tokens regardless of ThemeProvider on <html> */
         "--background": "250 20% 99%",
@@ -49,41 +44,32 @@ export function AuthLayout({ children }: AuthLayoutProps) {
         "--state-warning-bg": "33 100% 96%",
       } as React.CSSProperties}
     >
+      {/* Subtle ambient orb */}
+      <div
+        className="pointer-events-none fixed -top-32 -right-32 h-96 w-96 rounded-full mesh-glow opacity-20 animate-pulse-soft"
+        style={{ animationDuration: "8s" }}
+        aria-hidden="true"
+      />
 
-      {/* ── LEFT: Brand showcase ─────────────────────────────────────── */}
-      <aside
-        className="hidden lg:flex lg:w-[60%] sticky top-0 h-screen overflow-hidden flex-col"
-        aria-label="Operator brand showcase"
-      >
-        <AuthShowcasePanel />
-      </aside>
+      {/* Pinned brand logo — top-left */}
+      <div className="absolute top-8 left-10 z-20">
+        <Logo
+          iconClassName="text-primary h-6 w-6"
+          className="gap-2 text-foreground font-black text-lg"
+        />
+      </div>
 
-      {/* ── RIGHT: Form column ───────────────────────────────────────── */}
+      {/* Form — full width, centered horizontally + vertically */}
       <main
-        className="relative flex flex-col w-full lg:w-[40%] min-h-screen bg-background overflow-hidden"
+        className="relative z-10 flex flex-1 flex-col items-center justify-center px-space-6 py-space-16"
         id="auth-form-panel"
       >
-        {/* Subtle ambient orb — does not compete with the form */}
-        <div
-          className="pointer-events-none absolute -top-24 right-0 h-64 w-64 rounded-full mesh-glow opacity-25 animate-pulse-soft"
-          style={{ animationDuration: "8s" }}
-          aria-hidden="true"
-        />
-
-        {/* Mobile brand header */}
-        <div className="block lg:hidden" aria-hidden="true">
-          <MobileShowcaseCarousel />
+        <div className="w-full max-w-[420px]">
+          {children}
         </div>
-
-        {/* Form — vertically centered */}
-        <div className="relative z-10 flex flex-1 flex-col justify-center px-space-8 py-space-12 sm:px-space-12 lg:px-space-14 xl:px-space-16">
-          <div className="w-full max-w-[360px] mx-auto">
-            {children}
-          </div>
-        </div>
-
-        <AuthFooter className="relative z-10" />
       </main>
+
+      <AuthFooter className="relative z-10" />
     </div>
   );
 }

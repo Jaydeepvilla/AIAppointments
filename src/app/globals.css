@@ -9,58 +9,102 @@
 
 :root {
 
-    /* Dark Mode Default */
+    /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+       DARK MODE DEFAULT
+       (overridden by .light class)
+    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
 
     --background: 222 47% 4%;
     --foreground: 210 40% 98%;
 
-    --card: 222 47% 6%;
+    --card: 222 47% 7%;
     --card-foreground: 210 40% 98%;
+
+    /* Popover sits one step above card in the elevation stack */
+    --popover: 222 40% 10%;
+    --popover-foreground: 210 40% 98%;
 
     --primary: 250 75% 60%;
     --primary-light: 250 75% 66%;
     --primary-foreground: 0 0% 100%;
 
-    --border: 222 20% 14%;
-    --input: 222 20% 14%;
+    /* Secondary — neutral surface actions */
+    --secondary: 222 30% 14%;
+    --secondary-foreground: 210 40% 95%;
+
+    /* Muted — subdued surfaces and text */
+    --muted: 222 30% 11%;
+    --muted-foreground: 215 20% 60%;
+
+    /* Accent — hover/focus highlight surface */
+    --accent: 222 30% 13%;
+    --accent-foreground: 210 40% 98%;
+
+    /* Destructive */
+    --destructive: 4 90% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 20% 15%;
+    --input: 222 20% 15%;
 
     /* Semantic Borders - Dark */
-    --border-subtle: 222 20% 12%;
+    --border-subtle: 222 20% 11%;
     --border-default: 222 20% 18%;
     --border-strong: 222 20% 26%;
-    --border-hover: 222 20% 32%;
+    --border-hover: 222 20% 34%;
     --border-active: 250 75% 60%;
 
-    /* Dark Mode Elevations */
+    /* Focus Ring */
+    --ring: 250 75% 60%;
+
+    /* Modal / Drawer scrim overlay */
+    --overlay: 222 47% 2% / 0.7;
+
+    /* Surface elevation layers */
     --bg-layer-0: 222 47% 4%;
     --bg-layer-1: 222 47% 7%;
     --bg-layer-2: 222 40% 12%;
     --border-muted: 222 20% 14%;
 
+    /* Sidebar semantic tokens */
+    --sidebar-bg: 222 47% 5%;
+    --sidebar-border: 222 20% 10%;
+    --sidebar-item-active-bg: 210 40% 98% / 0.08;
+    --sidebar-item-hover-bg: 210 40% 98% / 0.05;
+    --sidebar-item-active-fg: 210 40% 98%;
+    --sidebar-item-fg: 215 20% 55%;
+    --sidebar-section-label: 215 20% 45%;
+
     /* Dark Mode Accessible State Colors */
     --state-success-text: 142 70% 60%;
     --state-success-bg: 142 80% 6%;
+    --state-success-border: 142 70% 25%;
     --state-error-text: 4 90% 65%;
     --state-error-bg: 4 80% 6%;
+    --state-error-border: 4 90% 30%;
     --state-warning-text: 35 90% 60%;
     --state-warning-bg: 35 80% 6%;
+    --state-warning-border: 35 90% 28%;
+    --state-info-text: 210 90% 70%;
+    --state-info-bg: 215 80% 7%;
+    --state-info-border: 215 80% 28%;
 
     --sidebar-width: 260px;
 
-    /* Button Semantic Design Tokens */
-    --btn-primary-bg: hsl(var(--primary));
-    --btn-primary-fg: hsl(var(--primary-foreground));
-    --btn-primary-hover: hsl(var(--primary-light));
-    --btn-primary-active: hsl(var(--primary-light) / 0.85);
+    /* Button Semantic Design Tokens — White Brand (Dark Mode) */
+    --btn-primary-bg: #ffffff;
+    --btn-primary-fg: #0A0E17;
+    --btn-primary-hover: #f0f0f0;
+    --btn-primary-active: #e0e0e0;
     --btn-primary-disabled-bg: hsl(var(--foreground) / 0.08);
     --btn-primary-disabled-fg: hsl(var(--foreground) / 0.3);
 
     --btn-secondary-bg: transparent;
-    --btn-secondary-border: hsl(var(--primary) / 0.3);
-    --btn-secondary-text: hsl(var(--primary));
-    --btn-secondary-hover-bg: hsl(var(--primary) / 0.08);
-    --btn-secondary-hover-border: hsl(var(--primary));
-    --btn-secondary-active-bg: hsl(var(--primary) / 0.15);
+    --btn-secondary-border: hsl(var(--foreground) / 0.2);
+    --btn-secondary-text: hsl(var(--foreground));
+    --btn-secondary-hover-bg: hsl(var(--foreground) / 0.06);
+    --btn-secondary-hover-border: hsl(var(--foreground) / 0.4);
+    --btn-secondary-active-bg: hsl(var(--foreground) / 0.12);
 }
 
 .light {
@@ -68,12 +112,32 @@
     --background: 250 20% 99%;
     --foreground: 222 47% 8%;
 
-    --card: 250 15% 98%;
+    --card: 0 0% 100%;
     --card-foreground: 222 47% 8%;
+
+    /* Popover sits one step above card — slightly cooler white */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 8%;
 
     --primary: 250 75% 52%;
     --primary-light: 250 75% 58%;
     --primary-foreground: 0 0% 100%;
+
+    /* Secondary — neutral surface actions */
+    --secondary: 250 15% 95%;
+    --secondary-foreground: 222 47% 12%;
+
+    /* Muted — subdued surfaces and text */
+    --muted: 250 12% 96%;
+    --muted-foreground: 215 16% 46%;
+
+    /* Accent — hover/focus highlight surface */
+    --accent: 250 15% 95%;
+    --accent-foreground: 222 47% 8%;
+
+    /* Destructive */
+    --destructive: 3 76% 42%;
+    --destructive-foreground: 0 0% 100%;
 
     --border: 250 12% 91%;
     --input: 250 12% 91%;
@@ -81,9 +145,15 @@
     /* Semantic Borders - Light */
     --border-subtle: 250 12% 94%;
     --border-default: 250 12% 88%;
-    --border-strong: 250 12% 82%;
-    --border-hover: 250 12% 76%;
+    --border-strong: 250 12% 80%;
+    --border-hover: 250 12% 72%;
     --border-active: 250 75% 52%;
+
+    /* Focus Ring */
+    --ring: 250 75% 52%;
+
+    /* Modal / Drawer scrim overlay */
+    --overlay: 222 47% 4% / 0.5;
 
     /* Light Mode Elevations */
     --bg-layer-0: 250 20% 99%;
@@ -91,16 +161,45 @@
     --bg-layer-2: 250 12% 95%;
     --border-muted: 250 12% 91%;
 
+    /* Sidebar semantic tokens */
+    --sidebar-bg: 250 20% 98%;
+    --sidebar-border: 250 12% 91%;
+    --sidebar-item-active-bg: 222 47% 8% / 0.06;
+    --sidebar-item-hover-bg: 222 47% 8% / 0.04;
+    --sidebar-item-active-fg: 222 47% 8%;
+    --sidebar-item-fg: 215 16% 42%;
+    --sidebar-section-label: 215 16% 52%;
+
     /* Light Mode Accessible State Colors */
     --state-success-text: 154 75% 24%;
     --state-success-bg: 147 79% 96%;
+    --state-success-border: 152 60% 78%;
     --state-error-text: 3 76% 40%;
     --state-error-bg: 6 100% 97%;
+    --state-error-border: 6 76% 82%;
     --state-warning-text: 21 90% 37%;
     --state-warning-bg: 33 100% 96%;
+    --state-warning-border: 33 90% 78%;
+    --state-info-text: 215 70% 40%;
+    --state-info-bg: 215 100% 97%;
+    --state-info-border: 215 70% 80%;
 
     --sidebar-width: 260px;
 
+    /* Button Semantic Design Tokens — Black Brand (Light Mode) */
+    --btn-primary-bg: #0A0E17;
+    --btn-primary-fg: #ffffff;
+    --btn-primary-hover: #1a2133;
+    --btn-primary-active: #050709;
+    --btn-primary-disabled-bg: hsl(var(--foreground) / 0.08);
+    --btn-primary-disabled-fg: hsl(var(--foreground) / 0.3);
+
+    --btn-secondary-bg: transparent;
+    --btn-secondary-border: hsl(var(--foreground) / 0.15);
+    --btn-secondary-text: hsl(var(--foreground));
+    --btn-secondary-hover-bg: hsl(var(--foreground) / 0.04);
+    --btn-secondary-hover-border: hsl(var(--foreground) / 0.3);
+    --btn-secondary-active-bg: hsl(var(--foreground) / 0.08);
 }
 
 * {
@@ -256,9 +355,18 @@ body {
     --color-background: hsl(var(--background));
     --color-card: hsl(var(--card));
     --color-card-foreground: hsl(var(--card-foreground));
-    --color-popover: hsl(var(--card));
-    --color-popover-foreground: hsl(var(--card-foreground));
+    --color-popover: hsl(var(--popover));
+    --color-popover-foreground: hsl(var(--popover-foreground));
+    --color-secondary: hsl(var(--secondary));
+    --color-secondary-foreground: hsl(var(--secondary-foreground));
+    --color-muted: hsl(var(--muted));
+    --color-muted-foreground: hsl(var(--muted-foreground));
+    --color-accent: hsl(var(--accent));
+    --color-accent-foreground: hsl(var(--accent-foreground));
+    --color-destructive: hsl(var(--destructive));
+    --color-destructive-foreground: hsl(var(--destructive-foreground));
     --color-border: hsl(var(--border));
+    --color-ring: hsl(var(--ring));
 
     --color-border-subtle: hsl(var(--border-subtle));
     --color-border-default: hsl(var(--border-default));
@@ -277,6 +385,8 @@ body {
     --color-state-error-bg: hsl(var(--state-error-bg));
     --color-state-warning-text: hsl(var(--state-warning-text));
     --color-state-warning-bg: hsl(var(--state-warning-bg));
+    --color-state-info-text: hsl(var(--state-info-text));
+    --color-state-info-bg: hsl(var(--state-info-bg));
 
     /* Map spacing system */
     --spacing-space-0: var(--space-0);
@@ -903,16 +1013,28 @@ input[type="range"]::-moz-range-thumb:hover {
     animation: float 3s ease-in-out infinite;
 }
 
-/* Premium Global Card Highlight Rule */
-.bg-card, [class*="bg-card/"] {
-    border-color: hsl(var(--primary) / 0.15) !important;
-    box-shadow: 0 0 12px -3px hsl(var(--primary) / 0.04) !important;
+/* Premium OS Card Highlight — scoped only to page content cards, not marketing/chart surfaces */
+.os-page-card {
+    border-color: hsl(var(--primary) / 0.12);
+    box-shadow: 0 0 12px -3px hsl(var(--primary) / 0.04);
+    transition: border-color var(--duration-fast) var(--ease-standard),
+                box-shadow var(--duration-fast) var(--ease-standard);
 }
 
-/* Maintain hover state highlights */
-.bg-card:hover, [class*="bg-card/"]:hover {
-    border-color: hsl(var(--primary) / 0.28) !important;
-    box-shadow: 0 0 15px -2px hsl(var(--primary) / 0.06) !important;
+.os-page-card:hover {
+    border-color: hsl(var(--primary) / 0.22);
+    box-shadow: 0 0 16px -2px hsl(var(--primary) / 0.06);
+}
+
+/* Autofill style reset — prevents browser blue tint breaking dark mode inputs */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0px 1000px hsl(var(--card)) inset !important;
+    -webkit-text-fill-color: hsl(var(--foreground)) !important;
+    caret-color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border-default)) !important;
+    transition: background-color 5000s ease-in-out 0s;
 }
 
 

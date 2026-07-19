@@ -1,3 +1,4 @@
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Button } from "@/components/shared/button";
@@ -107,6 +108,8 @@ export default function SecurityPage() {
       <main className="flex-1">
         {/* Hero */}
         <section className="relative overflow-hidden">
+<ScrollReveal stagger>
+
           <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none" />
           <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none" />
 
@@ -146,12 +149,16 @@ export default function SecurityPage() {
               ))}
             </div>
           </div>
-        </section>
+        
+</ScrollReveal>
+</section>
 
         {/* Security sections */}
         <div className="mx-auto max-w-6xl px-space-6 pb-space-20 space-y-space-6">
           {SECURITY_SECTIONS.map((section) => (
             <section key={section.id} id={section.id} className="scroll-mt-space-20 radius-xl border border-[hsl(var(--foreground)/0.06)] overflow-hidden">
+<ScrollReveal stagger>
+
               <div className="flex items-center gap-space-4 p-space-6 border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)]">
                 <div className="h-10 w-10 radius-lg bg-primary/10 flex items-center justify-center shrink-0">
                   <Shield className="h-5 w-5 text-primary" />
@@ -172,12 +179,16 @@ export default function SecurityPage() {
                   </div>
                 ))}
               </div>
-            </section>
+            
+</ScrollReveal>
+</section>
           ))}
         </div>
 
         {/* Responsible Disclosure */}
         <section className="border-y border-[hsl(var(--foreground)/0.06)] py-space-20">
+<ScrollReveal stagger>
+
           <div className="mx-auto max-w-6xl px-space-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-space-10 items-start">
               <div>
@@ -224,10 +235,14 @@ export default function SecurityPage() {
               </div>
             </div>
           </div>
-        </section>
+        
+</ScrollReveal>
+</section>
 
         {/* Certifications */}
         <section className="py-space-20">
+<ScrollReveal stagger>
+
           <div className="mx-auto max-w-6xl px-space-6">
             <div className="mb-space-12">
               <p className="text-body-sm text-primary  mb-space-3">Certifications</p>
@@ -252,10 +267,14 @@ export default function SecurityPage() {
               ))}
             </div>
           </div>
-        </section>
+        
+</ScrollReveal>
+</section>
 
         {/* CTA */}
         <section className="relative py-space-28 md:py-space-36 overflow-hidden border-t border-[hsl(var(--foreground)/0.06)]">
+<ScrollReveal stagger>
+
           <div className="absolute inset-space-0 dot-grid grid-fade-y pointer-events-none" />
           <div className="relative mx-auto max-w-2xl px-space-6 text-center">
             <h2 className="text-heading-lg sm:text-heading-lg  tracking-tight-sm text-foreground mb-space-4">Security questions before you buy?</h2>
@@ -269,7 +288,9 @@ export default function SecurityPage() {
               </Button>
             </div>
           </div>
-        </section>
+        
+</ScrollReveal>
+</section>
       </main>
 
       <MarketingFooter />

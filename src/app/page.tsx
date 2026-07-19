@@ -1,3 +1,4 @@
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
 import Link from"next/link";
 import { auth } from "@/lib/auth/server";
 import { MarketingNav } from"@/components/marketing/nav";
@@ -122,8 +123,8 @@ const COMPARISON_BADGES = [
  { label:"vs. Doing nothing", value:"Recover $60k+/year"},
 ];
 export default async function HomePage() {
-  const { userId } = await auth();
-  return (
+ const { userId } = await auth();
+ return (
  <div className="relative flex flex-col min-h-screen bg-background text-foreground">
  <MarketingNav />
  <main className="flex-1 overflow-x-hidden">
@@ -134,6 +135,8 @@ export default async function HomePage() {
  id="hero"
  className="relative overflow-hidden gradient-hero pt-space-28 pb-space-20 md:pt-space-32 md:pb-space-24"
  >
+<ScrollReveal stagger>
+
  {/* Dotted grid background */}
  <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  {/* Radial glow */}
@@ -200,60 +203,62 @@ export default async function HomePage() {
  {/* Bottom fade */}
  <div className="absolute bottom-space-0 left-space-0 right-space-0 h-40 bg-gradient-to-t from-background via-background/80 to-transparent z-20 pointer-events-none" />
  </div>
-  {/* Partner/Brand logos strip */}
-  <div className="mt-space-16 border-t border-border-muted pt-space-10 text-center w-full max-w-4xl">
-    <p className="text-caption text-muted-foreground uppercase tracking-widest mb-space-8 font-semibold opacity-85">
-      Trusted by 500+ clinics, salons, law firms, and service brands
-    </p>
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-y-space-6 gap-x-space-8 items-center justify-items-center opacity-65 hover:opacity-90 transition-opacity duration-300">
-      
-      {/* CareDental Logo */}
-      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
-        <div className="h-7 w-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600 dark:text-emerald-400 group-hover/logo:bg-emerald-500/20 transition-colors">
-          <Activity className="h-4 w-4" />
-        </div>
-        <span className="text-body-md tracking-tight">
-          <span className="text-muted-foreground font-light">Care</span>
-          <span className="text-foreground font-semibold">Dental</span>
-        </span>
-      </div>
+ {/* Partner/Brand logos strip */}
+ <div className="mt-space-16 border-t border-border-muted pt-space-10 text-center w-full max-w-4xl">
+ <p className="text-caption text-muted-foreground uppercase tracking-widest mb-space-8 font-semibold opacity-85">
+ Trusted by 500+ clinics, salons, law firms, and service brands
+ </p>
+ <div className="grid grid-cols-2 md:grid-cols-4 gap-y-space-6 gap-x-space-8 items-center justify-items-center opacity-65 hover:opacity-90 transition-opacity duration-300">
+ 
+ {/* CareDental Logo */}
+ <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+ <div className="h-7 w-7 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-500 group-hover/logo:bg-emerald-500/20 transition-colors">
+ <Activity className="h-4 w-4" />
+ </div>
+ <span className="text-body-md tracking-tight">
+ <span className="text-muted-foreground font-light">Care</span>
+ <span className="text-foreground font-semibold">Dental</span>
+ </span>
+ </div>
 
-      {/* Vanguard Law Logo */}
-      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
-        <div className="h-7 w-7 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-600 dark:text-indigo-400 group-hover/logo:bg-indigo-500/20 transition-colors">
-          <Scale className="h-4 w-4" />
-        </div>
-        <span className="text-body-md tracking-tight">
-          <span className="text-foreground font-semibold">Vanguard</span>
-          <span className="text-muted-foreground font-light ml-space-0.5">Law</span>
-        </span>
-      </div>
+ {/* Vanguard Law Logo */}
+ <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+ <div className="h-7 w-7 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-500 group-hover/logo:bg-indigo-500/20 transition-colors">
+ <Scale className="h-4 w-4" />
+ </div>
+ <span className="text-body-md tracking-tight">
+ <span className="text-foreground font-semibold">Vanguard</span>
+ <span className="text-muted-foreground font-light ml-space-0.5">Law</span>
+ </span>
+ </div>
 
-      {/* Aura Studios Logo */}
-      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
-        <div className="h-7 w-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400 group-hover/logo:bg-amber-500/20 transition-colors">
-          <Scissors className="h-4 w-4" />
-        </div>
-        <span className="text-body-sm tracking-wider uppercase font-bold text-foreground group-hover/logo:text-amber-500 transition-colors">
-          Aura<span className="text-muted-foreground font-light text-caption tracking-normal lowercase ml-space-1">studios</span>
-        </span>
-      </div>
+ {/* Aura Studios Logo */}
+ <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+ <div className="h-7 w-7 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover/logo:bg-amber-500/20 transition-colors">
+ <Scissors className="h-4 w-4" />
+ </div>
+ <span className="text-body-sm tracking-wider uppercase font-bold text-foreground group-hover/logo:text-amber-500 transition-colors">
+ Aura<span className="text-muted-foreground font-light text-caption tracking-normal lowercase ml-space-1">studios</span>
+ </span>
+ </div>
 
-      {/* Apex Realty Logo */}
-      <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
-        <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover/logo:bg-primary/20 transition-colors">
-          <Home className="h-4 w-4" />
-        </div>
-        <span className="text-body-md tracking-tight">
-          <span className="text-foreground font-medium">Apex</span>
-          <span className="text-primary font-bold ml-space-0.5">Realty</span>
-        </span>
-      </div>
+ {/* Apex Realty Logo */}
+ <div className="flex items-center gap-space-2.5 group/logo select-none cursor-default">
+ <div className="h-7 w-7 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover/logo:bg-primary/20 transition-colors">
+ <Home className="h-4 w-4" />
+ </div>
+ <span className="text-body-md tracking-tight">
+ <span className="text-foreground font-medium">Apex</span>
+ <span className="text-primary font-bold ml-space-0.5">Realty</span>
+ </span>
+ </div>
 
-    </div>
-  </div>
-  </div>
- </section>
+ </div>
+ </div>
+ </div>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 2: SOCIAL PROOF STRIP — Horizontal brand ribbon
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -261,6 +266,8 @@ export default async function HomePage() {
  id="social-proof"
  className="py-space-8 overflow-hidden relative"
  >
+<ScrollReveal stagger>
+
  <div className="w-full py-space-4 md:py-space-5 bg-gradient-to-r from-primary to-[hsl(280_75%_55%)] flex overflow-hidden">
  <div className="ticker-track flex flex-row w-max">
  {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, idx) => (
@@ -281,7 +288,9 @@ export default async function HomePage() {
  ))}
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 3: THE PROBLEM — What happens when you miss a call
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -290,6 +299,8 @@ export default async function HomePage() {
  id="the-problem"
  className="py-space-24 lg:py-space-32 bg-bg-layer-0 relative overflow-hidden"
  >
+<ScrollReveal stagger>
+
  {/* Decorative mesh glow */}
  <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-full max-w-2xl h-svh bg-[radial-gradient(ellipse_at_center,hsl(var(--state-error-text)/0.02),transparent_70%)] pointer-events-none blur-3xl"/>
  <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-full max-w-2xl h-svh bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.02),transparent_70%)] pointer-events-none blur-3xl"/>
@@ -412,7 +423,7 @@ export default async function HomePage() {
  </ul>
  </div>
  {/* WITH OPERATOR CARD */}
- <div className="radius-2xl border border-primary/20 bg-[hsl(var(--primary)/0.03)] dark:bg-[hsl(var(--primary)/0.015)] p-space-8 hover:-translate-y-1 transition-all duration-350 ease-out relative overflow-hidden group">
+ <div className="radius-2xl border border-primary/20 bg-[hsl(var(--primary)/0.03)] p-space-8 hover:-translate-y-1 transition-all duration-350 ease-out relative overflow-hidden group">
  {/* Subtle brand blue/purple glow on the right, matches reference image style */}
  <div className="absolute right-[-10%] top-[-10%] w-72 h-72 bg-[radial-gradient(circle_at_center,hsl(var(--primary)/0.12),transparent_70%)] pointer-events-none blur-2xl z-0"/>
  <div className="flex items-center gap-space-3 mb-space-6 relative z-10">
@@ -429,8 +440,8 @@ export default async function HomePage() {
  <Check className="h-4 w-4 stroke-[2.5]"/>
  </span>
  <span className="leading-snug font-medium">
- Every call answered in{""}
- <span className="inline-flex items-center px-space-2 py-space-0.5 rounded-full bg-primary/15 text-primary font-semibold text-caption">
+ Every call answered in
+ <span className="inline-flex items-center px-space-2 py-space-0.5 rounded-full bg-primary/15 text-primary font-semibold text-caption mx-space-1.5">
  under 2s
  </span>
  </span>
@@ -451,10 +462,10 @@ export default async function HomePage() {
  <Check className="h-4 w-4 stroke-[2.5]"/>
  </span>
  <span className="leading-snug font-medium">
- Appointments booked{""}
- <span className="inline-flex items-center px-space-2 py-space-0.5 rounded-full bg-primary/15 text-primary font-semibold text-caption">
+ Appointments booked{" "}
+ <span className="inline-flex items-center px-space-2 py-space-0.5 rounded-full bg-primary/15 text-primary font-semibold text-caption mx-space-1.5">
  24/7
- </span>{""}
+ </span>{" "}
  automatically
  </span>
  </li>
@@ -478,7 +489,9 @@ export default async function HomePage() {
  </div>
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 4: HOW IT WORKS — Architecture diagram centerpiece
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -487,6 +500,8 @@ export default async function HomePage() {
  id="how-it-works"
  className="relative py-space-24 lg:py-space-32 overflow-hidden architecture-bg"
  >
+<ScrollReveal stagger>
+
  <div className="absolute inset-space-0 dot-grid opacity-8 pointer-events-none"/>
  <div className="relative mx-auto max-w-6xl px-space-6">
  <div className="text-center mb-space-16">
@@ -509,7 +524,9 @@ export default async function HomePage() {
  {/* 3-Layer Interactive Architecture — the"aha"moment */}
  <InteractiveArchitecture />
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 5: SEE IT IN ACTION — Product simulation
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -518,6 +535,8 @@ export default async function HomePage() {
  id="live-demo"
  className="py-space-24 lg:py-space-32 bg-[hsl(var(--foreground)/0.01)]"
  >
+<ScrollReveal stagger>
+
  <div className="mx-auto max-w-6xl px-space-6">
  <div className="text-center mb-space-16">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-4">
@@ -539,7 +558,9 @@ export default async function HomePage() {
  {/* Chat & Database Simulation */}
  <ProductSimulation />
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 5.5: GETTING STARTED — Tilted Onboarding Steps
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -548,6 +569,8 @@ export default async function HomePage() {
  id="getting-started"
  className="py-space-24 lg:py-space-32 relative overflow-hidden"
  >
+<ScrollReveal stagger>
+
  <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl h-96 bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.06),transparent_70%)] pointer-events-none"/>
  <div className="relative mx-auto max-w-5xl px-space-6">
@@ -645,7 +668,7 @@ export default async function HomePage() {
  A: Free cancellation up to 24 hours prior.
  </div>
  </div>
- <Button className="w-full radius-md bg-primary py-space-2 text-center text-caption text-white font-normal hover:opacity-90 transition-all select-none cursor-pointer">
+ <Button className="w-full bg-primary py-space-2 text-center text-caption text-white font-normal hover:opacity-90 transition-all select-none cursor-pointer">
  Train Receptionist ✦
  </Button>
  </div>
@@ -703,12 +726,16 @@ export default async function HomePage() {
  </div>
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 6: BUILT FOR YOUR INDUSTRY — Industry explorer
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
  <div className="section-break"/>
  <section id="industries"className="py-space-24 lg:py-space-32">
+<ScrollReveal stagger>
+
  <div className="mx-auto max-w-6xl px-space-6">
  {/* Centered header */}
  <div className="text-center max-w-3xl mx-auto mb-space-14">
@@ -732,7 +759,9 @@ export default async function HomePage() {
  {/* Interactive Industry Switcher */}
  <InteractiveIndustryExplorer />
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 7: REVENUE RECOVERY — Merged ROI calculator
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -743,6 +772,8 @@ export default async function HomePage() {
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
  <div className="section-break"/>
  <section id="pricing"className="py-space-24 lg:py-space-32">
+<ScrollReveal stagger>
+
  <div className="mx-auto max-w-5xl px-space-6">
  <div className="text-center mb-space-16">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-4">
@@ -803,16 +834,13 @@ export default async function HomePage() {
  ))}
  </ul>
  </div>
- <Link
- href="/sign-up"
- className={`block w-full radius-md py-space-2 text-center text-body-sm transition-colors cursor-pointer ${
- plan.highlight
- ?"bg-primary text-white hover:bg-primary/95 "
- :"border border-[hsl(var(--foreground)/0.08)] text-foreground hover:bg-[hsl(var(--foreground)/0.04)]"
- } font-semibold`}
+ <Button
+ asChild
+ variant={plan.highlight ? "default" : "outline"}
+ className="w-full"
  >
- {plan.cta}
- </Link>
+ <Link href="/sign-up">{plan.cta}</Link>
+ </Button>
  </div>
  ))}
  </div>
@@ -840,7 +868,9 @@ export default async function HomePage() {
  </Link>
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  {/* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
  SECTION 9: FINAL CTA — High-urgency gradient close
  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */}
@@ -849,6 +879,8 @@ export default async function HomePage() {
  id="cta-final"
  className="relative py-space-28 lg:py-space-32 overflow-hidden cta-mesh"
  >
+<ScrollReveal stagger>
+
  <div className="absolute inset-space-0 dot-grid opacity-10 pointer-events-none"/>
  {/* Extra mesh glow */}
  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-2xl h-80 mesh-glow opacity-50 pointer-events-none"/>
@@ -894,7 +926,9 @@ export default async function HomePage() {
  </span>
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  </main>
  <MarketingFooter />
  </div>

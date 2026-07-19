@@ -35,11 +35,11 @@ export function AiSetupCoach({ recommendation }: { recommendation: Recommendatio
             <CardTitle className="text-body-sm font-semibold text-primary">AI Setup Coach</CardTitle>
           </div>
           <div className="flex items-center gap-space-2">
-            <Badge variant="secondary" className="bg-white/60 dark:bg-black/20 text-caption uppercase tracking-wider">
+            <Badge variant="secondary" className="bg-[hsl(var(--foreground)/0.06)] text-caption uppercase tracking-wider">
               <Clock className="h-3 w-3 mr-space-1" />
               {task.estimatedTimeMinutes} Min
             </Badge>
-            <Badge variant="secondary" className="bg-white/60 dark:bg-black/20 text-caption uppercase tracking-wider">
+            <Badge variant="secondary" className="bg-[hsl(var(--foreground)/0.06)] text-caption uppercase tracking-wider">
               <Activity className="h-3 w-3 mr-space-1" />
               Impact: {task.impact}
             </Badge>
@@ -52,7 +52,7 @@ export function AiSetupCoach({ recommendation }: { recommendation: Recommendatio
           <p className="text-body-sm text-foreground/80 mt-space-1 leading-relaxed">{task.description}</p>
         </div>
 
-        <div className="p-space-3 radius-md bg-white dark:bg-card border border-border-default/50">
+        <div className="p-space-3 radius-md bg-card border border-border-default/50">
           <div className="flex gap-space-2 items-start">
             <Zap className="h-4 w-4 text-amber-500 mt-space-0.5 shrink-0" />
             <p className="text-caption text-muted-foreground">

@@ -26,7 +26,7 @@ export function CodeBlock({ code, language, filename }: CodeBlockProps) {
   };
 
   return (
-    <div className="group relative my-space-6 overflow-hidden rounded-xl border border-[hsl(var(--foreground)/0.08)] bg-[#0d1117] dark:bg-[#0d1117]">
+    <div className="group relative my-space-6 overflow-hidden rounded-xl border border-[hsl(var(--foreground)/0.08)] bg-[#0d1117]">
       <div className="flex items-center justify-between border-b border-white/10 bg-white/5 px-space-4 py-space-2">
         <div className="flex items-center gap-space-2">
           {language && (

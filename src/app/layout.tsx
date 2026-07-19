@@ -4,6 +4,7 @@ import { AuthProvider } from "@/lib/auth/client";
 import { currentUser } from "@/lib/auth/server";
 import { ThemeProvider } from "@/components/shared/theme-provider";
 import { ToastProvider } from "@/components/shared/toast";
+import { MotionProvider } from "@/components/motion";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import "./globals.css";
 
@@ -39,7 +40,9 @@ export default async function RootLayout({
       >
         <body suppressHydrationWarning className="min-h-full flex flex-col bg-background text-foreground antialiased font-sans">
           <ThemeProvider>
-            <ToastProvider>{children}</ToastProvider>
+            <ToastProvider>
+              <MotionProvider>{children}</MotionProvider>
+            </ToastProvider>
           </ThemeProvider>
         </body>
       </html>

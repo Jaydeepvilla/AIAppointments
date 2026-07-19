@@ -21,6 +21,7 @@ function VerifyEmailContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") || "";
   const email = searchParams.get("email") || "";
+  const devToken = searchParams.get("devToken") || "";
 
   const [verifying, setVerifying] = React.useState(!!token);
   const [success, setSuccess] = React.useState(false);
@@ -165,6 +166,18 @@ function VerifyEmailContent() {
         <div className="flex items-center gap-space-3 bg-state-success-bg border border-state-success-text/20 text-state-success-text px-space-4 py-space-3 radius-xl animate-fade-in">
           <CheckCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span className="text-caption font-semibold">A new verification link has been sent.</span>
+        </div>
+      )}
+
+      {/* Dev Mode Bypass */}
+      {devToken && (
+        <div className="mt-space-4 p-space-4 bg-state-warning-bg border border-state-warning-text/20 radius-lg text-center">
+          <p className="text-caption font-semibold text-state-warning-text mb-space-2">
+            Since you are testing locally without SMTP credentials configured, here is your auto-generated link:
+          </p>
+          <Link href={`/verify-email?token=${devToken}`} className="text-body-sm font-semibold text-primary underline">
+            Click here to verify your account
+          </Link>
         </div>
       )}
 

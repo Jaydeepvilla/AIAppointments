@@ -11,9 +11,9 @@ interface MetricBarProps {
 }
 
 function resolveTextColor(value: number): string {
-  if (value >= 90) return "text-emerald-500 dark:text-emerald-400";
-  if (value >= 70) return "text-amber-500 dark:text-amber-400";
-  return "text-rose-500 dark:text-rose-400";
+  if (value >= 90) return "text-[hsl(var(--state-success-text))]";
+  if (value >= 70) return "text-[hsl(var(--state-warning-text))]";
+  return "text-[hsl(var(--state-error-text))]";
 }
 
 function resolveDotColor(value: number): string {

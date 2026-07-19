@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import {
   Search,
@@ -37,6 +36,8 @@ import {
   resetUserPasswordAction,
   forceLogoutUserAction,
 } from "@/server/actions/admin";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 export function AdminUserPanel() {
   const [usersList, setUsersList] = React.useState<any[]>([]);
@@ -286,7 +287,6 @@ export function AdminUserPanel() {
           </select>
         </div>
       </div>
-
       {/* Users table */}
       <div className="bg-[#0d0c18]/30 border border-white/5 rounded-2xl overflow-hidden backdrop-blur-md">
         {loading ? (
@@ -326,7 +326,7 @@ export function AdminUserPanel() {
                         <div className="h-9 w-9 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-bold uppercase shrink-0">
                           {user.avatar ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={user.avatar} alt="Avatar" className="h-full w-full object-cover rounded-xl" />
+                            (<img src={user.avatar} alt="Avatar" className="h-full w-full object-cover rounded-xl" />)
                           ) : (
                             user.name ? user.name.charAt(0) : "U"
                           )}
@@ -353,11 +353,14 @@ export function AdminUserPanel() {
                           onClick={() => handleToggleSuspension(user)}
                           disabled={actionLoadingId === user.id}
                           title={user.status === "suspended" ? "Unsuspend User" : "Suspend User"}
-                          className={`p-2 rounded-lg border transition-all duration-300 ${
-                            user.status === "suspended"
-                              ? "bg-amber-500/10 text-amber-400 border-amber-500/25 hover:bg-amber-500/20"
-                              : "bg-slate-900 text-slate-400 border-white/5 hover:text-amber-400 hover:border-amber-500/20"
-                          }`}
+                          className={getButtonClasses(
+                            'primary',
+                            'filled',
+                            'medium',
+                            `p-2 border transition-all duration-300 ${user.status === "suspended"
+  ? "bg-amber-500/10 text-amber-400 border-amber-500/25 hover:bg-amber-500/20"
+  : "bg-slate-900 text-slate-400 border-white/5 hover:text-amber-400 hover:border-amber-500/20"}`
+                          )}
                         >
                           {actionLoadingId === user.id ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -371,11 +374,14 @@ export function AdminUserPanel() {
                           onClick={() => handleToggleDeletion(user)}
                           disabled={actionLoadingId === user.id}
                           title={user.status === "deactivated" ? "Restore User Profile" : "Soft Delete User"}
-                          className={`p-2 rounded-lg border transition-all duration-300 ${
-                            user.status === "deactivated"
-                              ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25 hover:bg-emerald-500/20"
-                              : "bg-slate-900 text-slate-400 border-white/5 hover:text-rose-400 hover:border-rose-500/20"
-                          }`}
+                          className={getButtonClasses(
+                            'primary',
+                            'filled',
+                            'medium',
+                            `p-2 border transition-all duration-300 ${user.status === "deactivated"
+  ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/25 hover:bg-emerald-500/20"
+  : "bg-slate-900 text-slate-400 border-white/5 hover:text-rose-400 hover:border-rose-500/20"}`
+                          )}
                         >
                           {actionLoadingId === user.id ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -417,7 +423,6 @@ export function AdminUserPanel() {
           </div>
         )}
       </div>
-
       {/* ─── USER DETAILS DRAWER (SLIDE OVER) ─── */}
       {selectedUserId && (
         <div className="fixed inset-0 z-50 overflow-hidden bg-black/40 backdrop-blur-sm flex justify-end">
@@ -439,7 +444,12 @@ export function AdminUserPanel() {
               </div>
               <button
                 onClick={() => setSelectedUserId(null)}
-                className="p-1.5 hover:bg-white/5 border border-transparent hover:border-white/5 text-slate-400 hover:text-white rounded-xl transition-all duration-300"
+                className={getButtonClasses(
+                  'secondary',
+                  'filled',
+                  'medium',
+                  'p-1.5 hover: border border-transparent hover:/5 text-slate-400 hover: transition-all duration-300'
+                )}
               >
                 <X className="h-4.5 w-4.5" />
               </button>
@@ -459,7 +469,7 @@ export function AdminUserPanel() {
                     <div className="h-12 w-12 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center text-violet-400 font-bold uppercase text-lg shrink-0">
                       {userDetail.user.avatar ? (
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={userDetail.user.avatar} alt="Avatar" className="h-full w-full object-cover rounded-xl" />
+                        (<img src={userDetail.user.avatar} alt="Avatar" className="h-full w-full object-cover rounded-xl" />)
                       ) : (
                         userDetail.user.name ? userDetail.user.name.charAt(0) : "U"
                       )}
@@ -518,7 +528,12 @@ export function AdminUserPanel() {
                       {userDetail.sessions.length > 0 && (
                         <button
                           onClick={() => handleForceLogout(userDetail.user.id)}
-                          className="text-[10px] font-bold text-rose-400 hover:text-rose-300 transition-colors"
+                          className={getButtonClasses(
+                            'primary',
+                            'filled',
+                            'medium',
+                            'text-[10px] text-rose-400 transition-colors'
+                          )}
                         >
                           Revoke All Sessions
                         </button>
@@ -589,7 +604,12 @@ export function AdminUserPanel() {
                         <button
                           type="button"
                           onClick={() => setShowOverridePw(!showOverridePw)}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 focus:outline-none"
+                          className={getButtonClasses(
+                            'primary',
+                            'filled',
+                            'medium',
+                            'absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-500 focus:outline-none'
+                          )}
                         >
                           {showOverridePw ? <EyeOff className="h-3.5 w-3.5" /> : <Eye className="h-3.5 w-3.5" />}
                         </button>

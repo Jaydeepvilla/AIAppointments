@@ -374,7 +374,7 @@ export function HealthDashboardClient({
                       </div>
 
                       {/* Formula display */}
-                      <div className="p-space-3 bg-neutral-50 dark:bg-neutral-900 border border-border-subtle radius-lg space-y-space-1">
+                      <div className="p-space-3 bg-[hsl(var(--foreground)/0.03)] border border-border-subtle radius-lg space-y-space-1">
                         <div className="text-caption font-bold text-foreground flex items-center gap-space-1">
                           <Calculator className="h-3.5 w-3.5 text-primary" />
                           <span>Calculation Formula</span>

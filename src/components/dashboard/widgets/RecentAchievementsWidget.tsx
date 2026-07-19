@@ -1,3 +1,5 @@
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { Trophy, Star, TrendingUp } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 

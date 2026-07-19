@@ -24,8 +24,8 @@ export function NextBestActionCard({ action }: Props) {
         <CardContent className="p-space-6 flex items-center gap-space-4">
           <CheckCircle2 className="h-8 w-8 text-green-500 shrink-0" />
           <div>
-            <h3 className="text-heading-md font-semibold text-green-700 dark:text-green-400">You're All Caught Up!</h3>
-            <p className="text-body-sm text-green-600/80 dark:text-green-400/80 mt-space-1">
+            <h3 className="text-heading-md font-semibold text-[hsl(var(--state-success-text))]">You're All Caught Up!</h3>
+            <p className="text-body-sm text-[hsl(var(--state-success-text))]/70 mt-space-1">
               Your AI Receptionist is fully configured and optimized. We have no further recommendations at this time.
             </p>
           </div>
@@ -67,7 +67,7 @@ export function NextBestActionCard({ action }: Props) {
               <Zap className="h-3 w-3" /> Next Best Action
             </span>
             {action.impact === "High" && (
-              <span className="text-caption font-bold uppercase tracking-widest bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 px-space-2 py-space-1 radius-full flex items-center gap-space-1">
+              <span className="text-caption font-bold uppercase tracking-widest bg-[hsl(var(--state-error-bg))] text-[hsl(var(--state-error-text))] px-space-2 py-space-1 radius-full flex items-center gap-space-1">
                 <ShieldAlert className="h-3 w-3" /> High Impact
               </span>
             )}
@@ -124,7 +124,7 @@ export function NextBestActionCard({ action }: Props) {
                 <CalendarClock className="mr-space-2 h-4 w-4" />
                 <span>Remind me next week</span>
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={handleSkip} disabled={isPending} className="text-red-600 dark:text-red-400">
+              <DropdownMenuItem onClick={handleSkip} disabled={isPending} className="text-[hsl(var(--state-error-text))]">
                 <X className="mr-space-2 h-4 w-4" />
                 <span>Skip entirely</span>
               </DropdownMenuItem>

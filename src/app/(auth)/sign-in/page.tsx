@@ -15,7 +15,7 @@ export default function SignInPage() {
     <AuthLayout>
       <div className="space-y-space-8">
         <AuthHeader
-          heading="Welcome back."
+          heading="Welcome back 👋"
           subheading="Sign in to your Operator workspace."
         />
         <Suspense

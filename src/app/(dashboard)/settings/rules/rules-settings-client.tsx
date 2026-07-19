@@ -50,8 +50,8 @@ export function RulesSettingsClient({ initialRules }: RulesSettingsClientProps) 
             className={cn(
               "p-space-4 radius-lg border text-body-sm flex items-start gap-space-2.5 animate-fade-in",
               status.type === "success"
-                ? "bg-success-500/10 border-success-500/20 text-success-600 dark:text-success-400"
-                : "bg-error-500/10 border-error-500/20 text-error-600 dark:text-error-400"
+                ? "bg-[hsl(var(--state-success-bg))] border-[hsl(var(--state-success-border))] text-[hsl(var(--state-success-text))]"
+                : "bg-[hsl(var(--state-error-bg))] border-[hsl(var(--state-error-border))] text-[hsl(var(--state-error-text))]"
             )}
           >
             {status.type === "success" ? (
@@ -96,7 +96,7 @@ export function RulesSettingsClient({ initialRules }: RulesSettingsClientProps) 
               <div
                 className={cn(
                   "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out mt-space-1 pointer-events-none",
-                  rules.triggerOnRequest ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-800"
+                  rules.triggerOnRequest ? "bg-primary" : "bg-[hsl(var(--foreground)/0.12)]"
                 )}
               >
                 <span
@@ -131,7 +131,7 @@ export function RulesSettingsClient({ initialRules }: RulesSettingsClientProps) 
               <div
                 className={cn(
                   "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out mt-space-1 pointer-events-none",
-                  rules.triggerOnEmergency ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-800"
+                  rules.triggerOnEmergency ? "bg-primary" : "bg-[hsl(var(--foreground)/0.12)]"
                 )}
               >
                 <span
@@ -166,7 +166,7 @@ export function RulesSettingsClient({ initialRules }: RulesSettingsClientProps) 
               <div
                 className={cn(
                   "relative inline-flex h-6 w-11 shrink-0 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out mt-space-1 pointer-events-none",
-                  rules.triggerOnRepeatedFailure ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-800"
+                  rules.triggerOnRepeatedFailure ? "bg-primary" : "bg-[hsl(var(--foreground)/0.12)]"
                 )}
               >
                 <span
@@ -286,7 +286,7 @@ export function RulesSettingsClient({ initialRules }: RulesSettingsClientProps) 
               </li>
             </ul>
 
-            <div className="p-space-4 radius-lg bg-neutral-50 dark:bg-neutral-900 border border-border-subtle flex gap-space-3 items-start">
+            <div className="p-space-4 radius-lg bg-[hsl(var(--foreground)/0.03)] border border-border-subtle flex gap-space-3 items-start">
               <Info className="h-4.5 w-4.5 text-primary-500 shrink-0 mt-space-0.5" />
               <p className="text-caption leading-normal">
                 To return the chatbot receptionist to active duty, staff must mark the escalation ticket as **Resolved** from the escalations triage screen.

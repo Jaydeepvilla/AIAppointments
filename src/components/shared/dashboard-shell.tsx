@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import * as React from "react";
 import { usePathname } from "next/navigation";
 import { UserAvatarMenu } from "./user-avatar-menu";
@@ -16,6 +15,10 @@ import { SidebarNavGroup } from "@/components/shared/sidebar-nav";
 import { useSidebar } from "@/components/shared/sidebar-context";
 import { cn } from "@/components/shared/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { m, AnimatePresence } from "framer-motion";
+import { pageTransition } from "@/components/motion";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 // ─── Sidebar Section Definitions ─────────────────────────────────────────────
 // 4 clear groups that map to how business owners think.
@@ -151,6 +154,7 @@ export function DashboardShell({
   trialBanner,
 }: DashboardShellProps) {
   const { isCollapsed, toggleSidebar } = useSidebar();
+  const pathname = usePathname();
 
   // ─── Sidebar Content ─────────────────────────────────────────────────────────
 
@@ -192,7 +196,12 @@ export function DashboardShell({
           {!isMobile && !collapsed && (
             <button
               onClick={toggleSidebar}
-              className="shrink-0 h-6 w-6 flex items-center justify-center radius-md text-muted-foreground/50 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.06)] transition-all duration-150 cursor-pointer active:scale-90"
+              className={getButtonClasses(
+                'primary',
+                'filled',
+                'small',
+                'shrink-0 h-6 w-6 flex items-center justify-center text-muted-foreground/50 hover:)] transition-all duration-150 cursor-pointer'
+              )}
               aria-label="Collapse sidebar"
               title="Collapse sidebar"
             >
@@ -200,7 +209,6 @@ export function DashboardShell({
             </button>
           )}
         </div>
-
         {/* Scrollable Nav */}
         <ScrollArea className="flex flex-col flex-1 min-h-0" horizontal={false}>
           <div
@@ -222,7 +230,6 @@ export function DashboardShell({
             )}
           </div>
         </ScrollArea>
-
         {/* User Footer */}
         <div className="border-t border-[hsl(var(--foreground)/0.06)] p-space-3 shrink-0">
           <div
@@ -258,19 +265,21 @@ export function DashboardShell({
   return (
     <div className="flex h-screen overflow-hidden bg-background text-foreground">
       {/* Desktop Sidebar */}
-      <aside
+      <m.aside
+        layout
         className={cn(
-          "fixed inset-y-0 left-0 z-20 hidden border-r border-[hsl(var(--foreground)/0.06)] bg-background md:flex md:flex-col sidebar-transition",
+          "fixed inset-y-0 left-0 z-20 hidden border-r border-[hsl(var(--foreground)/0.06)] bg-background md:flex md:flex-col",
           isCollapsed ? "w-18" : "w-64"
         )}
       >
         <SidebarContent />
-      </aside>
+      </m.aside>
 
       {/* Main content column */}
-      <div
+      <m.div
+        layout
         className={cn(
-          "flex flex-1 flex-col min-h-0 overflow-hidden sidebar-transition",
+          "flex flex-1 flex-col min-h-0 overflow-hidden",
           isCollapsed ? "md:pl-[72px]" : "md:pl-[var(--sidebar-width)]"
         )}
       >
@@ -301,10 +310,19 @@ export function DashboardShell({
         </header>
 
         {/* Page Content — scrolls within the shell, never the browser */}
-        <main className="flex-1 min-h-0 overflow-y-auto p-space-6 md:p-space-8 animate-page-enter sidebar-scroll">
-          {children}
-        </main>
-      </div>
+        <AnimatePresence mode="wait">
+          <m.main
+            key={pathname}
+            variants={pageTransition}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            className="flex-1 min-h-0 overflow-y-auto p-space-6 md:p-space-8 sidebar-scroll"
+          >
+            {children}
+          </m.main>
+        </AnimatePresence>
+      </m.div>
     </div>
   );
 }

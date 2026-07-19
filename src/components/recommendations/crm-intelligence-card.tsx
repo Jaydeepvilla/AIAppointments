@@ -16,7 +16,7 @@ export function CrmIntelligenceCard({ quality }: CrmIntelligenceCardProps) {
     <Card className="border border-border-default radius-xl overflow-hidden flex flex-col h-full bg-gradient-to-br from-background to-purple-500/5 hover:border-purple-500/30 transition-colors">
       <CardHeader className="border-b border-border-default/50 pb-space-4">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-body-md font-semibold flex items-center gap-space-2 text-purple-600 dark:text-purple-400">
+          <CardTitle className="text-body-md font-semibold flex items-center gap-space-2 text-primary">
             <Users className="h-5 w-5" />
             CRM Quality Engine
           </CardTitle>

@@ -1,4 +1,6 @@
 "use client";
+import { ScrollReveal } from "@/components/motion/scroll-reveal";
+
 
 import { useState, Fragment } from"react";
 import Link from"next/link";
@@ -7,7 +9,7 @@ import { MarketingFooter } from"@/components/marketing/footer";
 import { Check, X, ArrowRight, ChevronRight, Shield, Building2 } from"lucide-react";
 import { Button } from"@/components/shared/button";
 import { NativeTable } from "@/components/shared/native";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/components/shared/utils";
 
 const PLANS = [
  {
@@ -97,35 +99,6 @@ const PLANS = [
  "Support":"Dedicated CSM",
  },
  },
- {
- id:"agency",
- name:"Agency",
- monthlyPrice: 799,
- yearlyPrice: 639,
- desc:"For agencies and resellers managing multiple client accounts under your brand.",
- highlight: false,
- badge:"White Label",
- features: {
- "Conversations":"Unlimited",
- "Voice AI Minutes":"5,000 min / month",
- "Website Widget": true,
- "SMS Messaging": true,
- "Email Responses": true,
- "WhatsApp": true,
- "Instagram / Facebook": true,
- "Calendar Integrations":"Unlimited",
- "Lead Qualification":"Advanced + Custom Flows",
- "Knowledge Base Articles":"Unlimited",
- "Team Members":"Unlimited",
- "Locations":"Unlimited clients",
- "Analytics Dashboard":"Full + Client Reports",
- "Custom AI Training": true,
- "Agency / White Label": true,
- "Dedicated Onboarding": true,
- "SLA Guarantee":"99.9%",
- "Support":"Dedicated Agency Manager",
- },
- },
 ];
 
 const FEATURE_CATEGORIES = [
@@ -153,6 +126,8 @@ export default function PricingPage() {
  <main className="flex-1 overflow-x-hidden">
  {/* Hero */}
  <section className="relative overflow-hidden">
+<ScrollReveal stagger>
+
  <div className="absolute inset-space-0 dot-grid grid-fade-b pointer-events-none"/>
  <div className="absolute top-space-0 left-1/2 -translate-x-1/2 w-[var(--bg-blob)] h-[var(--bg-blob-h)] bg-[radial-gradient(ellipse_at_center,hsl(var(--primary)/0.08),transparent_70%)] pointer-events-none"/>
 
@@ -167,29 +142,47 @@ export default function PricingPage() {
  Start free for 14 days. No credit card required. Cancel anytime. Scale as you grow.
  </p>
 
- {/* Toggle */}
- <div className="inline-flex items-center gap-space-1 radius-lg border border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.03)] p-space-1 mb-space-12">
- <Button onClick={() => setYearly(false)}
-  variant={!yearly ? "default" : "ghost"}
-  size="sm"
+  {/* Toggle */}
+  <div className="inline-flex items-center gap-space-1.5 radius-full border border-[hsl(var(--foreground)/0.08)] bg-[hsl(var(--foreground)/0.03)] p-space-1.5 mb-space-12">
+  <button 
+   onClick={() => setYearly(false)}
+   className={cn(
+     "h-space-8 text-caption rounded-full transition-all duration-200 select-none cursor-pointer font-semibold",
+     !yearly 
+       ? "bg-[#0A0E17] text-white px-space-4 shadow-xs" 
+       : "text-muted-foreground hover:text-foreground pl-space-0.5 pr-space-3"
+   )}
   >
-  Monthly
-  </Button>
-  <Button onClick={() => setYearly(true)}
-  variant={yearly ? "default" : "ghost"}
-  size="sm"
-  className="flex items-center gap-space-2"
+   Monthly
+  </button>
+  <button 
+   onClick={() => setYearly(true)}
+   className={cn(
+     "h-space-8 text-caption rounded-full transition-all duration-200 select-none cursor-pointer font-semibold flex items-center gap-space-1.5",
+     yearly 
+       ? "bg-[#0A0E17] text-white pl-space-4 pr-space-3 shadow-xs" 
+       : "text-muted-foreground hover:text-foreground pl-space-3 pr-space-0.5"
+   )}
   >
-  Yearly
-  <span className={`radius-full px-space-2 py-space-1 text-caption transition-colors ${yearly ?"bg-primary-foreground/20 text-primary-foreground":"bg-primary/20 text-primary"}`}>Save 20%</span>
-  </Button>
+   <span>Yearly</span>
+   <span className={cn(
+     "radius-full px-space-2 py-space-0.5 text-caption font-semibold transition-colors",
+     yearly ? "bg-white/20 text-white" : "bg-primary/20 text-primary"
+   )}>
+     Save 20%
+   </span>
+  </button>
+  </div>
  </div>
- </div>
- </section>
+ 
+</ScrollReveal>
+</section>
 
  {/* Plan Cards */}
  <section className="mx-auto max-w-6xl px-space-6 pb-space-16">
- <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-space-5">
+<ScrollReveal stagger>
+
+ <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-5">
  {PLANS.map((plan) => (
  <div
  key={plan.id}
@@ -249,10 +242,14 @@ export default function PricingPage() {
  </div>
  ))}
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
 
  {/* Enterprise CTA */}
  <section className="mx-auto max-w-6xl px-space-6 pb-space-16">
+<ScrollReveal stagger>
+
  <div className="radius-xl border border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)] p-space-8 flex flex-col sm:flex-row items-center justify-between gap-space-6">
  <div className="flex items-center gap-space-4">
  <div className="h-10 w-10 radius-lg bg-primary/10 text-primary flex items-center justify-center shrink-0">
@@ -263,17 +260,20 @@ export default function PricingPage() {
  <p className="text-body-sm text-muted-foreground">Custom volume, SLAs, HIPAA-ready, dedicated infrastructure, and white-glove support.</p>
  </div>
  </div>
- <Link
- href="/contact"
- className="shrink-0 inline-flex items-center gap-space-2 radius-lg border border-[hsl(var(--foreground)/0.08)] px-space-6 py-space-2 text-body-sm text-foreground hover:bg-[hsl(var(--foreground)/0.04)] transition-colors"
- >
- Contact Sales <ArrowRight className="h-4 w-4"/>
- </Link>
+  <Button asChild variant="outline" className="shrink-0">
+  <Link href="/contact">
+  Contact Sales <ArrowRight className="h-4 w-4"/>
+  </Link>
+  </Button>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
 
  {/* Full Feature Comparison Table */}
  <section className="mx-auto max-w-6xl px-space-6 pb-space-24">
+<ScrollReveal stagger>
+
  <div className="text-center mb-space-12">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
  <span className="text-caption uppercase tracking-widest text-primary font-semibold">Compare Plans</span>
@@ -284,7 +284,7 @@ export default function PricingPage() {
  <span className="text-primary">Full Feature Comparison</span>
  </h2>
  </div>
- <ScrollArea className="radius-xl border border-[hsl(var(--foreground)/0.06)]" vertical={false}>
+ <div className="overflow-x-auto w-full radius-xl border border-[hsl(var(--foreground)/0.06)]">
  <NativeTable className="w-full text-body-sm min-w-full">
  <thead>
  <tr className="border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.02)]">
@@ -300,7 +300,7 @@ export default function PricingPage() {
  {FEATURE_CATEGORIES.map((cat) => (
  <Fragment key={cat.label}>
  <tr className="border-b border-[hsl(var(--foreground)/0.06)] bg-[hsl(var(--foreground)/0.03)]">
- <td colSpan={5} className="px-space-6 py-space-3 text-caption uppercase tracking-wider text-muted-foreground">
+ <td colSpan={PLANS.length + 1} className="px-space-6 py-space-3 text-caption uppercase tracking-wider text-muted-foreground">
  {cat.label}
  </td>
  </tr>
@@ -322,11 +322,15 @@ export default function PricingPage() {
  ))}
  </tbody>
  </NativeTable>
- </ScrollArea>
- </section>
+ </div>
+ 
+</ScrollReveal>
+</section>
 
  {/* Trust Signals */}
  <section className="border-t border-[hsl(var(--foreground)/0.06)] py-space-16">
+<ScrollReveal stagger>
+
  <div className="mx-auto max-w-6xl px-space-6">
  <div className="grid grid-cols-1 sm:grid-cols-3 gap-space-6">
  {[
@@ -344,10 +348,14 @@ export default function PricingPage() {
  ))}
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
 
  {/* FAQ */}
  <section className="py-space-28 md:py-space-36 border-t border-[hsl(var(--foreground)/0.06)]">
+<ScrollReveal stagger>
+
  <div className="mx-auto max-w-3xl px-space-6">
  <div className="mb-space-16 text-center">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
@@ -366,8 +374,7 @@ export default function PricingPage() {
  { q:"Can I change plans anytime?", a:"Yes. Upgrade or downgrade at any time. Upgrades are instant. Downgrades take effect at the next billing cycle."},
  { q:"How are conversations counted?", a:"Each conversation is one complete session (e.g., one phone call, one chat session, one email thread). Not per-message."},
  { q:"Do voice minutes roll over?", a:"Unused voice minutes do not roll over. They reset on your billing date each month."},
- { q:"Is the Agency plan fully white-labeled?", a:"Yes. Agency plan includes custom branding, your own logo, custom domain, and removes all Operator branding from client-facing interfaces."},
- { q:"Are there setup or onboarding fees?", a:"No setup fees on any plan. Business and Agency plans include a dedicated onboarding specialist at no extra cost."},
+ { q:"Are there setup or onboarding fees?", a:"No setup fees on any plan. Business plans include a dedicated onboarding specialist at no extra cost."},
  ].map((faq, i) => (
  <details key={i} className="group border-b border-[hsl(var(--foreground)/0.06)]">
  <summary className="flex items-center justify-between py-space-5 cursor-pointer list-none text-body-md text-foreground hover:text-primary transition-colors">
@@ -379,10 +386,14 @@ export default function PricingPage() {
  ))}
  </div>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
 
  {/* Final CTA */}
  <section className="relative py-space-28 md:py-space-36 overflow-hidden border-t border-[hsl(var(--foreground)/0.06)]">
+<ScrollReveal stagger>
+
  <div className="absolute inset-space-0 dot-grid grid-fade-y pointer-events-none"/>
  <div className="relative mx-auto max-w-2xl px-space-6 text-center">
  <div className="inline-flex items-center gap-space-2 px-space-4 py-space-2 radius-full border border-primary/20 bg-primary/5 mb-space-6">
@@ -398,7 +409,9 @@ export default function PricingPage() {
   <Link href="/sign-up">Start free trial <ArrowRight className="h-4 w-4"/></Link>
 </Button>
  </div>
- </section>
+ 
+</ScrollReveal>
+</section>
  </main>
 
  <MarketingFooter />

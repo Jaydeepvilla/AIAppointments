@@ -1,5 +1,4 @@
-"use client";
-
+"use client";;
 import React, { useState } from "react";
 import Link from "next/link";
 import { 
@@ -12,6 +11,8 @@ import { Button } from "@/components/shared/button";
 import { cn } from "@/components/shared/utils";
 import { BIReport } from "@/lib/business-intelligence/types";
 import { OverallHealthResult } from "@/lib/health-engine/overall";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 // Helper for status classes
 function getScoreStatusColor(score: number) {
@@ -233,7 +234,6 @@ export function IntelligenceDashboardClient({
 
   return (
     <div className="space-y-space-6 w-full animate-page-enter pb-space-8 text-foreground">
-      
       {/* ─── SCREEN 1: ABOVE THE FOLD KPI ROW ─── */}
       <section aria-label="Command Center Metrics" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-space-4">
         
@@ -319,10 +319,9 @@ export function IntelligenceDashboardClient({
         </Card>
 
       </section>
-
       {/* ─── CENTER: AI EXECUTIVE SUMMARY ─── */}
       <section aria-label="AI Executive Summary">
-        <div className="relative overflow-hidden radius-lg border border-primary/20 dark:border-primary/30 bg-card p-space-6 shadow-[radial-gradient(ellipse_60%_50%_at_0%_0%,hsl(250_75%_60%/0.08),transparent)]">
+        <div className="relative overflow-hidden radius-lg border border-primary/20 bg-card p-space-6 shadow-[radial-gradient(ellipse_60%_50%_at_0%_0%,hsl(250_75%_60%/0.08),transparent)]">
           <div className="flex items-center gap-space-2 mb-space-3">
             <Sparkles className="h-4.5 w-4.5 text-primary" />
             <h2 className="text-body-sm font-bold uppercase tracking-wider text-primary">AI Executive Digest</h2>
@@ -338,7 +337,6 @@ export function IntelligenceDashboardClient({
           </div>
         </div>
       </section>
-
       {/* ─── NEXT: PRIORITY ACTIONS & BUSINESS MODULES (2 Columns) ─── */}
       <section className="grid grid-cols-1 lg:grid-cols-12 gap-space-6 items-start">
         
@@ -352,7 +350,12 @@ export function IntelligenceDashboardClient({
             {remainingActionsCount > 0 && (
               <button 
                 onClick={() => setIsDrawerOpen(true)} 
-                className="text-primary text-[11px] font-bold hover:underline cursor-pointer transition-colors py-1 shrink-0"
+                className={getButtonClasses(
+                  'primary',
+                  'link',
+                  'medium',
+                  'text-primary text-[11px] hover:underline cursor-pointer transition-colors shrink-0'
+                )}
               >
                 View All ({deduplicatedActions.length})
               </button>
@@ -458,7 +461,6 @@ export function IntelligenceDashboardClient({
         </div>
 
       </section>
-
       {/* ─── NEXT: GROWTH OPPORTUNITIES ─── */}
       <section aria-label="Growth Opportunities" className="space-y-space-4">
         <h3 className="text-body-md font-bold text-foreground flex items-center gap-space-2">
@@ -550,7 +552,6 @@ export function IntelligenceDashboardClient({
 
         </div>
       </section>
-
       {/* ─── PROGRESSIVE DISCLOSURE MODAL (Centered overlay) ─── */}
       {isDrawerOpen && (
         <div 
@@ -641,7 +642,6 @@ export function IntelligenceDashboardClient({
           </div>
         </div>
       )}
-
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
 import { ScoreRing } from "@/components/dashboard/shared/score-ring";
 import { MetricBar } from "@/components/dashboard/shared/metric-bar";
 import { KPICard } from "@/components/dashboard/shared/kpi-card";
@@ -17,7 +19,7 @@ interface KnowledgeScoreWidgetProps {
 
 export function KnowledgeScoreWidget({ score }: KnowledgeScoreWidgetProps) {
   const statusLabel = ScoreRing.label(score.overall);
-  const statusTextClass = "text-info-600 dark:text-info-400";
+  const statusTextClass = "text-[hsl(var(--state-info-text))]";
 
   const totalIssues = score.missingDocuments + score.weakDocuments + score.duplicateDocuments;
 

@@ -223,7 +223,7 @@ export function ServicesManager({ initialServices, categories }: ServicesManager
  className={cn(
  "inline-flex text-caption font-normal border px-space-2 py-space-0.5 rounded-full uppercase tracking-wider",
  service.isActive
- ?"bg-emerald-500/8 border-emerald-500/15 text-emerald-600 dark:text-emerald-400"
+ ?"bg-[hsl(var(--state-success-bg))] border-[hsl(var(--state-success-border))] text-[hsl(var(--state-success-text))]"
  :"bg-[hsl(var(--foreground)/0.04)] border-[hsl(var(--foreground)/0.08)] text-muted-foreground/80"
  )}
  >

@@ -21,13 +21,13 @@ export function IndustryReadinessCard({ analysis }: IndustryReadinessCardProps) 
   }
 
   return (
-    <Card className="col-span-1 shadow-sm border-blue-100 dark:border-blue-900 bg-gradient-to-br from-blue-50/50 to-white dark:from-blue-900/10 dark:to-background">
+    <Card className="col-span-1 shadow-sm border-[hsl(var(--state-info-border))] bg-gradient-to-br from-[hsl(var(--state-info-bg))] to-background">
       <CardHeader className="pb-space-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl flex items-center gap-space-2">
             Industry Benchmark
           </CardTitle>
-          <Badge variant="outline" className="text-xs bg-blue-50 text-blue-700 dark:bg-blue-900 dark:text-blue-200">
+          <Badge variant="outline" className="text-xs bg-[hsl(var(--state-info-bg))] text-[hsl(var(--state-info-text))] border-[hsl(var(--state-info-border))]">
             {analysis.industryName}
           </Badge>
         </div>

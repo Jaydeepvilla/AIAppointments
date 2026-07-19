@@ -9,7 +9,7 @@ interface GapAnalysisCardProps {
 
 export function GapAnalysisCard({ analysis }: GapAnalysisCardProps) {
   return (
-    <Card className="col-span-1 shadow-sm border-orange-100 dark:border-orange-900 bg-gradient-to-br from-orange-50/50 to-white dark:from-orange-900/10 dark:to-background">
+    <Card className="col-span-1 shadow-sm border-[hsl(var(--state-warning-border))] bg-gradient-to-br from-[hsl(var(--state-warning-bg))] to-background">
       <CardHeader className="pb-space-3">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl flex items-center gap-space-2">

@@ -164,11 +164,11 @@ export default function TeamPage() {
   const getRoleBadgeClass = (role: string) => {
     switch (role) {
       case "owner":
-        return "bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20";
+        return "bg-violet-500/10 text-violet-500 border-violet-500/20";
       case "admin":
-        return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20";
+        return "bg-rose-500/10 text-rose-500 border-rose-500/20";
       case "manager":
-        return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20";
+        return "bg-emerald-500/10 text-emerald-500 border-emerald-500/20";
       default:
         return "bg-neutral-500/10 text-muted-foreground border-neutral-500/20";
     }
@@ -374,8 +374,8 @@ export default function TeamPage() {
                                       className={cn(
                                         "inline-flex text-caption font-normal border px-space-2 py-space-0.5 rounded-full uppercase tracking-wider",
                                         member.status === "active" ?
-                                        "bg-emerald-500/8 border-emerald-500/15 text-emerald-600 dark:text-emerald-400" :
-                                        "bg-amber-500/8 border-amber-500/15 text-amber-600 dark:text-amber-400 animate-pulse"
+                                        "bg-emerald-500/8 border-emerald-500/15 text-emerald-500" :
+                                        "bg-amber-500/8 border-amber-500/15 text-amber-500 animate-pulse"
                                       )}>
                                       
                {member.status}

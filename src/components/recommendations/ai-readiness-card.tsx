@@ -88,7 +88,7 @@ export function AIReadinessCard({ readiness }: { readiness: GlobalAIReadiness })
             <h4 className="text-caption font-semibold text-muted-foreground mb-space-2 uppercase">Critical Missing Data</h4>
             <ul className="space-y-space-1">
               {criticalMissingInformation.slice(0, 3).map((req, i) => (
-                <li key={i} className="flex items-start gap-space-2 text-body-sm text-red-600 dark:text-red-400">
+                <li key={i} className="flex items-start gap-space-2 text-body-sm text-[hsl(var(--state-error-text))]">
                   <AlertTriangle className="h-4 w-4 shrink-0 mt-space-0.5" />
                   <span className="line-clamp-1">{req}</span>
                 </li>

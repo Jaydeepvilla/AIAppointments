@@ -1,5 +1,8 @@
 "use client";
 
+import { m } from "framer-motion";
+import { hoverScale } from "@/components/motion/hover";
+;
 import { Card } from "@/components/shared/card";
 import {
   Calendar,
@@ -12,6 +15,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+
+import { getButtonClasses } from '@/design-system/button-tokens';
 
 interface ActivityItem {
   id: string;
@@ -30,8 +35,8 @@ const ACTIVITY_META: Record<
 > = {
   appointment: {
     icon: Calendar,
-    iconBg: "bg-emerald-500/10 text-emerald-500 dark:text-emerald-400",
-    dot: "bg-emerald-500",
+    iconBg: "bg-[hsl(var(--state-success-bg))] text-[hsl(var(--state-success-text))]",
+    dot: "bg-[hsl(var(--state-success-text))]",
     label: "Booking",
   },
   knowledge: {
@@ -42,20 +47,20 @@ const ACTIVITY_META: Record<
   },
   ai_optimization: {
     icon: Sparkles,
-    iconBg: "bg-violet-500/10 text-violet-500 dark:text-violet-400",
-    dot: "bg-violet-500",
+    iconBg: "bg-primary/10 text-primary",
+    dot: "bg-primary",
     label: "AI",
   },
   message: {
     icon: MessageSquare,
-    iconBg: "bg-neutral-500/10 text-neutral-500 dark:text-neutral-400",
-    dot: "bg-neutral-400",
+    iconBg: "bg-[hsl(var(--foreground)/0.06)] text-muted-foreground",
+    dot: "bg-muted-foreground",
     label: "Chat",
   },
   escalation: {
     icon: AlertTriangle,
-    iconBg: "bg-rose-500/10 text-rose-500 dark:text-rose-400",
-    dot: "bg-rose-500",
+    iconBg: "bg-[hsl(var(--state-error-bg))] text-[hsl(var(--state-error-text))]",
+    dot: "bg-[hsl(var(--state-error-text))]",
     label: "Alert",
   },
 };
@@ -63,7 +68,8 @@ const ACTIVITY_META: Record<
 export function RecentActivityWidget({ activity }: RecentActivityWidgetProps) {
   if (activity.length === 0) {
     return (
-      <Card className="h-full p-space-5 flex flex-col items-center justify-center text-center gap-space-3">
+      <m.div whileHover={hoverScale}>
+<Card className="h-full p-space-5 flex flex-col items-center justify-center text-center gap-space-3">
         <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center">
           <Activity className="w-5 h-5 text-muted-foreground/40" />
         </div>
@@ -74,11 +80,13 @@ export function RecentActivityWidget({ activity }: RecentActivityWidgetProps) {
           </p>
         </div>
       </Card>
+</m.div>
     );
   }
 
   return (
-    <Card className="h-full flex flex-col overflow-hidden">
+    <m.div whileHover={hoverScale}>
+<Card className="h-full flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-space-5 pt-space-5 pb-space-3">
         <div className="flex items-center gap-space-2">
@@ -89,15 +97,13 @@ export function RecentActivityWidget({ activity }: RecentActivityWidgetProps) {
             Recent Activity
           </p>
         </div>
-        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-500 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-[hsl(var(--state-success-text))] bg-[hsl(var(--state-success-bg))] px-2 py-0.5 rounded-full">
+          <span className="w-1.5 h-1.5 rounded-full bg-[hsl(var(--state-success-text))] animate-pulse" />
           Live
         </span>
       </div>
-
       {/* Divider */}
       <div className="h-px bg-border mx-space-5 mb-space-1" />
-
       {/* Feed */}
       <div className="flex-1 px-space-4 py-space-2 space-y-space-1 overflow-auto">
         {activity.map((item, idx) => {
@@ -146,14 +152,19 @@ export function RecentActivityWidget({ activity }: RecentActivityWidgetProps) {
           );
         })}
       </div>
-
       {/* Footer */}
       <div className="px-space-5 py-space-3 border-t border-border/50">
-        <button className="flex items-center gap-1 text-[11px] font-semibold text-primary hover:text-primary/80 transition-colors">
+        <button className={getButtonClasses(
+          'primary',
+          'filled',
+          'medium',
+          'flex items-center gap-1 text-[11px] text-primary transition-colors'
+        )}>
           View all activity
           <ChevronRight className="w-3 h-3" />
         </button>
       </div>
     </Card>
+</m.div>
   );
 }

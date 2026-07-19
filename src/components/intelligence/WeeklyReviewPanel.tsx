@@ -109,7 +109,7 @@ export function WeeklyReviewPanel({ weeklyReview: review }: WeeklyReviewPanelPro
   return (
     <Card className="relative overflow-hidden border border-[hsl(var(--foreground)/0.07)]">
       {/* Ambient glow */}
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_0%,hsl(262_80%_60%/0.06),transparent)] dark:bg-[radial-gradient(ellipse_60%_50%_at_0%_0%,hsl(262_80%_60%/0.10),transparent)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_0%_0%,hsl(262_80%_60%/0.08),transparent)]" />
 
       <div className="relative p-5 flex flex-col gap-5">
         {/* ── Header ── */}
