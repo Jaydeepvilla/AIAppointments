@@ -8,6 +8,7 @@ import { TrialBanner } from "@/components/shared/trial-banner";
 import { DashboardHeaderActions } from "@/components/shared/dashboard-header-actions";
 import { SidebarProvider } from "@/components/shared/sidebar-context";
 import { DashboardShell } from "@/components/shared/dashboard-shell";
+import { NotificationEngine } from "@/lib/notification-engine";
 
 // ─── Layout ───────────────────────────────────────────────────────────────────
 
@@ -23,7 +24,7 @@ export default async function DashboardLayout({
   }
 
   const { userId } = await auth();
-  const [subscription, membership] = await Promise.all([
+  const [subscription, membership, notifications] = await Promise.all([
     db.query.subscriptions.findFirst({ where: eq(subscriptions.organizationId, org.id) }),
     userId
       ? db.query.memberships.findFirst({
@@ -33,6 +34,7 @@ export default async function DashboardLayout({
           ),
         })
       : Promise.resolve(null),
+    NotificationEngine.getSmartNotifications(org.id),
   ]);
 
   const isAgency =
@@ -62,7 +64,12 @@ export default async function DashboardLayout({
             planId={subscription?.planId ?? "free"}
           />
         }
-        headerActions={<DashboardHeaderActions roleLabel={roleLabel} />}
+        headerActions={
+          <DashboardHeaderActions 
+            roleLabel={roleLabel} 
+            initialNotifications={notifications} 
+          />
+        }
       >
         {children}
       </DashboardShell>

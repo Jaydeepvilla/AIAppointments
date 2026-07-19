@@ -63,10 +63,16 @@ export default async function DashboardPage() {
         </ScrollReveal>
 
         {/* 5. Journey & Operations Row: Recent Activity, Setup Journey */}
-        <ScrollReveal className="grid grid-cols-1 lg:grid-cols-2 gap-space-5">
-          <DashboardWidgets.RecentActivity activity={snapshot.recentActivity} />
-          <DashboardWidgets.SetupProgress progress={snapshot.setupProgress} />
-        </ScrollReveal>
+        {snapshot.recentActivity && snapshot.recentActivity.length > 0 ? (
+          <ScrollReveal className="grid grid-cols-1 lg:grid-cols-2 gap-space-5">
+            <DashboardWidgets.RecentActivity activity={snapshot.recentActivity} />
+            <DashboardWidgets.SetupProgress progress={snapshot.setupProgress} />
+          </ScrollReveal>
+        ) : (
+          <ScrollReveal className="w-full">
+            <DashboardWidgets.SetupProgress progress={snapshot.setupProgress} />
+          </ScrollReveal>
+        )}
       </div>
     </div>
   );

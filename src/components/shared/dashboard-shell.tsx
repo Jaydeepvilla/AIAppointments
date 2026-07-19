@@ -196,12 +196,7 @@ export function DashboardShell({
           {!isMobile && !collapsed && (
             <button
               onClick={toggleSidebar}
-              className={getButtonClasses(
-                'primary',
-                'filled',
-                'small',
-                'shrink-0 h-6 w-6 flex items-center justify-center text-muted-foreground/50 hover:)] transition-all duration-150 cursor-pointer'
-              )}
+              className="shrink-0 h-6 w-6 flex items-center justify-center rounded-md text-muted-foreground/60 hover:text-foreground hover:bg-[hsl(var(--foreground)/0.05)] transition-all duration-150 cursor-pointer"
               aria-label="Collapse sidebar"
               title="Collapse sidebar"
             >

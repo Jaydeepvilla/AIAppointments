@@ -1,3 +1,5 @@
+"use client";
+
 import { cn } from "@/components/shared/utils"
 import { m } from "framer-motion"
 

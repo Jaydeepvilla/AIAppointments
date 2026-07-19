@@ -59,13 +59,13 @@ export default async function ProfilePage({ searchParams }: PageProps) {
         />
 
         {/* Premium Tab Switcher */}
-        <div className="flex bg-[#0d0c18]/45 border border-white/5 p-1 rounded-xl shrink-0 backdrop-blur-md self-start sm:self-center">
+        <div className="flex bg-[hsl(var(--foreground)/0.04)] border border-[hsl(var(--foreground)/0.06)] p-1 rounded-full shrink-0 shadow-inner self-start sm:self-center">
           <Link
             href="/profile?tab=business"
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-300 ${
+            className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
               activeTab === "business"
-                ? "bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm"
-                : "text-slate-400 hover:text-white border border-transparent"
+                ? "bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border border-[hsl(var(--foreground)/0.08)] shadow-sm"
+                : "text-muted-foreground hover:text-foreground border border-transparent"
             }`}
           >
             <Building className="h-3.5 w-3.5" />
@@ -73,10 +73,10 @@ export default async function ProfilePage({ searchParams }: PageProps) {
           </Link>
           <Link
             href="/profile?tab=account"
-            className={`flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-300 ${
+            className={`flex items-center gap-2 px-4 py-1.5 text-xs font-semibold rounded-full transition-all duration-200 ${
               activeTab === "account"
-                ? "bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm"
-                : "text-slate-400 hover:text-white border border-transparent"
+                ? "bg-[hsl(var(--background))] text-[hsl(var(--foreground))] border border-[hsl(var(--foreground)/0.08)] shadow-sm"
+                : "text-muted-foreground hover:text-foreground border border-transparent"
             }`}
           >
             <User className="h-3.5 w-3.5" />
