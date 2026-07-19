@@ -1,7 +1,8 @@
-"use client";;
+"use client";
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { cn } from "@/components/shared/utils";
 import {
   Save,
   Loader2,
@@ -357,11 +358,12 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
   ] as const;
 
   return (
-    <div className="flex flex-col md:flex-row gap-6 items-start w-full">
+    <div className="flex flex-col md:flex-row gap-8 items-start w-full">
       {/* Sidebar Nav */}
-      <div className="flex md:flex-col flex-wrap gap-1.5 w-full md:w-60 shrink-0 bg-[#0d0c18]/45 border border-white/5 p-3 rounded-2xl backdrop-blur-md">
+      <div className="flex md:flex-col flex-wrap gap-1 w-full md:w-56 shrink-0 select-none">
         {tabs.map((tab) => {
           const Icon = tab.icon;
+          const isActive = activeTab === tab.id;
           return (
             <button
               key={tab.id}
@@ -369,25 +371,23 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                 setActiveTab(tab.id);
                 setErrorMsg(null);
               }}
-              className={getButtonClasses(
-                'primary',
-                'filled',
-                'medium',
-                `flex items-center gap-3 text-sm text-left transition-all duration-300 w-full] ${activeTab === tab.id
-  ? "bg-violet-600/10 text-violet-400 border border-violet-500/20 shadow-sm"
-  : "text-slate-400 hover:text-white hover:bg-white/[0.02] border border-transparent"}`
+              className={cn(
+                "flex items-center gap-3 px-4 py-2.5 text-xs font-semibold rounded-full transition-all duration-200 w-full select-none text-left cursor-pointer border-none",
+                isActive
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "text-muted-foreground hover:text-foreground hover:bg-[hsl(var(--foreground)/0.03)]"
               )}
             >
-              <Icon className="h-4.5 w-4.5" />
+              <Icon className="h-4 w-4" />
               <span>{tab.label}</span>
             </button>
           );
         })}
       </div>
       {/* Main Settings Display */}
-      <div className="flex-1 w-full bg-[#0d0c18]/30 border border-white/5 rounded-2xl p-6 sm:p-8 backdrop-blur-md relative min-h-[400px]">
+      <div className="flex-1 w-full bg-card border border-[hsl(var(--foreground)/0.06)] rounded-2xl p-6 sm:p-8 shadow-sm relative min-h-[400px]">
         {errorMsg && (
-          <div role="alert" className="flex items-center gap-3 bg-rose-500/10 border border-rose-500/20 text-rose-200 p-4 radius-xl text-caption animate-fade-in mb-6">
+          <div role="alert" className="flex items-center gap-3 bg-rose-500/10 border border-rose-500/20 text-rose-200 p-4 rounded-xl text-caption animate-fade-in mb-6">
             <AlertTriangle className="h-4.5 w-4.5 text-rose-400 shrink-0" />
             <span>{errorMsg}</span>
           </div>
@@ -396,16 +396,16 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
         {/* ── TAB 1: USER PROFILE ── */}
         {activeTab === "profile" && (
           <form onSubmit={handleUpdateProfile} className="space-y-6">
-            <div className="border-b border-white/5 pb-4">
-              <h2 className="text-lg font-bold text-white">Personal Profile</h2>
-              <p className="text-xs text-slate-400">Configure your personal name, phone numbers, and profile bio.</p>
+            <div className="border-b border-[hsl(var(--foreground)/0.06)] pb-4">
+              <h2 className="text-body-md font-bold text-foreground">Personal Profile</h2>
+              <p className="text-xs text-muted-foreground">Configure your personal name, phone numbers, and profile bio.</p>
             </div>
 
             {/* Avatar input */}
             <div className="space-y-1.5">
               <Label htmlFor="avatar-url">Avatar Photo URL</Label>
               <div className="flex gap-4 items-center">
-                <div className="h-12 w-12 rounded-xl bg-violet-600/10 border border-violet-500/20 flex items-center justify-center overflow-hidden shrink-0 text-violet-400 font-bold uppercase">
+                <div className="h-12 w-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0 text-primary font-bold uppercase">
                   {avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     (<img src={avatar} alt="Avatar" className="h-full w-full object-cover" />)
@@ -452,8 +452,8 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
             {/* Phone */}
             <div className="space-y-1.5">
-              <Label htmlFor="profile-phone" className="flex items-center gap-1.5">
-                <Phone className="h-4 w-4 text-slate-500" /> Phone Number
+              <Label htmlFor="profile-phone" className="flex items-center gap-1.5 text-muted-foreground/95">
+                <Phone className="h-4 w-4 text-muted-foreground/60" /> Phone Number
               </Label>
               <Input
                 id="profile-phone"
@@ -472,11 +472,11 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
                 placeholder="Write a brief profile description..."
-                className="w-full min-h-[100px] bg-slate-950/40 border border-slate-800 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/10 radius-xl px-4 py-3 text-body-sm text-white placeholder-slate-600 outline-none transition-all duration-300"
+                className="w-full min-h-[100px] bg-[hsl(var(--foreground)/0.02)] border border-border/80 focus:border-primary/50 focus:ring-2 focus:ring-primary/10 rounded-xl px-4.5 py-3 text-body-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200"
               />
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between pt-4 border-t border-[hsl(var(--foreground)/0.06)]">
               <div className="flex items-center gap-2">
                 {profileSuccess && (
                   <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold animate-fade-in">
@@ -484,7 +484,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                   </div>
                 )}
               </div>
-              <Button type="submit" disabled={savingProfile} className="bg-violet-600 hover:bg-violet-500 flex items-center gap-2 px-6">
+              <Button type="submit" disabled={savingProfile} className="rounded-full flex items-center gap-2 px-6">
                 {savingProfile ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" /> Saving...
@@ -502,9 +502,9 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
         {/* ── TAB 2: USER PREFERENCES ── */}
         {activeTab === "preferences" && (
           <form onSubmit={handleUpdatePrefs} className="space-y-6">
-            <div className="border-b border-white/5 pb-4">
-              <h2 className="text-lg font-bold text-white">System Preferences</h2>
-              <p className="text-xs text-slate-400">Configure language, themes, and dashboard timezones.</p>
+            <div className="border-b border-[hsl(var(--foreground)/0.06)] pb-4">
+              <h2 className="text-body-md font-bold text-foreground">System Preferences</h2>
+              <p className="text-xs text-muted-foreground">Configure language, themes, and default timezones.</p>
             </div>
 
             {/* Theme Select */}
@@ -540,8 +540,8 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
             {/* Timezone Select */}
             <div className="space-y-1.5">
-              <Label htmlFor="timezone-select" className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-slate-500" /> Default Timezone
+              <Label htmlFor="timezone-select" className="flex items-center gap-1.5 text-muted-foreground/95">
+                <Clock className="h-4 w-4 text-muted-foreground/60" /> Default Timezone
               </Label>
               <Select value={timezoneVal} onValueChange={setTimezoneVal}>
                 <SelectTrigger id="timezone-select">
@@ -557,7 +557,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
               </Select>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between pt-4 border-t border-[hsl(var(--foreground)/0.06)]">
               <div className="flex items-center gap-2">
                 {prefsSuccess && (
                   <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold animate-fade-in">
@@ -565,7 +565,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                   </div>
                 )}
               </div>
-              <Button type="submit" disabled={savingPrefs} className="bg-violet-600 hover:bg-violet-500 flex items-center gap-2 px-6">
+              <Button type="submit" disabled={savingPrefs} className="rounded-full flex items-center gap-2 px-6">
                 {savingPrefs ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" /> Saving...
@@ -583,69 +583,69 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
         {/* ── TAB 3: NOTIFICATIONS ── */}
         {activeTab === "notifications" && (
           <form onSubmit={handleUpdateNotifications} className="space-y-6">
-            <div className="border-b border-white/5 pb-4">
-              <h2 className="text-lg font-bold text-white">Notifications</h2>
-              <p className="text-xs text-slate-400">Configure email, SMS, and push notification alerts.</p>
+            <div className="border-b border-[hsl(var(--foreground)/0.06)] pb-4">
+              <h2 className="text-body-md font-bold text-foreground">Notifications</h2>
+              <p className="text-xs text-muted-foreground">Configure email, SMS, and push notification alerts.</p>
             </div>
 
             {/* Notification Checkboxes */}
             <div className="space-y-4">
-              <div className="flex items-start gap-3 bg-slate-950/20 border border-slate-900/60 p-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-[hsl(var(--foreground)/0.02)] border border-border/40 p-4 rounded-xl">
                 <input
                   id="notify-email"
                   type="checkbox"
                   checked={emailNotify}
                   onChange={(e) => setEmailNotify(e.target.checked)}
-                  className="h-4 w-4 mt-1 rounded border-slate-800 bg-slate-950/40 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-950"
+                  className="h-4 w-4 mt-1 rounded border-border/80 bg-background text-primary focus:ring-primary/20"
                 />
                 <div>
-                  <label htmlFor="notify-email" className="text-sm font-semibold text-white select-none cursor-pointer">
+                  <label htmlFor="notify-email" className="text-sm font-semibold text-foreground select-none cursor-pointer">
                     Email Notifications
                   </label>
-                  <p className="text-xs text-slate-400 leading-normal mt-0.5">
+                  <p className="text-xs text-muted-foreground leading-normal mt-0.5">
                     Receive account alerts, call logs, weekly dashboard summary reports, and client billing reminders.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-slate-950/20 border border-slate-900/60 p-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-[hsl(var(--foreground)/0.02)] border border-border/40 p-4 rounded-xl">
                 <input
                   id="notify-sms"
                   type="checkbox"
                   checked={smsNotify}
                   onChange={(e) => setSmsNotify(e.target.checked)}
-                  className="h-4 w-4 mt-1 rounded border-slate-800 bg-slate-950/40 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-950"
+                  className="h-4 w-4 mt-1 rounded border-border/80 bg-background text-primary focus:ring-primary/20"
                 />
                 <div>
-                  <label htmlFor="notify-sms" className="text-sm font-semibold text-white select-none cursor-pointer">
-                    SMS SMS Notifications
+                  <label htmlFor="notify-sms" className="text-sm font-semibold text-foreground select-none cursor-pointer">
+                    SMS Notifications
                   </label>
-                  <p className="text-xs text-slate-400 leading-normal mt-0.5">
+                  <p className="text-xs text-muted-foreground leading-normal mt-0.5">
                     Get text notifications on your phone for urgent client appointment escalations or critical system failures.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 bg-slate-950/20 border border-slate-900/60 p-4 rounded-xl">
+              <div className="flex items-start gap-3 bg-[hsl(var(--foreground)/0.02)] border border-border/40 p-4 rounded-xl">
                 <input
                   id="notify-push"
                   type="checkbox"
                   checked={pushNotify}
                   onChange={(e) => setPushNotify(e.target.checked)}
-                  className="h-4 w-4 mt-1 rounded border-slate-800 bg-slate-950/40 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-950"
+                  className="h-4 w-4 mt-1 rounded border-border/80 bg-background text-primary focus:ring-primary/20"
                 />
                 <div>
-                  <label htmlFor="notify-push" className="text-sm font-semibold text-white select-none cursor-pointer">
+                  <label htmlFor="notify-push" className="text-sm font-semibold text-foreground select-none cursor-pointer">
                     Browser Push Toggles
                   </label>
-                  <p className="text-xs text-slate-400 leading-normal mt-0.5">
+                  <p className="text-xs text-muted-foreground leading-normal mt-0.5">
                     Receive real-time push prompts in your browser when the receptionist AI is actively answering a call.
                   </p>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-white/5">
+            <div className="flex items-center justify-between pt-4 border-t border-[hsl(var(--foreground)/0.06)]">
               <div className="flex items-center gap-2">
                 {notifySuccess && (
                   <div className="flex items-center gap-1.5 text-emerald-400 text-xs font-semibold animate-fade-in">
@@ -653,7 +653,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                   </div>
                 )}
               </div>
-              <Button type="submit" disabled={savingNotify} className="bg-violet-600 hover:bg-violet-500 flex items-center gap-2 px-6">
+              <Button type="submit" disabled={savingNotify} className="rounded-full flex items-center gap-2 px-6">
                 {savingNotify ? (
                   <>
                     <Loader2 className="h-4 w-4 animate-spin" /> Saving...
@@ -673,13 +673,13 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
           <div className="space-y-8">
             {/* Change Password Form */}
             <form onSubmit={handleChangePassword} className="space-y-6">
-              <div className="border-b border-white/5 pb-4">
-                <h2 className="text-lg font-bold text-white">Credentials & Security</h2>
-                <p className="text-xs text-slate-400">Change your login password and restrict active session limits.</p>
+              <div className="border-b border-[hsl(var(--foreground)/0.06)] pb-4">
+                <h2 className="text-body-md font-bold text-foreground">Credentials & Security</h2>
+                <p className="text-xs text-muted-foreground">Change your login password and restrict active session limits.</p>
               </div>
 
               {passwordSuccess && (
-                <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-200 p-4 radius-xl text-caption animate-fade-in">
+                <div className="flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 text-emerald-200 p-4 rounded-xl text-caption animate-fade-in">
                   <CheckCircle className="h-4.5 w-4.5 text-emerald-400 shrink-0" />
                   <span>Password changed successfully! Previous sessions rotated.</span>
                 </div>
@@ -709,18 +709,13 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
                     placeholder="••••••••"
-                    className="w-full bg-slate-950/40 border border-slate-800 focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/10 radius-xl pl-4 pr-10 py-3 text-body-sm text-white placeholder-slate-600 outline-none transition-all duration-300"
+                    className="w-full bg-[hsl(var(--foreground)/0.02)] border border-border/80 focus:border-primary/50 focus:ring-2 focus:ring-primary/10 rounded-xl pl-4 pr-10 py-3 text-body-sm text-foreground placeholder:text-muted-foreground/50 outline-none transition-all duration-200"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     aria-label={showPassword ? "Hide password" : "Show password"}
-                    className={getButtonClasses(
-                      'primary',
-                      'filled',
-                      'medium',
-                      'absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 focus:outline-none transition-colors'
-                    )}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer focus:outline-none transition-colors"
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
@@ -728,29 +723,29 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
                 {/* Password strength meter */}
                 {newPassword.length > 0 && (
-                  <div className="space-y-2 mt-2 p-3 bg-slate-950/20 border border-slate-900 radius-lg animate-fade-in text-left">
+                  <div className="space-y-2 mt-2 p-3 bg-[hsl(var(--foreground)/0.01)] border border-border/50 rounded-xl animate-fade-in text-left">
                     <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-wider">
-                      <span className="text-slate-400">Password Strength</span>
-                      <span className="text-violet-400">{strength.label}</span>
+                      <span className="text-muted-foreground/80">Password Strength</span>
+                      <span className="text-primary font-bold">{strength.label}</span>
                     </div>
                     
                     <div className="grid grid-cols-5 gap-1.5 h-1">
                       {[1, 2, 3, 4, 5].map((level) => (
                         <div 
                           key={level} 
-                          className={`h-full radius-full transition-all duration-300 ${
-                            level <= strength.score ? getStrengthColor(strength.score) : "bg-slate-800"
+                          className={`h-full rounded-full transition-all duration-300 ${
+                            level <= strength.score ? getStrengthColor(strength.score) : "bg-[hsl(var(--foreground)/0.08)]"
                           }`} 
                         />
                       ))}
                     </div>
 
-                    <div className="space-y-1 pt-1 text-[10px] text-slate-400">
+                    <div className="space-y-1 pt-1 text-[10px] text-muted-foreground/75">
                       <div className="flex items-center gap-1.5">
                         {newPassword.length >= 12 ? (
                           <Check className="h-3 w-3 text-emerald-400" />
                         ) : (
-                          <div className="h-1.5 w-1.5 rounded-full bg-slate-600" />
+                          <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/50" />
                         )}
                         <span>12+ characters</span>
                       </div>
@@ -758,7 +753,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                         {/[A-Z]/.test(newPassword) && /[a-z]/.test(newPassword) ? (
                           <Check className="h-3 w-3 text-emerald-400" />
                         ) : (
-                          <div className="h-1.5 w-1.5 rounded-full bg-slate-600" />
+                          <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/50" />
                         )}
                         <span>Uppercase & lowercase letters</span>
                       </div>
@@ -766,7 +761,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                         {/[0-9]/.test(newPassword) && /[!@#$%^&*()_+\-=\[\]\{\};':",.\/<>?]/.test(newPassword) ? (
                           <Check className="h-3 w-3 text-emerald-400" />
                         ) : (
-                          <div className="h-1.5 w-1.5 rounded-full bg-slate-600" />
+                          <div className="h-1.5 w-1.5 rounded-full bg-muted-foreground/50" />
                         )}
                         <span>Number & symbol</span>
                       </div>
@@ -796,9 +791,9 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                   type="checkbox"
                   checked={logoutOtherDevices}
                   onChange={(e) => setLogoutOtherDevices(e.target.checked)}
-                  className="h-4 w-4 rounded border-slate-800 bg-slate-950/40 text-violet-600 focus:ring-violet-500 focus:ring-offset-slate-950"
+                  className="h-4 w-4 rounded border-border/80 bg-background text-primary focus:ring-primary/20"
                 />
-                <label htmlFor="invalidate-sessions" className="text-caption text-slate-400 font-medium select-none cursor-pointer">
+                <label htmlFor="invalidate-sessions" className="text-caption text-muted-foreground/80 font-medium select-none cursor-pointer">
                   Log out of all other devices on password update
                 </label>
               </div>
@@ -807,7 +802,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                 <Button 
                   type="submit" 
                   disabled={savingPassword || strength.score < 4 || newPassword !== confirmPassword} 
-                  className="bg-violet-600 hover:bg-violet-500 flex items-center gap-2"
+                  className="rounded-full flex items-center gap-2"
                 >
                   {savingPassword ? (
                     <>
@@ -823,16 +818,16 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
             </form>
 
             {/* Active device sessions list */}
-            <div className="space-y-4 pt-6 border-t border-white/5">
+            <div className="space-y-4 pt-6 border-t border-[hsl(var(--foreground)/0.06)]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-white">Active Device Sessions</h3>
-                  <p className="text-[11px] text-slate-400">These devices are currently logged in with your account credentials.</p>
+                  <h3 className="text-sm font-bold text-foreground">Active Device Sessions</h3>
+                  <p className="text-[11px] text-muted-foreground">These devices are currently logged in with your account credentials.</p>
                 </div>
                 {sessionsList.length > 1 && (
                   <Button 
                     onClick={handleRevokeAllOtherSessions}
-                    className="bg-rose-500/10 hover:bg-rose-500/20 text-rose-200 border border-rose-500/20 text-xs px-3"
+                    className="bg-[hsl(var(--state-error-text))]/10 hover:bg-[hsl(var(--state-error-text))]/20 text-[hsl(var(--state-error-text))] border border-[hsl(var(--state-error-text))]/20 text-xs px-3 rounded-full"
                   >
                     Logout All Other Devices
                   </Button>
@@ -841,19 +836,19 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
               {loadingSessions ? (
                 <div className="flex justify-center py-6">
-                  <Loader2 className="h-6 w-6 text-slate-500 animate-spin" />
+                  <Loader2 className="h-6 w-6 text-muted-foreground animate-spin" />
                 </div>
               ) : (
-                <div className="divide-y divide-white/5 border border-white/5 rounded-xl overflow-hidden bg-slate-950/10">
+                <div className="divide-y divide-border/60 border border-border/60 rounded-xl overflow-hidden bg-[hsl(var(--foreground)/0.01)]">
                   {sessionsList.map((session) => (
-                    <div key={session.id} className="flex justify-between items-center p-4 hover:bg-white/[0.01] transition-colors">
+                    <div key={session.id} className="flex justify-between items-center p-4 hover:bg-[hsl(var(--foreground)/0.01)] transition-colors">
                       <div className="flex gap-3.5 items-start">
-                        <div className="p-2 bg-slate-900 border border-white/5 rounded-lg text-slate-400 shrink-0">
+                        <div className="p-2 bg-[hsl(var(--foreground)/0.02)] border border-border/50 rounded-xl text-muted-foreground shrink-0">
                           <Smartphone className="h-4.5 w-4.5" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-white">
+                            <span className="text-xs font-semibold text-foreground">
                               {session.userAgent ? (
                                 session.userAgent.includes("Chrome") ? "Google Chrome" :
                                 session.userAgent.includes("Safari") ? "Apple Safari" :
@@ -861,12 +856,12 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                               ) : "Unknown Device"}
                             </span>
                             {session.isCurrent && (
-                              <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] uppercase font-bold tracking-wider px-2 py-0.5">
+                              <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[9px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full">
                                 Current Session
                               </Badge>
                             )}
                           </div>
-                          <p className="text-[10px] text-slate-400 mt-1 leading-normal">
+                          <p className="text-[10px] text-muted-foreground mt-1 leading-normal">
                             IP Address: <strong>{session.ipAddress || "Unknown"}</strong> • Created: {new Date(session.createdAt).toLocaleDateString()}
                           </p>
                         </div>
@@ -876,12 +871,7 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
                         <button
                           onClick={() => handleRevokeSession(session.id)}
                           aria-label="Terminate session"
-                          className={getButtonClasses(
-                            'primary',
-                            'filled',
-                            'medium',
-                            'p-2 text-slate-500 border border-transparent transition-all duration-300'
-                          )}
+                          className="p-2 text-muted-foreground hover:text-[hsl(var(--state-error-text))] hover:bg-[hsl(var(--state-error-bg))] border border-transparent rounded-full transition-all duration-200 cursor-pointer"
                         >
                           <LogOut className="h-4 w-4" />
                         </button>
@@ -897,39 +887,39 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
         {/* ── TAB 5: DANGER ZONE ── */}
         {activeTab === "danger" && (
           <div className="space-y-6">
-            <div className="border-b border-white/5 pb-4">
-              <h2 className="text-lg font-bold text-rose-400">Danger Zone</h2>
-              <p className="text-xs text-slate-400">Perform destructive actions like deactivating or deleting your profile.</p>
+            <div className="border-b border-[hsl(var(--foreground)/0.06)] pb-4">
+              <h2 className="text-body-md font-bold text-[hsl(var(--state-error-text))]">Danger Zone</h2>
+              <p className="text-xs text-muted-foreground">Perform destructive actions like deactivating or deleting your profile.</p>
             </div>
 
             <div className="space-y-4">
               {/* Deactivate account card */}
-              <div className="p-5 border border-amber-500/10 bg-amber-500/[0.02] rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="p-5 border border-[hsl(var(--state-warning-text))]/20 bg-[hsl(var(--state-warning-bg))]/10 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-amber-200">Deactivate Account</h3>
-                  <p className="text-xs text-slate-400 leading-normal mt-0.5">
+                  <h3 className="text-sm font-semibold text-[hsl(var(--state-warning-text))]">Deactivate Account</h3>
+                  <p className="text-xs text-muted-foreground leading-normal mt-0.5">
                     Deactivating suspends your account. You can reactivate your account at any time by logging in again.
                   </p>
                 </div>
                 <Button 
                   onClick={() => setShowDeactivateConfirm(true)}
-                  className="bg-amber-600/10 hover:bg-amber-600/20 text-amber-200 border border-amber-500/20 text-xs px-4"
+                  className="bg-[hsl(var(--state-warning-text))]/10 hover:bg-[hsl(var(--state-warning-text))]/20 text-[hsl(var(--state-warning-text))] border border-[hsl(var(--state-warning-text))]/20 text-xs px-4 rounded-full"
                 >
                   Deactivate Profile
                 </Button>
               </div>
 
               {/* Delete account card */}
-              <div className="p-5 border border-rose-500/15 bg-rose-500/[0.01] rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="p-5 border border-[hsl(var(--state-error-text))]/20 bg-[hsl(var(--state-error-bg))]/10 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h3 className="text-sm font-semibold text-rose-200">Delete Account (Soft Delete)</h3>
-                  <p className="text-xs text-slate-400 leading-normal mt-0.5">
+                  <h3 className="text-sm font-semibold text-[hsl(var(--state-error-text))]">Delete Account (Soft Delete)</h3>
+                  <p className="text-xs text-muted-foreground leading-normal mt-0.5">
                     Soft deleting schedules your account for permanent removal. Your business templates remain isolated.
                   </p>
                 </div>
                 <Button 
                   onClick={() => setShowDeleteConfirm(true)}
-                  className="bg-rose-600 hover:bg-rose-500 text-white text-xs px-4 flex items-center gap-1.5"
+                  className="bg-[hsl(var(--state-error-text))] hover:bg-[hsl(var(--state-error-text))]/90 text-[hsl(var(--state-error-bg))] text-xs px-4 flex items-center gap-1.5 rounded-full border-none"
                 >
                   <Trash2 className="h-3.5 w-3.5" /> Delete Account
                 </Button>
@@ -938,25 +928,25 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
             {/* Deactivation Modal Dialog */}
             {showDeactivateConfirm && (
-              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-[#0b0a15] border border-white/5 p-6 rounded-2xl w-full max-w-md shadow-2xl animate-scale-in text-left">
-                  <div className="flex items-center gap-3 text-amber-400 mb-3">
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+                <div className="bg-popover border border-border p-6 rounded-2xl w-full max-w-md shadow-2xl animate-scale-in text-left">
+                  <div className="flex items-center gap-3 text-[hsl(var(--state-warning-text))] mb-3">
                     <AlertTriangle className="h-6 w-6 shrink-0" />
-                    <h3 className="text-base font-bold text-white">Deactivate your Account?</h3>
+                    <h3 className="text-base font-bold text-foreground">Deactivate your Account?</h3>
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
                     This will log you out of all devices and suspend access to your business. You can reactivate by signing in again with your credentials.
                   </p>
                   <div className="flex justify-end gap-3">
                     <Button 
                       onClick={() => setShowDeactivateConfirm(false)}
-                      className="bg-white/5 hover:bg-white/10 text-white text-xs px-4"
+                      className="bg-muted hover:bg-muted/95 text-foreground text-xs px-4 rounded-full border-none"
                     >
                       Cancel
                     </Button>
                     <Button 
                       onClick={handleDeactivate}
-                      className="bg-amber-600 hover:bg-amber-500 text-white text-xs px-4"
+                      className="bg-[hsl(var(--state-warning-text))] hover:bg-[hsl(var(--state-warning-text))]/90 text-[hsl(var(--state-warning-bg))] text-xs px-4 rounded-full border-none"
                     >
                       Confirm Deactivation
                     </Button>
@@ -967,25 +957,25 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
 
             {/* Deletion Modal Dialog */}
             {showDeleteConfirm && (
-              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-                <div className="bg-[#0b0a15] border border-white/5 p-6 rounded-2xl w-full max-w-md shadow-2xl animate-scale-in text-left">
-                  <div className="flex items-center gap-3 text-rose-400 mb-3">
+              <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in">
+                <div className="bg-popover border border-border p-6 rounded-2xl w-full max-w-md shadow-2xl animate-scale-in text-left">
+                  <div className="flex items-center gap-3 text-[hsl(var(--state-error-text))] mb-3">
                     <AlertTriangle className="h-6 w-6 shrink-0" />
-                    <h3 className="text-base font-bold text-white">Delete your Account?</h3>
+                    <h3 className="text-base font-bold text-foreground">Delete your Account?</h3>
                   </div>
-                  <p className="text-xs text-slate-400 leading-relaxed mb-6">
+                  <p className="text-xs text-muted-foreground leading-relaxed mb-6">
                     Are you absolutely sure? This soft deletes your profile. Logins will be disabled and administrator restoration overrides will be required to recover.
                   </p>
                   <div className="flex justify-end gap-3">
                     <Button 
                       onClick={() => setShowDeleteConfirm(false)}
-                      className="bg-white/5 hover:bg-white/10 text-white text-xs px-4"
+                      className="bg-muted hover:bg-muted/95 text-foreground text-xs px-4 rounded-full border-none"
                     >
                       Cancel
                     </Button>
                     <Button 
                       onClick={handleDelete}
-                      className="bg-rose-600 hover:bg-rose-500 text-white text-xs px-4"
+                      className="bg-[hsl(var(--state-error-text))] hover:bg-[hsl(var(--state-error-text))]/90 text-[hsl(var(--state-error-bg))] text-xs px-4 rounded-full border-none"
                     >
                       Confirm Deletion
                     </Button>
