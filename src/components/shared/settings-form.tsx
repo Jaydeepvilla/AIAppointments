@@ -49,8 +49,6 @@ import {
 } from "@/server/actions/user-profile";
 import { analyzePasswordStrength } from "@/lib/auth/security-checks";
 
-import { getButtonClasses } from '@/design-system/button-tokens';
-
 interface SettingsFormProps {
   initialData: {
     user: {
@@ -161,6 +159,26 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
       loadSessions();
     }
   }, [activeTab, loadSessions]);
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("Image file size must be less than 2MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setAvatar(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleRemoveAvatar = () => {
+    setAvatar("");
+  };
 
   // Submit Handlers
   const handleUpdateProfile = async (e: React.FormEvent) => {
@@ -402,25 +420,50 @@ export function PersonalSettingsForm({ initialData }: SettingsFormProps) {
             </div>
 
             {/* Avatar input */}
-            <div className="space-y-1.5">
-              <Label htmlFor="avatar-url">Avatar Photo URL</Label>
-              <div className="flex gap-4 items-center">
-                <div className="h-12 w-12 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center overflow-hidden shrink-0 text-primary font-bold uppercase">
+            <div className="space-y-3">
+              <Label className="text-body-sm font-semibold text-foreground">Avatar Photo</Label>
+              <div className="flex flex-col sm:flex-row gap-6 items-center">
+                <div className="relative group w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center overflow-hidden shrink-0 text-xl text-primary font-bold uppercase transition-all duration-300 shadow-md">
                   {avatar ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    (<img src={avatar} alt="Avatar" className="h-full w-full object-cover" />)
+                    <img src={avatar} alt="Avatar" className="h-full w-full object-cover" />
                   ) : (
                     `${firstName.charAt(0)}${lastName.charAt(0)}`
                   )}
+                  {/* Hover Edit Overlay */}
+                  <label htmlFor="avatar-upload" className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-semibold transition-opacity duration-200 cursor-pointer uppercase tracking-wider">
+                    Change
+                  </label>
                 </div>
-                <Input
-                  id="avatar-url"
-                  type="text"
-                  value={avatar}
-                  onChange={(e) => setAvatar(e.target.value)}
-                  placeholder="https://example.com/avatar.jpg"
-                  className="flex-1"
-                />
+                <div className="flex flex-col gap-2 w-full sm:w-auto">
+                  <div className="flex flex-wrap items-center gap-3">
+                    <label
+                      htmlFor="avatar-upload"
+                      className="px-4 py-2 text-xs font-semibold rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors shadow-sm cursor-pointer inline-flex items-center justify-center gap-1.5"
+                    >
+                      Upload Image
+                    </label>
+                    <input
+                      id="avatar-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleAvatarChange}
+                      className="hidden"
+                    />
+                    {avatar && (
+                      <button
+                        type="button"
+                        onClick={handleRemoveAvatar}
+                        className="px-4 py-2 text-xs font-semibold rounded-full bg-muted text-muted-foreground hover:text-foreground hover:bg-muted/95 border border-[hsl(var(--foreground)/0.06)] transition-all cursor-pointer inline-flex items-center justify-center"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-muted-foreground leading-normal max-w-xs">
+                    Support JPG, PNG, GIF. Max file size of 2MB.
+                  </p>
+                </div>
               </div>
             </div>
 
